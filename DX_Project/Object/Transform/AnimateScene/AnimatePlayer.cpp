@@ -237,7 +237,6 @@ bool AnimatePlayer::IsHanging()
 	if (action_status == CHAR_STATUS::ROPE) {
 		SetClip(CHAR_STATUS::ROPE);
 		jump_speed = 0;
-		move_speed = 0;
 		return true;
 	}
 	else {
@@ -308,7 +307,6 @@ void AnimatePlayer::Update()
 				//점프 관련 설정을 변경
 				jump_speed = 100.0f;
 				SetClip(CHAR_STATUS::JUMP);
-
 			}
 		}
 	}
@@ -465,21 +463,31 @@ void AnimatePlayer::Update()
 		if (KEY_PRESS(VK_DOWN)) {
 			pos.y += 300.0f * DELTA;
 		}
-		if (KEY_PRESS(VK_LEFT) && KEY_PRESS('C')) {
-			SetClip(CHAR_STATUS::JUMP);
+		if (KEY_PRESS(VK_LEFT)) {
 			move_pos = -50.0f;
-			//move_speed = 50.0f;
+			move_speed = 50.0f;
+		}
+		if (KEY_PRESS(VK_RIGHT)) {
+			move_pos = 50.0f;
+			move_speed = -50.0f;
+		}
+		if (KEY_PRESS(VK_LEFT) && KEY_PRESS('C')) {
+			move_pos = -50.0f;
+			move_speed = 50.0f;
 			jump_speed = 50.0f;
+			SetClip(CHAR_STATUS::JUMP);
 		}
 		if (KEY_PRESS(VK_RIGHT) && KEY_PRESS('C')) {
-			SetClip(CHAR_STATUS::JUMP);
 			move_pos = 50.0f;
-			//move_speed = -50.0f;
+			move_speed = -50.0f;
 			jump_speed = 50.0f;
+			SetClip(CHAR_STATUS::JUMP);
 		}
+		/*
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			move_pos = 0;
 		}
+		*/
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK:
 		if (attack_collider != NULL) {

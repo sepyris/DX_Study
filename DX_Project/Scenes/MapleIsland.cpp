@@ -7,22 +7,22 @@ MapleIsland::MapleIsland(float area)
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite2.png");
 	CAM->SetTarget(player);
 	if (area == 3) {
-		player->pos = Vector2(2145, 900);
-		CAM->pos = Vector2(1280, 600);
+		player->pos = Vector2(2145, 850);
+		CAM->pos = Vector2(1280, 500);
 	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X,WIN_CENTER_Y);
 	}
-	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 1));
-	ground[1] = new RectCollider(Vector2(150, 1));
-	ground[2] = new RectCollider(Vector2(150, 1));
-	ground[3] = new RectCollider(Vector2(1680, 1));
-	ground[4] = new RectCollider(Vector2(150, 1));
-	ground[5] = new RectCollider(Vector2(660, 1));
-	ground[6] = new RectCollider(Vector2(600, 1));
-	ground[7] = new RectCollider(Vector2(780, 1));
-	ground[8] = new RectCollider(Vector2(510, 1));
-	ground[9] = new RectCollider(Vector2(1800, 1));
+	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 3));
+	ground[1] = new RectCollider(Vector2(150, 3));
+	ground[2] = new RectCollider(Vector2(150, 3));
+	ground[3] = new RectCollider(Vector2(1680, 3));
+	ground[4] = new RectCollider(Vector2(150, 3));
+	ground[5] = new RectCollider(Vector2(660, 3));
+	ground[6] = new RectCollider(Vector2(600, 3));
+	ground[7] = new RectCollider(Vector2(780, 3));
+	ground[8] = new RectCollider(Vector2(510, 3));
+	ground[9] = new RectCollider(Vector2(1800, 3));
 	ground[0]->pos = Vector2(Vector2(WIN_CENTER_X, 1240));
 	ground[1]->pos = Vector2(Vector2(665,1160));
 	ground[2]->pos = Vector2(Vector2(815,1090));

@@ -130,7 +130,6 @@ typedef XMMATRIX Matrix;
 
 // Object Header 
 #include"Object/Shape/Shape.h"
-#include"Object/Shape/Triangle.h"
 #include"Object/Shape/SRTCircle.h"
 #include"Object/Shape/RectUV.h"
 

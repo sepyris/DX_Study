@@ -3,3 +3,4 @@ D:\project\새 폴더 (4)\DirectxTex\Bin\Desktop_2019\x64\Debug\DirectXTex.lib
 D:\project\새 폴더 (5)\DirectxTex\Bin\Desktop_2019\x64\Debug\DirectXTex.lib
 D:\project\새 폴더 (6)\DirectxTex\Bin\Desktop_2019\x64\Debug\DirectXTex.lib
 C:\Users\사토밀피유\Desktop\새 폴더\DirectxTex\Bin\Desktop_2019\x64\Debug\DirectXTex.lib
+D:\project\DX_Study\DirectxTex\Bin\Desktop_2019\x64\Debug\DirectXTex.lib

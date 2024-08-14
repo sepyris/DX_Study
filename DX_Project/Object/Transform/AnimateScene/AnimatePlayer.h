@@ -52,6 +52,8 @@ private:
 	float jump_speed;
 	float jump_height;
 	float init_jump_pos;
+	float move_speed;
+	float move_pos;
 
 	bool is_can_double_jump;
 	bool is_jump_attack;

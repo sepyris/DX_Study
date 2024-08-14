@@ -8,14 +8,14 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 	CAM->SetTarget(player);
 	if (area == 2) {
 		player->pos = Vector2(WIN_CENTER_X-180, 1000);
-		CAM->pos = Vector2(WIN_CENTER_X - 180, 1000);
+		CAM->pos = Vector2(-200, 600);
 	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);
 	}
 
 
-	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 1));
+	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 3));
 	ground[0]->pos = Vector2(Vector2(WIN_CENTER_X, 1175));
 
 

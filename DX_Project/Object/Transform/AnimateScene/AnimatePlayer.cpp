@@ -175,10 +175,12 @@ AnimatePlayer::AnimatePlayer(wstring file)
 	clip_cursor = 0;
 	is_looking_left = false;
 	action_status = CHAR_STATUS::IDLE;
-	jump_speed = 30.0f;
+	jump_speed = 0.0f;
 	init_jump_pos = 0.0f;
-	is_can_double_jump = true;
+	is_can_double_jump = false;
 	is_jump_attack = false;
+	move_speed = 0;
+	move_pos = 0;
 }
 
 AnimatePlayer::~AnimatePlayer()
@@ -206,7 +208,7 @@ void AnimatePlayer::landing()
 		is_jump_attack = false;
 		if (action_status == CHAR_STATUS::JUMP || action_status == CHAR_STATUS::ROPE) {
 			SetClip(CHAR_STATUS::IDLE);
-			is_can_double_jump = true;
+			is_can_double_jump = false;
 		}
 	}
 }
@@ -235,6 +237,7 @@ bool AnimatePlayer::IsHanging()
 	if (action_status == CHAR_STATUS::ROPE) {
 		SetClip(CHAR_STATUS::ROPE);
 		jump_speed = 0;
+		move_speed = 0;
 		return true;
 	}
 	else {
@@ -274,17 +277,38 @@ void AnimatePlayer::Update()
 		}
 		pos.y -= jump_speed * DELTA * 5.0f;
 	}
+	if (action_status != CHAR_STATUS::ROPE) {
+		move_speed -= 9.8f * move_pos * DELTA;
+
+		if (move_speed < -50.0f) {
+			move_speed = -50.0f;
+		}
+		if (move_speed > 50.0f) {
+			move_speed = 50.0f;
+		}
+		if (move_pos == 0) {
+			if (move_speed > 0.0f) {
+				move_speed -= 9.8f * DELTA * 20.0f;
+			}
+			else if(move_speed < 0.0f) {
+				move_speed += 9.8f * DELTA * 20.0f;
+			}
+		}
+		pos.x -= move_speed * DELTA*5.0f;
+	}
 	
 	
 	//엎드린 상태에서 점프가 불가하므로 조건 설정
 	if (action_status != CHAR_STATUS::PRONE) {
 		//점프키를 누름
-		if (KEY_DOWN('C'))
+		if (KEY_PRESS('C'))
 		{
 			//만약 점프 상태가 아니라면
 			if (action_status != CHAR_STATUS::JUMP &&action_status != CHAR_STATUS::ATTACK) {
 				//점프 관련 설정을 변경
 				jump_speed = 100.0f;
+				SetClip(CHAR_STATUS::JUMP);
+
 			}
 		}
 	}
@@ -333,14 +357,22 @@ void AnimatePlayer::Update()
 	{
 	case AnimatePlayer::CHAR_STATUS::IDLE:
 		if (KEY_PRESS(VK_LEFT)) {
-			pos.x -= 300.0f * DELTA;
+			move_pos = -10.0f;
+			//pos.x -= 300.0f * DELTA;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = true;
 		}
+		else {
+			move_pos = 0.0f;
+		}
 		if (KEY_PRESS(VK_RIGHT)) {
-			pos.x += 300.0f * DELTA;
+			move_pos = 10.0f;
+			//pos.x += 300.0f * DELTA;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
+		}
+		else {
+			move_pos = 0.0f;
 		}
 		if (KEY_DOWN('C')) {
 			SetClip(CHAR_STATUS::JUMP);
@@ -351,17 +383,26 @@ void AnimatePlayer::Update()
 		break;
 	case AnimatePlayer::CHAR_STATUS::WALK:
 		if (KEY_PRESS(VK_LEFT)) {
-			pos.x -= 300.0f * DELTA;
+			if (move_speed < 0) {
+				move_speed = 0.0f;
+			}
+			move_pos = -10.0f;
+			//pos.x -= 300.0f * DELTA;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = true;
 		}
 		if (KEY_PRESS(VK_RIGHT)) {
-			pos.x += 300.0f * DELTA;
+			if (move_speed > 0) {
+				move_speed = 0.0f;
+			}
+			move_pos = 10.0f;
+			//pos.x += 300.0f * DELTA;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
 		}
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			SetClip(CHAR_STATUS::IDLE);
+			move_pos = 0;
 		}
 		if (KEY_DOWN('C')) {
 			SetClip(CHAR_STATUS::JUMP);
@@ -370,26 +411,44 @@ void AnimatePlayer::Update()
 	case AnimatePlayer::CHAR_STATUS::JUMP:
 		//점프 상태일때 좌우 키를 누를시 좌우로 이동
 		//단 모션은 변경 없음
+		if (move_speed > 0) {
+			if (KEY_PRESS(VK_LEFT)) {
+				move_pos = -50.0f;
+			}
+			if (KEY_PRESS(VK_RIGHT)) {
+				move_pos = 3.0f;
+			}
+		}
 		if (KEY_PRESS(VK_LEFT)) {
-			pos.x -= 300.0f * DELTA;
 			is_looking_left = true;
+		}	
+		if (move_speed < 0) {
+			if (KEY_PRESS(VK_RIGHT)) {
+				move_pos = 50.0f;
+			}
+			if (KEY_PRESS(VK_LEFT)) {
+				move_pos = -3.0f;
+			}
 		}
 		if (KEY_PRESS(VK_RIGHT)) {
-			pos.x += 300.0f * DELTA;
 			is_looking_left = false;
 		}
+		
 		break;
 	case AnimatePlayer::CHAR_STATUS::PRONE:
 		//엎드린 상태에서 좌우 이동시 이동 상태로 변경
 		if (KEY_PRESS(VK_LEFT)) {
-			pos.x -= 300.0f * DELTA;
+			move_pos = -10.0f;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = true;
 		}
 		if (KEY_PRESS(VK_RIGHT)) {
-			pos.x += 300.0f * DELTA;
+			move_pos = 10.0f;
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
+		}
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
+			move_pos = 0;
 		}
 		//엎드린 상태일때 아래키를 누르지 않으면 대기상태로 변경
 		if (!KEY_PRESS(VK_DOWN)) {
@@ -408,14 +467,19 @@ void AnimatePlayer::Update()
 		}
 		if (KEY_PRESS(VK_LEFT) && KEY_PRESS('C')) {
 			SetClip(CHAR_STATUS::JUMP);
-			pos.x += 300.0f * DELTA;
-			jump_speed = 90.0f;
+			move_pos = -50.0f;
+			//move_speed = 50.0f;
+			jump_speed = 50.0f;
 		}
 		if (KEY_PRESS(VK_RIGHT) && KEY_PRESS('C')) {
 			SetClip(CHAR_STATUS::JUMP);
-			pos.x -= 300.0f * DELTA;
-			jump_speed = 90.0f;
-		}			
+			move_pos = 50.0f;
+			//move_speed = -50.0f;
+			jump_speed = 50.0f;
+		}
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
+			move_pos = 0;
+		}
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK:
 		if (attack_collider != NULL) {
@@ -426,14 +490,22 @@ void AnimatePlayer::Update()
 			attack_collider->WorldUpdate();
 		}
 		if (is_jump_attack) {
-			if (KEY_PRESS(VK_LEFT)) {
-				pos.x -= 300.0f * DELTA;
-				is_looking_left = true;
+			if (move_pos < 0) {
+				if (KEY_PRESS(VK_LEFT)) {
+					move_pos = -25.0f;
+					is_looking_left = true;
+				}
 			}
-			if (KEY_PRESS(VK_RIGHT)) {
-				pos.x += 300.0f * DELTA;
-				is_looking_left = false;
+			if (move_pos > 0) {
+				if (KEY_PRESS(VK_RIGHT)) {
+					move_pos = 25.0f;
+					is_looking_left = false;
+				}
 			}
+		}
+		else {
+			move_pos = 0;
+			move_speed = 0;
 		}
 		break;
 	case AnimatePlayer::CHAR_STATUS::MAX:
@@ -484,6 +556,8 @@ void AnimatePlayer::PostRender()
 	ImGui::Text("animatePlayer");
 	ImGui::SliderFloat2("p.pos", (float*)&pos, 0, WIN_WIDTH);
 	ImGui::SliderFloat("jump_speed", (float*)&jump_speed, 0, WIN_WIDTH);
+	ImGui::SliderFloat("move_speed", (float*)&move_speed, 0, WIN_WIDTH);
+	ImGui::SliderFloat("move_pos", (float*)&move_pos, 0, WIN_WIDTH);
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)

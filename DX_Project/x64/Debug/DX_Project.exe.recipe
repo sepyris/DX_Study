@@ -2,27 +2,27 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\project\DX_Study\x64\Debug\DX_Project.exe</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\DX_Project.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\PixelShader.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\PixelShader.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\PixelShaderPos.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\PixelShaderPos.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\PixelShaderUV.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\PixelShaderUV.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\VertexShader.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\VertexShader.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\VertexShaderPos.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\VertexShaderPos.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\project\DX_Study\x64\Debug\VertexShaderUV.cso</FullPath>
+      <FullPath>C:\Users\사토밀피유\Desktop\새 폴더 (2)\DX_Study\x64\Debug\VertexShaderUV.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

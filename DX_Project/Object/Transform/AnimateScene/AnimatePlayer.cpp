@@ -302,12 +302,18 @@ void AnimatePlayer::Update()
 		//점프키를 누름
 		if (KEY_PRESS('C'))
 		{
+			if (action_status == CHAR_STATUS::ROPE) {
+				if (!KEY_PRESS(VK_RIGHT) && !KEY_PRESS(VK_LEFT)) {
+					return;
+				}
+			}
 			//만약 점프 상태가 아니라면
 			if (action_status != CHAR_STATUS::JUMP &&action_status != CHAR_STATUS::ATTACK) {
 				//점프 관련 설정을 변경
 				jump_speed = 100.0f;
 				SetClip(CHAR_STATUS::JUMP);
 			}
+			
 		}
 	}
 	//점프중에 점프를 누름

@@ -209,6 +209,7 @@ void AnimatePlayer::landing()
 		if (action_status == CHAR_STATUS::JUMP || action_status == CHAR_STATUS::ROPE) {
 			SetClip(CHAR_STATUS::IDLE);
 			is_can_double_jump = false;
+			move_pos = 0;
 		}
 	}
 }
@@ -237,6 +238,7 @@ bool AnimatePlayer::IsHanging()
 	if (action_status == CHAR_STATUS::ROPE) {
 		SetClip(CHAR_STATUS::ROPE);
 		jump_speed = 0;
+		move_speed = 0;
 		return true;
 	}
 	else {

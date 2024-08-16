@@ -192,6 +192,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scenes\MapleIsland.h" />
     <ClInclude Include="Scenes\MapleIslandField.h" />
+    <ClInclude Include="Scenes\RunningWaitting.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Scenes\SceneList.h" />
     <ClInclude Include="Scenes\StarBridgeWaitting.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="Program\Program.cpp" />
     <ClCompile Include="Scenes\MapleIsland.cpp" />
     <ClCompile Include="Scenes\MapleIslandField.cpp" />
+    <ClCompile Include="Scenes\RunningWaitting.cpp" />
     <ClCompile Include="Scenes\StarBridgeWaitting.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@ MapleIslandField::MapleIslandField(UINT area)
 		CAM->pos = Vector2(0, 800);
 	}
 	else if (area == 3) {
-		player->pos = Vector2(WIN_CENTER_X + 545, 500);
+		player->pos = Vector2(2220, 900);
 	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);
@@ -64,6 +64,11 @@ MapleIslandField::MapleIslandField(UINT area)
 	center_portal = new RectCollider(Vector2(120, 40));
 	center_portal->pos = Vector2(Vector2(530, 925));
 
+	right_portal = new RectCollider(Vector2(120, 40));
+	right_portal->pos = Vector2(Vector2(2220, 1040));
+
+	
+
 	player->Update();
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
@@ -92,8 +97,7 @@ MapleIslandField::MapleIslandField(UINT area)
 	}
 	left_portal->WorldUpdate();
 	center_portal->WorldUpdate();
-	//CAM->Update();
-
+	right_portal->WorldUpdate();
 }
 
 MapleIslandField::~MapleIslandField()
@@ -127,6 +131,7 @@ MapleIslandField::~MapleIslandField()
 	}
 	delete left_portal;
 	delete center_portal;
+	delete right_portal;
 }
 
 void MapleIslandField::Update()
@@ -217,6 +222,14 @@ void MapleIslandField::Update()
 			}
 		}
 	}
+	if (right_portal != NULL) {
+		if (player->GetCollider()->isCollision(right_portal)) {
+			if (KEY_DOWN(VK_UP)) {
+				program->CreateScene(4, 1);
+				return;
+			}
+		}
+	}
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -246,6 +259,7 @@ void MapleIslandField::Update()
 	}
 	left_portal->WorldUpdate();
 	center_portal->WorldUpdate();
+	right_portal->WorldUpdate();
 }
 
 void MapleIslandField::Render()
@@ -278,6 +292,7 @@ void MapleIslandField::Render()
 	}
 	left_portal->Render();
 	center_portal->Render();
+	right_portal->Render();
 	player->Render();
 }
 

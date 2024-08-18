@@ -238,7 +238,9 @@ bool AnimatePlayer::IsHanging()
 	if (action_status == CHAR_STATUS::ROPE) {
 		SetClip(CHAR_STATUS::ROPE);
 		jump_speed = 0;
-		move_speed = 0;
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
+			move_speed = 0;
+		}
 		return true;
 	}
 	else {
@@ -419,10 +421,10 @@ void AnimatePlayer::Update()
 		//단 모션은 변경 없음
 		if (move_speed > 0) {
 			if (KEY_PRESS(VK_LEFT)) {
-				move_pos = -50.0f;
+				move_pos = -20.0f;
 			}
 			if (KEY_PRESS(VK_RIGHT)) {
-				move_pos = 3.0f;
+				move_pos = 8.0f;
 			}
 		}
 		if (KEY_PRESS(VK_LEFT)) {
@@ -430,10 +432,10 @@ void AnimatePlayer::Update()
 		}	
 		if (move_speed < 0) {
 			if (KEY_PRESS(VK_RIGHT)) {
-				move_pos = 50.0f;
+				move_pos = 20.0f;
 			}
 			if (KEY_PRESS(VK_LEFT)) {
-				move_pos = -3.0f;
+				move_pos = -8.0f;
 			}
 		}
 		if (KEY_PRESS(VK_RIGHT)) {
@@ -467,9 +469,11 @@ void AnimatePlayer::Update()
 		
 		if (KEY_PRESS(VK_UP)) {
 			pos.y -= 300.0f * DELTA;
+			move_pos = 0.0f;
 		}
 		if (KEY_PRESS(VK_DOWN)) {
 			pos.y += 300.0f * DELTA;
+			move_pos = 0.0f;
 		}
 		if (KEY_PRESS(VK_LEFT)) {
 			move_pos = -50.0f;
@@ -479,23 +483,6 @@ void AnimatePlayer::Update()
 			move_pos = 50.0f;
 			move_speed = -50.0f;
 		}
-		if (KEY_PRESS(VK_LEFT) && KEY_PRESS('C')) {
-			move_pos = -50.0f;
-			move_speed = 50.0f;
-			jump_speed = 50.0f;
-			SetClip(CHAR_STATUS::JUMP);
-		}
-		if (KEY_PRESS(VK_RIGHT) && KEY_PRESS('C')) {
-			move_pos = 50.0f;
-			move_speed = -50.0f;
-			jump_speed = 50.0f;
-			SetClip(CHAR_STATUS::JUMP);
-		}
-		/*
-		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
-			move_pos = 0;
-		}
-		*/
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK:
 		if (attack_collider != NULL) {

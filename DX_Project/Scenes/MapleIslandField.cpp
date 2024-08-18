@@ -16,11 +16,11 @@ MapleIslandField::MapleIslandField(UINT area)
 	}
 	else if (area == 3) {
 		player->pos = Vector2(2220, 900);
+		CAM->pos = Vector2(1270, 800);
 	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);
 	}
-	
 
 	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 3));
 	ground[1] = new RectCollider(Vector2(390, 3));
@@ -43,11 +43,11 @@ MapleIslandField::MapleIslandField(UINT area)
 	ground[8]->pos = Vector2(Vector2(-570, 700));
 	ground[9]->pos = Vector2(Vector2(-320, 210));
 
-	left_col[0] = new RectCollider(Vector2(3, 115));
-	left_col[0]->pos = Vector2(Vector2(-10, 1003));
+	left_col[0] = new RectCollider(Vector2(30, 115));
+	left_col[0]->pos = Vector2(Vector2(0, 1003));
 
-	right_col[0] = new RectCollider(Vector2(3, 115));
-	right_col[0]->pos = Vector2(Vector2(1150,1003));
+	right_col[0] = new RectCollider(Vector2(30, 115));
+	right_col[0]->pos = Vector2(Vector2(1140,1003));
 
 	ladder[0] = new RectCollider(Vector2(30, 280));
 	ladder[1] = new RectCollider(Vector2(30, 350));
@@ -66,8 +66,6 @@ MapleIslandField::MapleIslandField(UINT area)
 
 	right_portal = new RectCollider(Vector2(120, 40));
 	right_portal->pos = Vector2(Vector2(2220, 1040));
-
-	
 
 	player->Update();
 	for (RectCollider* g : ground) {

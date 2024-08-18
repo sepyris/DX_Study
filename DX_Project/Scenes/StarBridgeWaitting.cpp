@@ -14,10 +14,8 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);
 	}
 
-
 	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 3));
 	ground[0]->pos = Vector2(Vector2(WIN_CENTER_X, 1175));
-
 
 	center_portal = new RectCollider(Vector2(180, 60));
 	center_portal->pos = Vector2(Vector2(WIN_CENTER_X-180, 1150));

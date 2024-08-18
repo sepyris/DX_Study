@@ -34,21 +34,21 @@ MapleIsland::MapleIsland(float area)
 	ground[8]->pos = Vector2(Vector2(-1012,725));
 	ground[9]->pos = Vector2(Vector2(-390,650));
 
-	//hill_ground[0] = new RectCollider(Vector2(750, 1));
-	//hill_ground[0]->pos = Vector2(Vector2(WIN_CENTER_X + 65, WIN_HEIGHT - 210));
+	//hill_ground[0] = new RectCollider(Vector2(770, 1));
+	//hill_ground[0]->pos = Vector2(Vector2(850, 820));
 	//hill_ground[0]->rot.z = 0.46f;
 
-	left_col[0] = new RectCollider(Vector2(3, 75));
-	left_col[1] = new RectCollider(Vector2(3, 75));
-	left_col[2] = new RectCollider(Vector2(3, 75));
-	left_col[3] = new RectCollider(Vector2(3, 75));
-	left_col[0]->pos = Vector2(Vector2(740, 1125));
-	left_col[1]->pos = Vector2(Vector2(890, 1057));
-	left_col[2]->pos = Vector2(Vector2(1172, 1208));
-	left_col[3]->pos = Vector2(Vector2(1315, 1130));
+	left_col[0] = new RectCollider(Vector2(30, 75));
+	left_col[1] = new RectCollider(Vector2(30, 75));
+	left_col[2] = new RectCollider(Vector2(30, 75));
+	left_col[3] = new RectCollider(Vector2(30, 75));
+	left_col[0]->pos = Vector2(Vector2(750, 1125));
+	left_col[1]->pos = Vector2(Vector2(900, 1057));
+	left_col[2]->pos = Vector2(Vector2(1182, 1208));
+	left_col[3]->pos = Vector2(Vector2(1325, 1130));
 
-	right_col[0] = new RectCollider(Vector2(3, 75));
-	right_col[0]->pos = Vector2(Vector2(1975, 1130));
+	right_col[0] = new RectCollider(Vector2(30, 75));
+	right_col[0]->pos = Vector2(Vector2(1965, 1130));
 
 	ladder[0] = new RectCollider(Vector2(60, 309));
 	ladder[0]->pos = Vector2(Vector2(-530,1020));

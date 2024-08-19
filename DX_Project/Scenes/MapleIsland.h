@@ -11,6 +11,7 @@ private:
 
 	AnimatePlayer* player;
 	
+	
 public:
 	MapleIsland(float area);
 	~MapleIsland();

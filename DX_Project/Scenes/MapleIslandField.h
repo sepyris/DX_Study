@@ -12,6 +12,7 @@ private:
 	RectCollider* right_portal;
 
 	AnimatePlayer* player;
+	Mushroom* mushroom[5];
 	
 public:
 	MapleIslandField(UINT area);

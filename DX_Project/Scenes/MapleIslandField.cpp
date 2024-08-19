@@ -4,7 +4,21 @@ MapleIslandField::MapleIslandField(UINT area)
 {
 	bg = new BackGroundUV(L"Texture/Image/field.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y), Vector2(3, 3), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
-	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite2.png");
+	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
+	mushroom[0] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	/*
+	for (Mushroom* m : mushroom) {
+		if (m == NULL) {
+			
+		}
+	}
+	*/
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->pos = Vector2(0, 0);
+		}
+	}
+
 	CAM->SetTarget(player);
 	if (area == 1) {
 		player->pos = Vector2(-880, 900);
@@ -44,19 +58,19 @@ MapleIslandField::MapleIslandField(UINT area)
 	ground[9]->pos = Vector2(Vector2(-320, 210));
 
 	left_col[0] = new RectCollider(Vector2(30, 115));
-	left_col[0]->pos = Vector2(Vector2(0, 1003));
+	left_col[0]->pos = Vector2(Vector2(0, 1008));
 
 	right_col[0] = new RectCollider(Vector2(30, 115));
-	right_col[0]->pos = Vector2(Vector2(1140,1003));
+	right_col[0]->pos = Vector2(Vector2(1140,1008));
 
 	ladder[0] = new RectCollider(Vector2(30, 280));
 	ladder[1] = new RectCollider(Vector2(30, 350));
 	ladder[2] = new RectCollider(Vector2(30, 350));
 	ladder[3] = new RectCollider(Vector2(30, 590));
-	ladder[0]->pos = Vector2(Vector2(-560, 340));
-	ladder[1]->pos = Vector2(Vector2(1110, 250));
-	ladder[2]->pos = Vector2(Vector2(2010, 250));
-	ladder[3]->pos = Vector2(Vector2(1530, 740));
+	ladder[0]->pos = Vector2(Vector2(-560, 350));
+	ladder[1]->pos = Vector2(Vector2(1110, 260));
+	ladder[2]->pos = Vector2(Vector2(2010, 260));
+	ladder[3]->pos = Vector2(Vector2(1530, 745));
 
 	left_portal = new RectCollider(Vector2(120, 40));
 	left_portal->pos = Vector2(Vector2(-880, 1040));
@@ -93,6 +107,11 @@ MapleIslandField::MapleIslandField(UINT area)
 			g->WorldUpdate();
 		}
 	}
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->Update();
+		}
+	}
 	left_portal->WorldUpdate();
 	center_portal->WorldUpdate();
 	right_portal->WorldUpdate();
@@ -102,6 +121,11 @@ MapleIslandField::~MapleIslandField()
 {
 	delete player;
 	delete bg;
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			delete m;
+		}
+	}
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			delete g;
@@ -145,11 +169,7 @@ void MapleIslandField::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x < g->pos.x) {
-						player->pos.x -= collision.x * DELTA * 100.0f;
-					}
-				}
+				player->pos.x -= collision.x * DELTA * 50.0f;
 			}
 		}
 	}
@@ -157,11 +177,7 @@ void MapleIslandField::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x > g->pos.x) {
-						player->pos.x += collision.x * DELTA * 100.0f;
-					}
-				}
+				player->pos.x += collision.x * DELTA * 50.0f;
 			}
 		}
 	}
@@ -230,6 +246,11 @@ void MapleIslandField::Update()
 	}
 
 	player->Update();
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->Update();
+		}
+	}
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			g->WorldUpdate();
@@ -263,6 +284,7 @@ void MapleIslandField::Update()
 void MapleIslandField::Render()
 {
 	bg->Render();
+
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			g->Render();
@@ -288,6 +310,12 @@ void MapleIslandField::Render()
 			g->Render();
 		}
 	}
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->Render();
+		}
+	}
+
 	left_portal->Render();
 	center_portal->Render();
 	right_portal->Render();

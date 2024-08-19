@@ -4,7 +4,7 @@ MapleIsland::MapleIsland(float area)
 {
 	bg = new BackGroundUV(L"Texture/Image/mapleisland.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y),Vector2(3,3),0.0f,Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
-	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite2.png");
+	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	CAM->SetTarget(player);
 	if (area == 3) {
 		player->pos = Vector2(2145, 850);
@@ -38,22 +38,22 @@ MapleIsland::MapleIsland(float area)
 	//hill_ground[0]->pos = Vector2(Vector2(850, 820));
 	//hill_ground[0]->rot.z = 0.46f;
 
-	left_col[0] = new RectCollider(Vector2(30, 75));
-	left_col[1] = new RectCollider(Vector2(30, 75));
+	left_col[0] = new RectCollider(Vector2(10, 75));
+	left_col[1] = new RectCollider(Vector2(10, 75));
 	left_col[2] = new RectCollider(Vector2(30, 75));
 	left_col[3] = new RectCollider(Vector2(30, 75));
-	left_col[0]->pos = Vector2(Vector2(750, 1125));
-	left_col[1]->pos = Vector2(Vector2(900, 1057));
-	left_col[2]->pos = Vector2(Vector2(1182, 1208));
-	left_col[3]->pos = Vector2(Vector2(1325, 1130));
+	left_col[0]->pos = Vector2(Vector2(745, 1135));
+	left_col[1]->pos = Vector2(Vector2(895, 1062));
+	left_col[2]->pos = Vector2(Vector2(1182, 1213));
+	left_col[3]->pos = Vector2(Vector2(1325, 1137));
 
 	right_col[0] = new RectCollider(Vector2(30, 75));
-	right_col[0]->pos = Vector2(Vector2(1965, 1130));
+	right_col[0]->pos = Vector2(Vector2(1965, 1137));
 
 	ladder[0] = new RectCollider(Vector2(60, 309));
-	ladder[0]->pos = Vector2(Vector2(-530,1020));
+	ladder[0]->pos = Vector2(Vector2(-530,1025));
 	ladder[1] = new RectCollider(Vector2(60, 459));
-	ladder[1]->pos = Vector2(Vector2(-1135,950));
+	ladder[1]->pos = Vector2(Vector2(-1135,955));
 
 	right_portal = new RectCollider(Vector2(120, 40));
 	right_portal->pos = Vector2(Vector2(2145, 1000));
@@ -134,11 +134,7 @@ void MapleIsland::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x < g->pos.x) {
-						player->pos.x -= collision.x*DELTA * 300.0f;
-					}
-				}
+				player->pos.x -= collision.x*DELTA * 50.0f;
 			}
 		}
 	}
@@ -146,11 +142,7 @@ void MapleIsland::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x > g->pos.x) {
-						player->pos.x += collision.x * DELTA * 300.0f;
-					}
-				}
+				player->pos.x += collision.x * DELTA * 50.0f;
 			}
 		}
 	}
@@ -184,6 +176,7 @@ void MapleIsland::Update()
 			if (player->GetCollider()->isCollision(g, &collision)) {
 				if (player->IsHanging()) {
 					player->pos.x = g->GlobalPos().x;
+					player->GetCollider()->pos.x = g->GlobalPos().x;
 					check_hanging = true;
 				}
 			}

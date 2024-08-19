@@ -169,7 +169,7 @@ AnimatePlayer::AnimatePlayer(wstring file)
 	// 
 	//2)³ë°¡´Ù
 	hit_collider = new RectCollider(Vector2(10, 10));
-	foot_collider = new RectCollider(Vector2(10, 10));
+	foot_collider = new RectCollider(Vector2(20, 10));
 	
 
 	clip_cursor = 0;
@@ -206,7 +206,14 @@ void AnimatePlayer::landing()
 		jump_speed = 0;
 		pos.y += jump_speed * DELTA * 5.0f;
 		is_jump_attack = false;
-		if (action_status == CHAR_STATUS::JUMP || action_status == CHAR_STATUS::ROPE) {
+		if (action_status == CHAR_STATUS::ROPE) {
+			if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
+				SetClip(CHAR_STATUS::IDLE);
+				is_can_double_jump = false;
+				move_pos = 0;
+			}
+		}
+		if (action_status == CHAR_STATUS::JUMP) {
 			SetClip(CHAR_STATUS::IDLE);
 			is_can_double_jump = false;
 			move_pos = 0;
@@ -232,6 +239,7 @@ bool AnimatePlayer::IsHanging()
 	}
 	if (KEY_PRESS(VK_DOWN)) {
 		if (action_status == CHAR_STATUS::IDLE || action_status == CHAR_STATUS::PRONE || action_status == CHAR_STATUS::ROPE) {
+			foot_collider->pos.y -= 3.0f;
 			SetClip(CHAR_STATUS::ROPE);
 		}
 	}
@@ -361,6 +369,8 @@ void AnimatePlayer::Update()
 	if (jump_speed < -10.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
+	
+
 	switch (action_status)
 	{
 	case AnimatePlayer::CHAR_STATUS::IDLE:
@@ -382,6 +392,8 @@ void AnimatePlayer::Update()
 		else {
 			move_pos = 0.0f;
 		}
+		
+
 		if (KEY_DOWN('C')) {
 			SetClip(CHAR_STATUS::JUMP);
 		}
@@ -455,6 +467,12 @@ void AnimatePlayer::Update()
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
 		}
+		if (KEY_PRESS(VK_DOWN)) {
+			foot_collider->pos.y += 5.0f;
+		}
+		else {
+			foot_collider->pos.y = pos.y;
+		}
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			move_pos = 0;
 		}
@@ -515,21 +533,36 @@ void AnimatePlayer::Update()
 		break;
 	default:
 		break;
-	}
+	}	
 	hit_collider->pos = pos + Vector2(10, 0);
 	foot_collider->pos = pos + Vector2(10, 50);
 	clips[(UINT)action_status]->Update();
-	scale = clips[(UINT)action_status]->GetFrameSize()*1.5;
+	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
 	if (is_looking_left) {
 		scale.x *= -1;
-		hit_collider->pos.x = pos.x - 10;
-		foot_collider->pos.x = pos.x - 10;
+
+		hit_collider->pos.x = pos.x - 3;
+		foot_collider->pos.x = pos.x - 3;
 	}
 	if (action_status == AnimatePlayer::CHAR_STATUS::ROPE) {
 		hit_collider->pos.x = pos.x;
 		foot_collider->pos.x = pos.x;
 	}
-	
+	if (action_status == AnimatePlayer::CHAR_STATUS::IDLE) {
+		if (KEY_PRESS(VK_UP)) {
+			foot_collider->pos.y += 1.0f;
+		}
+		if (KEY_PRESS(VK_DOWN)) {
+			foot_collider->pos.y -= 3.0f;
+		}
+	}
+	if (action_status == AnimatePlayer::CHAR_STATUS::PRONE) {
+		if (KEY_PRESS(VK_DOWN)) {
+			foot_collider->pos.y -= 3.0f;
+		}
+	}
+
+
 	WorldUpdate();
 
 	hit_collider->WorldUpdate();

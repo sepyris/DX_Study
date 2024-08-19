@@ -3,7 +3,7 @@
 RunningWaitting::RunningWaitting(float area)
 {
 	bg = new BackGroundUV(L"Texture/Image/RunningWait.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y), Vector2(3, 3), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
-	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite2.png");
+	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	CAM->SetTarget(player);
 	if (area == 1) {
 		player->pos = Vector2(-1190, 800);
@@ -31,7 +31,7 @@ RunningWaitting::RunningWaitting(float area)
 
 	ground[0]->pos = Vector2(Vector2(WIN_CENTER_X, 1245));
 	ground[1]->pos = Vector2(Vector2(-890, 1030));
-	ground[2]->pos = Vector2(Vector2(-420, 1030));
+	ground[2]->pos = Vector2(Vector2(-417, 1030));
 	ground[3]->pos = Vector2(Vector2(-245, 645));
 	ground[4]->pos = Vector2(Vector2(455, 645));
 	ground[5]->pos = Vector2(Vector2(165, 590));
@@ -54,26 +54,26 @@ RunningWaitting::RunningWaitting(float area)
 	left_col[5] = new RectCollider(Vector2(30, 55));
 	left_col[6] = new RectCollider(Vector2(30, 55));
 	left_col[7] = new RectCollider(Vector2(30, 55));
-	left_col[0]->pos = Vector2(Vector2(-20, 617));
-	left_col[1]->pos = Vector2(Vector2(1150, 1110));
-	left_col[2]->pos = Vector2(Vector2(1225, 1055));
-	left_col[3]->pos = Vector2(Vector2(1300, 1000));
-	left_col[4]->pos = Vector2(Vector2(1370, 945));
-	left_col[5]->pos = Vector2(Vector2(1440, 890));
-	left_col[6]->pos = Vector2(Vector2(1515, 835));
-	left_col[7]->pos = Vector2(Vector2(1585, 780));
+	left_col[0]->pos = Vector2(Vector2(-20, 622));
+	left_col[1]->pos = Vector2(Vector2(1150, 1115));
+	left_col[2]->pos = Vector2(Vector2(1225, 1060));
+	left_col[3]->pos = Vector2(Vector2(1300, 1005));
+	left_col[4]->pos = Vector2(Vector2(1370, 950));
+	left_col[5]->pos = Vector2(Vector2(1440, 895));
+	left_col[6]->pos = Vector2(Vector2(1515, 840));
+	left_col[7]->pos = Vector2(Vector2(1585, 785));
 
 	right_col[0] = new RectCollider(Vector2(30, 220));
-	right_col[0]->pos = Vector2(Vector2(-520, 1140));
+	right_col[0]->pos = Vector2(Vector2(-520, 1145));
 
 	ladder[0] = new RectCollider(Vector2(40, 340));
-	ladder[0]->pos = Vector2(Vector2(-415, 810));
-	ladder[1] = new RectCollider(Vector2(10, 180));
-	ladder[1]->pos = Vector2(Vector2(-385, 1115));
-	ladder[2] = new RectCollider(Vector2(10, 210));
-	ladder[2]->pos = Vector2(Vector2(-450, 1130));
+	ladder[1] = new RectCollider(Vector2(15, 180));
+	ladder[2] = new RectCollider(Vector2(15, 200));
 	ladder[3] = new RectCollider(Vector2(40, 310));
-	ladder[3]->pos = Vector2(Vector2(590, 955));
+	ladder[0]->pos = Vector2(Vector2(-415, 815));
+	ladder[1]->pos = Vector2(Vector2(-385, 1120));
+	ladder[2]->pos = Vector2(Vector2(-450, 1130));
+	ladder[3]->pos = Vector2(Vector2(593, 965));
 
 	left_portal = new RectCollider(Vector2(60, 20));
 	left_portal->pos = Vector2(Vector2(-1190, 1020));
@@ -153,11 +153,7 @@ void RunningWaitting::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x < g->pos.x) {
-						player->pos.x -= collision.x * DELTA * 300.0f;
-					}
-				}
+				player->pos.x -= collision.x * DELTA * 50.0f;
 			}
 		}
 	}
@@ -165,11 +161,7 @@ void RunningWaitting::Update()
 		if (g != NULL) {
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (collision.x <= collision.y) {
-					if (player->pos.x > g->pos.x) {
-						player->pos.x += collision.x * DELTA * 300.0f;
-					}
-				}
+				player->pos.x += collision.x * DELTA * 50.0f;
 			}
 		}
 	}

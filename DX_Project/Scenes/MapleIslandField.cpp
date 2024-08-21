@@ -6,6 +6,21 @@ MapleIslandField::MapleIslandField(UINT area)
 
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	mushroom[0] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[1] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[2] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[3] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[4] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[5] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[6] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+	mushroom[7] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
+
+	snail[0] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[1] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[2] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[3] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[4] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[5] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
+	snail[6] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
 	/*
 	for (Mushroom* m : mushroom) {
 		if (m == NULL) {
@@ -13,20 +28,16 @@ MapleIslandField::MapleIslandField(UINT area)
 		}
 	}
 	*/
-	for (Mushroom* m : mushroom) {
-		if (m != NULL) {
-			m->pos = Vector2(0, 0);
-		}
-	}
+	
 
 	CAM->SetTarget(player);
 	if (area == 1) {
-		player->pos = Vector2(-880, 900);
+		player->pos = Vector2(-880, 800);
 		CAM->pos = Vector2(-1280, 600);
 	}
 	else if (area == 2) {
-		player->pos = Vector2(510, 800);
-		CAM->pos = Vector2(0, 800);
+		player->pos = Vector2(510, 600);
+		CAM->pos = Vector2(0, 700);
 	}
 	else if (area == 3) {
 		player->pos = Vector2(2220, 900);
@@ -57,6 +68,23 @@ MapleIslandField::MapleIslandField(UINT area)
 	ground[8]->pos = Vector2(Vector2(-570, 700));
 	ground[9]->pos = Vector2(Vector2(-320, 210));
 
+	monster_zone[0] = new RectCollider(Vector2(390, 30));
+	monster_zone[1] = new RectCollider(Vector2(1410, 30));
+	monster_zone[2] = new RectCollider(Vector2(910, 30));
+	monster_zone[3] = new RectCollider(Vector2(800, 30));
+	monster_zone[4] = new RectCollider(Vector2(1170, 30));
+	monster_zone[0]->pos = Vector2(Vector2(-570, 560));
+	monster_zone[1]->pos = Vector2(Vector2(-320, 190));
+	monster_zone[2]->pos = Vector2(Vector2(935, 65));
+	monster_zone[3]->pos = Vector2(Vector2(2160, 65));
+	monster_zone[4]->pos = Vector2(Vector2(1580, 430));
+	monster_zone_count[0] = 1;
+	monster_zone_count[1] = 5;
+	monster_zone_count[2] = 2;
+	monster_zone_count[3] = 2;
+	monster_zone_count[4] = 5;
+
+
 	left_col[0] = new RectCollider(Vector2(30, 115));
 	left_col[0]->pos = Vector2(Vector2(0, 1008));
 
@@ -80,6 +108,8 @@ MapleIslandField::MapleIslandField(UINT area)
 
 	right_portal = new RectCollider(Vector2(120, 40));
 	right_portal->pos = Vector2(Vector2(2220, 1040));
+
+	
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -107,7 +137,19 @@ MapleIslandField::MapleIslandField(UINT area)
 			g->WorldUpdate();
 		}
 	}
+	for (RectCollider* z : monster_zone) {
+		if (z != NULL) {
+			z->WorldUpdate();
+		}
+	}
+
+
 	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->Update();
+		}
+	}
+	for (Snail* m : snail) {
 		if (m != NULL) {
 			m->Update();
 		}
@@ -121,11 +163,7 @@ MapleIslandField::~MapleIslandField()
 {
 	delete player;
 	delete bg;
-	for (Mushroom* m : mushroom) {
-		if (m != NULL) {
-			delete m;
-		}
-	}
+	
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			delete g;
@@ -151,6 +189,23 @@ MapleIslandField::~MapleIslandField()
 			delete g;
 		}
 	}
+	for (RectCollider* z : monster_zone) {
+		if (z != NULL) {
+			delete z;
+		}
+	}
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			delete m;
+		}
+	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			delete m;
+		}
+	}
+
+
 	delete left_portal;
 	delete center_portal;
 	delete right_portal;
@@ -163,6 +218,50 @@ void MapleIslandField::Update()
 	}
 	CAM->SetTarget(player);
 	bg->Update();
+
+	UINT count_check = 0;
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	for (int i = 0; i < monster_count; i++) {
+		std::uniform_int_distribution<int> rand_count(0,2);
+		std::uniform_int_distribution<int> rand_x(monster_zone[i]->LeftVX(), monster_zone[i]->RightVX());
+		std::uniform_int_distribution<int> rand_y(monster_zone[i]->TopVX(), monster_zone[i]->TopVX());
+		if (rand_count(gen)>1) {
+			for (Snail* m : snail) {
+				if (m != NULL) {
+					if (!m->Islive()) {
+						if (count_check >= monster_zone_count[i]) {
+							count_check = 0;
+							break;
+						}
+						m->pos = Vector2(rand_x(gen), rand_y(gen)-100);
+						m->IsCreate();
+						count_check++;
+						
+					}
+				}
+			}
+		}
+		else {
+			for (Mushroom* m : mushroom) {
+				if (m != NULL) {
+					if (!m->Islive()) {
+						if (count_check >= monster_zone_count[i]) {
+							count_check = 0;
+							break;
+						}
+						m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
+						m->IsCreate();
+						count_check++;
+						
+					}
+				}
+			}
+		}
+	}
+
+	
+
 
 
 	for (RectCollider* g : left_col) {
@@ -185,6 +284,33 @@ void MapleIslandField::Update()
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			Vector2 collision;
+			for (Mushroom* m : mushroom) {
+				if (m != NULL) {
+					if (m->GetCollider()->isCollision(g, &collision)) {
+						if (m->pos.y < g->pos.y) {
+							if (m->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
+								m->pos.y -= collision.y * DELTA * 20.0f;
+								m->landing();
+								
+							}
+						}
+					}
+				}
+			}
+			for (Snail* m : snail) {
+				if (m != NULL) {
+					if (m->GetCollider()->isCollision(g, &collision)) {
+						if (m->pos.y < g->pos.y) {
+							if (m->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
+								m->pos.y -= collision.y * DELTA * 20.0f;
+								m->landing();
+								m->Setcollider(g);
+							}
+						}
+					}
+				}
+			}
+
 			if (player->GetCollider()->isCollision(g, &collision)) {
 				if (player->pos.y < g->pos.y) {
 					if (player->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
@@ -193,8 +319,11 @@ void MapleIslandField::Update()
 					}
 				}
 			}
+			
 		}
 	}
+
+
 
 	for (RectCollider* g : hill_ground) {
 		if (g != NULL) {
@@ -251,6 +380,11 @@ void MapleIslandField::Update()
 			m->Update();
 		}
 	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			m->Update();
+		}
+	}
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			g->WorldUpdate();
@@ -276,9 +410,27 @@ void MapleIslandField::Update()
 			g->WorldUpdate();
 		}
 	}
+	for (RectCollider* z : monster_zone) {
+		if (z != NULL) {
+			z->WorldUpdate();
+		}
+	}
+
 	left_portal->WorldUpdate();
 	center_portal->WorldUpdate();
 	right_portal->WorldUpdate();
+
+	player->LoadingEnd();
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->LoadingEnd();
+		}
+	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			m->LoadingEnd();
+		}
+	}
 }
 
 void MapleIslandField::Render()
@@ -311,6 +463,11 @@ void MapleIslandField::Render()
 		}
 	}
 	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->Render();
+		}
+	}
+	for (Snail* m : snail) {
 		if (m != NULL) {
 			m->Render();
 		}

@@ -281,13 +281,16 @@ void AnimatePlayer::Update()
 		pos.x += 300.0f * DELTA;
 	}
 	//가속도 설정
-	if (action_status != CHAR_STATUS::ROPE) {
-		jump_speed -= 9.8f * 20.0f * DELTA;
-		if (jump_speed <= -250.0f) {
-			jump_speed = -250.0f;
+	if (loading_end) {
+		if (action_status != CHAR_STATUS::ROPE) {
+			jump_speed -= 9.8f * 20.0f * DELTA;
+			if (jump_speed <= -250.0f) {
+				jump_speed = -250.0f;
+			}
+			pos.y -= jump_speed * DELTA * 5.0f;
 		}
-		pos.y -= jump_speed * DELTA * 5.0f;
 	}
+	
 	if (action_status != CHAR_STATUS::ROPE) {
 		move_speed -= 9.8f * move_pos * DELTA;
 

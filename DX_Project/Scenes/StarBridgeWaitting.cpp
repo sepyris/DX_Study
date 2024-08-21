@@ -4,7 +4,7 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 {
 	bg = new BackGroundUV(L"Texture/Image/starbridgewait.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y), Vector2(3, 3), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
-	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite1.png");
+	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	CAM->SetTarget(player);
 	if (area == 2) {
 		player->pos = Vector2(WIN_CENTER_X-180, 1000);
@@ -80,6 +80,7 @@ void StarBridgeWaitting::Update()
 		}
 	}
 	center_portal->WorldUpdate();
+	player->LoadingEnd();
 }
 
 void StarBridgeWaitting::Render()

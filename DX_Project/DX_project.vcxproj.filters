@@ -242,6 +242,9 @@
     <ClCompile Include="Object\Transform\AnimateScene\Mushroom.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Transform\AnimateScene\Snail.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX_Framework.rc">

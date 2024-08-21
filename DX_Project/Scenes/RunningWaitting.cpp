@@ -240,6 +240,7 @@ void RunningWaitting::Update()
 		}
 	}
 	left_portal->WorldUpdate();
+	player->LoadingEnd();
 }
 
 void RunningWaitting::Render()

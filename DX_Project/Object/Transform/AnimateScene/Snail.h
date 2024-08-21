@@ -16,6 +16,7 @@ private:
 
 	RectCollider* hit_collider;
 	RectCollider* foot_collider;
+	RectCollider* now_ground;
 
 	UINT clip_cursor;
 
@@ -25,6 +26,11 @@ private:
 	float move_speed;
 	float move_pos;
 	float hit_point;
+	bool is_live;
+	bool loading_end = false;
+	float move_check;
+	bool is_moving = false;
+	float move = 0;
 
 public:
 	Snail(wstring file);
@@ -38,6 +44,11 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
+	void IsCreate() { is_live = true; }
+	bool Islive() { return is_live; }
+	void IsDead() { is_live = false; }
+	void LoadingEnd() { loading_end = true; }
+	void Setcollider(RectCollider* collider) { now_ground = collider;}
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

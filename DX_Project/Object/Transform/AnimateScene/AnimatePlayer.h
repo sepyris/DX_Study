@@ -38,6 +38,7 @@ private:
 
 	bool is_can_double_jump;
 	bool is_jump_attack;
+	bool loading_end = false;
 
 public:
 	AnimatePlayer(wstring file);
@@ -52,6 +53,7 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
+	void LoadingEnd() { loading_end = true; }
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

@@ -91,8 +91,13 @@ Frame::Frame(wstring file, float x, float y, float w, float h)
 
 Frame::~Frame()
 {
-	delete VB;
-	delete IB;
+	if (VB != NULL) {
+		delete VB;
+	}
+	if (IB != NULL) {
+		delete IB;
+	}
+	
 }
 
 void Frame::Render()

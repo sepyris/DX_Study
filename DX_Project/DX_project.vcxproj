@@ -230,6 +230,7 @@
     <ClCompile Include="Object\Shape\SRTCircle.cpp" />
     <ClCompile Include="Object\Transform\AnimateScene\AnimatePlayer.cpp" />
     <ClCompile Include="Object\Transform\AnimateScene\Mushroom.cpp" />
+    <ClCompile Include="Object\Transform\AnimateScene\Snail.cpp" />
     <ClCompile Include="Object\Transform\BackGroundUV.cpp" />
     <ClCompile Include="Object\Transform\ImageRect.cpp" />
     <ClCompile Include="Framework\Math\Transform.cpp" />

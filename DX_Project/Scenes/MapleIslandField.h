@@ -7,12 +7,18 @@ private:
 	RectCollider* right_col[20];
 	RectCollider* hill_ground[20];
 	RectCollider* ladder[20];
+
+	RectCollider* monster_zone[5];
+	UINT monster_zone_count[5];
+	UINT monster_count = 5;
+
 	RectCollider* left_portal;
 	RectCollider* center_portal;
 	RectCollider* right_portal;
 
 	AnimatePlayer* player;
-	Mushroom* mushroom[5];
+	Mushroom* mushroom[10];
+	Snail* snail[10];
 	
 public:
 	MapleIslandField(UINT area);

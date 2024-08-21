@@ -6,7 +6,7 @@ class Timer : public Singleton<Timer> {
 public:
 	friend class Singleton;
 
-	float time_scale; //1초를 표한하는데 필요한 성능 카운터
+	float time_scale; //1초를 표현하는데 필요한 성능 카운터
 	float time_elapsed;//경과시간을 체크및 기록하는 멤버변수
 
 	//아래의 2개 변수는 타임 스탬프로 사용할 변수

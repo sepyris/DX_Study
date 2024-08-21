@@ -11,7 +11,13 @@ Clip::Clip(vector<Frame*> frames, CLIP_TYPE t, float fps)
 Clip::~Clip()
 {
 	for (auto frame : frames)
-		delete frame;
+	{
+		if (frame != NULL) {
+			delete frame;
+		}
+	}
+		
+		
 	// 클립에 프레임을 등록한 뒤로는 클립 외에서는 이 프레임들에 접근할 방안이 없으며,
 	// 기본적으로 프레임은 동적 할당으로 생성한 것이므로
 	// 이 클립이 할당 해제될 떄 이 프레임들 역시 할당 해제를 해줘야 함

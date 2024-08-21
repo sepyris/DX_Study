@@ -27,6 +27,8 @@ private:
 	float move_speed;
 	float move_pos;
 	float hit_point;
+	bool is_live;
+	bool loading_end = false;
 
 public:
 	Mushroom(wstring file);
@@ -40,6 +42,10 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
+	void IsCreate() { is_live = true; }
+	bool Islive() { return is_live;}
+	void IsDead() { is_live = false; }
+	void LoadingEnd() { loading_end = true; }
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

@@ -37,17 +37,32 @@ Mushroom::Mushroom(wstring file)
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
-	//워크상태와점프상태의 모션이 같아 같은 모션 이용
+	frames.clear();
+	//워크상태 끝
+
+	//점프 CHAR_STATUS::JUMP
+	init_pos = { 6,77 };
+	this_frame_size = { 64,55 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
+	init_pos = { 73,72 };
+	this_frame_size = { 62,64 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
+	init_pos = { 138,77 };
+	this_frame_size = { 63,55 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
 	frames.clear();
-	//워크 상태 끝
+	//점프 상태 끝
 
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
 
 	CB = new ColourBuffer();
 
-	hit_collider = new RectCollider(Vector2(10, 10));
+	hit_collider = new RectCollider(Vector2(50, 50));
 	foot_collider = new RectCollider(Vector2(20, 10));
 
 
@@ -57,12 +72,15 @@ Mushroom::Mushroom(wstring file)
 	jump_speed = 0.0f;
 	move_speed = 0;
 	move_pos = 0;
+	is_live = false;
 }
 
 Mushroom::~Mushroom()
 {
 	for (Clip* c : clips) {
-		delete c;
+		if (c != NULL) {
+			delete c;
+		}
 	}
 	delete CB;
 	delete hit_collider;
@@ -102,140 +120,38 @@ void Mushroom::Update()
 		pos.x += 300.0f * DELTA;
 	}
 	//중력 적용
+	if (loading_end) {
 		jump_speed -= 9.8f * 20.0f * DELTA;
 		if (jump_speed <= -250.0f) {
 			jump_speed = -250.0f;
 		}
 		pos.y -= jump_speed * DELTA * 5.0f;
-
-		//이동 관성 적용
-		move_speed -= 9.8f * move_pos * DELTA;
-
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
+	}
+	//이동 관성 적용
+	move_speed -= 9.8f * move_pos * DELTA;
+	if (move_speed < -50.0f) {
+		move_speed = -50.0f;
+	}
+	if (move_speed > 50.0f) {
+		move_speed = 50.0f;
+	}
+	if (move_pos == 0) {
+		if (move_speed > 0.0f) {
+			move_speed -= 9.8f * DELTA * 20.0f;
 		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
-		}
-		if (move_pos == 0) {
-			if (move_speed > 0.0f) {
-				move_speed -= 9.8f * DELTA * 20.0f;
-			}
-			else if (move_speed < 0.0f) {
-				move_speed += 9.8f * DELTA * 20.0f;
-			}
-		}
-		pos.x -= move_speed * DELTA * 5.0f;
-
-	/*
-	//엎드린 상태에서 점프가 불가하므로 조건 설정
-		//점프키를 누름
-	if (KEY_PRESS('C'))
-	{
-		//만약 점프 상태가 아니라면
-		if (action_status != CHAR_STATUS::JUMP) {
-			//점프 관련 설정을 변경
-			jump_speed = 100.0f;
-			SetClip(CHAR_STATUS::JUMP);
+		else if (move_speed < 0.0f) {
+			move_speed += 9.8f * DELTA * 20.0f;
 		}
 	}
-
-
-	switch (action_status)
-	{
-	case Mushroom::CHAR_STATUS::IDLE:
-		if (KEY_PRESS(VK_LEFT)) {
-			move_pos = -10.0f;
-			//pos.x -= 300.0f * DELTA;
-			SetClip(CHAR_STATUS::WALK);
-			is_looking_left = true;
-		}
-		else {
-			move_pos = 0.0f;
-		}
-		if (KEY_PRESS(VK_RIGHT)) {
-			move_pos = 10.0f;
-			//pos.x += 300.0f * DELTA;
-			SetClip(CHAR_STATUS::WALK);
-			is_looking_left = false;
-		}
-		else {
-			move_pos = 0.0f;
-		}
-
-
-		if (KEY_DOWN('C')) {
-			SetClip(CHAR_STATUS::JUMP);
-		}
-		break;
-	case Mushroom::CHAR_STATUS::WALK:
-		if (KEY_PRESS(VK_LEFT)) {
-			if (move_speed < 0) {
-				move_speed = 0.0f;
-			}
-			move_pos = -10.0f;
-			//pos.x -= 300.0f * DELTA;
-			SetClip(CHAR_STATUS::WALK);
-			is_looking_left = true;
-		}
-		if (KEY_PRESS(VK_RIGHT)) {
-			if (move_speed > 0) {
-				move_speed = 0.0f;
-			}
-			move_pos = 10.0f;
-			//pos.x += 300.0f * DELTA;
-			SetClip(CHAR_STATUS::WALK);
-			is_looking_left = false;
-		}
-		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
-			SetClip(CHAR_STATUS::IDLE);
-			move_pos = 0;
-		}
-		if (KEY_DOWN('C')) {
-			SetClip(CHAR_STATUS::JUMP);
-		}
-		break;
-	case Mushroom::CHAR_STATUS::JUMP:
-		//점프 상태일때 좌우 키를 누를시 좌우로 이동
-		//단 모션은 변경 없음
-		if (move_speed > 0) {
-			if (KEY_PRESS(VK_LEFT)) {
-				move_pos = -20.0f;
-			}
-			if (KEY_PRESS(VK_RIGHT)) {
-				move_pos = 8.0f;
-			}
-		}
-		if (KEY_PRESS(VK_LEFT)) {
-			is_looking_left = true;
-		}
-		if (move_speed < 0) {
-			if (KEY_PRESS(VK_RIGHT)) {
-				move_pos = 20.0f;
-			}
-			if (KEY_PRESS(VK_LEFT)) {
-				move_pos = -8.0f;
-			}
-		}
-		if (KEY_PRESS(VK_RIGHT)) {
-			is_looking_left = false;
-		}
-
-		break;
-	case Mushroom::CHAR_STATUS::MAX:
-		break;
-	default:
-		break;
-	}
-	*/
-	hit_collider->pos = pos + Vector2(10, 0);
-	foot_collider->pos = pos + Vector2(10, 50);
+	pos.x -= move_speed * DELTA * 5.0f;
+	hit_collider->pos = pos + Vector2(0, 0);
+	foot_collider->pos = pos + Vector2(0, 40);
 	clips[(UINT)action_status]->Update();
 	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
+
 	if (is_looking_left) {
 		scale.x *= -1;
 	}
-
 
 	WorldUpdate();
 

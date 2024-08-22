@@ -29,6 +29,14 @@ private:
 	float hit_point;
 	bool is_live;
 	bool loading_end = false;
+	float move_check;
+	bool is_moving_left = false;
+	float move = 0;
+	int ground_num = 0;
+
+	float zen_count = 0;
+
+	RectCollider* now_ground = NULL;
 
 public:
 	Mushroom(wstring file);
@@ -42,10 +50,15 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
-	void IsCreate() { is_live = true; }
+	void IsCreate();
 	bool Islive() { return is_live;}
-	void IsDead() { is_live = false; }
 	void LoadingEnd() { loading_end = true; }
+	void Setcollider(RectCollider* collider) { now_ground = collider; }
+	void SetGroundNum(int num) { ground_num = num; }
+	int GetGroundNum() { return ground_num; }
+	void IsHit();
+
+
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

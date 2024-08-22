@@ -31,6 +31,8 @@ private:
 	float move_check;
 	bool is_moving = false;
 	float move = 0;
+	int ground_num = 0;
+	float zen_count = 0;
 
 public:
 	Snail(wstring file);
@@ -44,11 +46,13 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
-	void IsCreate() { is_live = true; }
+	void IsCreate();
 	bool Islive() { return is_live; }
-	void IsDead() { is_live = false; }
 	void LoadingEnd() { loading_end = true; }
 	void Setcollider(RectCollider* collider) { now_ground = collider;}
+	void IsHit();
+	void SetGroundNum(int num) { ground_num = num; }
+	int GetGroundNum() { return ground_num; }
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

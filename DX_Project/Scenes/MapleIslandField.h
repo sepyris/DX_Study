@@ -10,6 +10,7 @@ private:
 
 	RectCollider* monster_zone[5];
 	UINT monster_zone_count[5];
+	UINT monster_zen_count[5];
 	UINT monster_count = 5;
 
 	RectCollider* left_portal;

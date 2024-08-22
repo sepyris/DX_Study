@@ -50,6 +50,8 @@ public:
 	void SetIdle();
 
 	RectCollider* GetCollider() { return foot_collider; }
+	RectCollider* GetHitCollider() { return hit_collider; }
+	RectCollider* GetAtkCollider() { return attack_collider; }
 	void Update();
 	void Render();
 	void PostRender();

@@ -13,7 +13,7 @@ MapleIslandField::MapleIslandField(UINT area)
 	mushroom[5] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
 	mushroom[6] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
 	mushroom[7] = new Mushroom(L"Texture/AnimateScene/Animation/mushroom.png");
-
+	
 	snail[0] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
 	snail[1] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
 	snail[2] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
@@ -21,13 +21,6 @@ MapleIslandField::MapleIslandField(UINT area)
 	snail[4] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
 	snail[5] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
 	snail[6] = new Snail(L"Texture/AnimateScene/Animation/snail.png");
-	/*
-	for (Mushroom* m : mushroom) {
-		if (m == NULL) {
-			
-		}
-	}
-	*/
 	
 
 	CAM->SetTarget(player);
@@ -219,49 +212,76 @@ void MapleIslandField::Update()
 	CAM->SetTarget(player);
 	bg->Update();
 
-	UINT count_check = 0;
+	
 	std::random_device rd;
 	std::mt19937_64 gen(rd());
 	for (int i = 0; i < monster_count; i++) {
 		std::uniform_int_distribution<int> rand_count(0,2);
 		std::uniform_int_distribution<int> rand_x(monster_zone[i]->LeftVX(), monster_zone[i]->RightVX());
 		std::uniform_int_distribution<int> rand_y(monster_zone[i]->TopVX(), monster_zone[i]->TopVX());
-		if (rand_count(gen)>1) {
-			for (Snail* m : snail) {
-				if (m != NULL) {
-					if (!m->Islive()) {
-						if (count_check >= monster_zone_count[i]) {
-							count_check = 0;
+		while (monster_zen_count[i] != monster_zone_count[i]) {
+			if (rand_count(gen) > 1) {
+				for (Snail* m : snail) {
+					if (m != NULL) {
+						if (!m->Islive()) {
+							m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
+							m->IsCreate();
+							monster_zen_count[i]++;
+							m->SetGroundNum(i);
+							m->Setcollider(monster_zone[i]);
 							break;
 						}
-						m->pos = Vector2(rand_x(gen), rand_y(gen)-100);
-						m->IsCreate();
-						count_check++;
-						
 					}
 				}
 			}
-		}
-		else {
-			for (Mushroom* m : mushroom) {
-				if (m != NULL) {
-					if (!m->Islive()) {
-						if (count_check >= monster_zone_count[i]) {
-							count_check = 0;
+			else {
+				for (Mushroom* m : mushroom) {
+					if (m != NULL) {
+						if (!m->Islive()) {
+							m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
+							m->IsCreate();
+							monster_zen_count[i]++;
+							m->SetGroundNum(i);
+							m->Setcollider(monster_zone[i]);
 							break;
 						}
-						m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
-						m->IsCreate();
-						count_check++;
-						
 					}
 				}
 			}
 		}
 	}
-
-	
-
+	bool is_hit = false;
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			Vector2 collision;
+			if (player->GetAtkCollider() != NULL) {
+				if (player->GetAtkCollider()->isCollision(m->GetHitCollider(), &collision)) {
+					m->IsHit();
+					is_hit = true;
+					if (!m->Islive()) {
+						m->GetCollider();
+						monster_zen_count[m->GetGroundNum()]--;
+					}
+				}
+			}
+			
+		}
+	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			Vector2 collision;
+			if (player->GetAtkCollider() != NULL) {
+				if (player->GetAtkCollider()->isCollision(m->GetHitCollider(), &collision)) {
+					m->IsHit();
+					is_hit = true;
+					if (!m->Islive()) {
+						m->GetCollider();
+						monster_zen_count[m->GetGroundNum()]--;
+					}
+				}
+			}
+		}
+	}
 
 
 	for (RectCollider* g : left_col) {
@@ -290,8 +310,7 @@ void MapleIslandField::Update()
 						if (m->pos.y < g->pos.y) {
 							if (m->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
 								m->pos.y -= collision.y * DELTA * 20.0f;
-								m->landing();
-								
+								m->landing();								
 							}
 						}
 					}
@@ -304,7 +323,6 @@ void MapleIslandField::Update()
 							if (m->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
 								m->pos.y -= collision.y * DELTA * 20.0f;
 								m->landing();
-								m->Setcollider(g);
 							}
 						}
 					}
@@ -483,9 +501,9 @@ void MapleIslandField::PostRender()
 {
 	ImGui::SliderFloat2("p.pos", (float*)&player->pos, 0, WIN_WIDTH);
 	UINT count = 0;
-	for (RectCollider* g : ladder) {
-		if (g != NULL) {
-			ImGui::SliderFloat2(to_string(count).c_str(), (float*)&g->pos, -WIN_WIDTH*3, WIN_WIDTH*3);
+	for (Snail* s : snail) {
+		if (s != NULL) {
+			ImGui::SliderFloat2(to_string(count).c_str(), (float*)&s->pos, -WIN_WIDTH*3, WIN_WIDTH*3);
 			count++;
 		}
 	}

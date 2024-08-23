@@ -273,6 +273,9 @@
     <Image Include="Texture\AnimateScene\Animation\sprite.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Texture\Image\attack.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\PixelShader\PixelShader.hlsl" />

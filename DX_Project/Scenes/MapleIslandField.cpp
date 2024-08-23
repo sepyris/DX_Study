@@ -256,15 +256,30 @@ void MapleIslandField::Update()
 			Vector2 collision;
 			if (player->GetAtkCollider() != NULL) {
 				if (player->GetAtkCollider()->isCollision(m->GetHitCollider(), &collision)) {
-					m->IsHit();
-					is_hit = true;
-					if (!m->Islive()) {
-						m->GetCollider();
-						monster_zen_count[m->GetGroundNum()]--;
+					if (m->Islive()) {
+						
+						m->IsHit();
+						is_hit = true;
+						//맞으면 살짝 밀리도록 설정
+						if (m->pos.x < player->pos.x) {
+							m->pos.x -= 300.0f * DELTA;
+						}
+						else if (m->pos.x > player->pos.x) {
+							m->pos.x += 300.0f * DELTA;
+						}
+
+						//밀려도 땅을 넘어가지 않도록 설정
+						float min = monster_zone[m->GetGroundNum()]->LeftVX();
+						float max = monster_zone[m->GetGroundNum()]->RightVX();
+						if (m->pos.x > max) {
+							m->pos.x -= 300.0f * DELTA;
+						}
+						if (m->pos.x < min) {
+							m->pos.x += 300.0f * DELTA;
+						}
 					}
 				}
 			}
-			
 		}
 	}
 	for (Snail* m : snail) {
@@ -272,16 +287,48 @@ void MapleIslandField::Update()
 			Vector2 collision;
 			if (player->GetAtkCollider() != NULL) {
 				if (player->GetAtkCollider()->isCollision(m->GetHitCollider(), &collision)) {
-					m->IsHit();
-					is_hit = true;
-					if (!m->Islive()) {
-						m->GetCollider();
-						monster_zen_count[m->GetGroundNum()]--;
+					if (m->Islive()) {
+						m->IsHit();
+						is_hit = true;
+
+						//맞으면 살짝 밀리도록 설정
+						if (m->pos.x < player->pos.x) {
+							m->pos.x -= 300.0f * DELTA;
+						}
+						else if (m->pos.x > player->pos.x) {
+							m->pos.x += 300.0f * DELTA;
+						}
+
+						//밀려도 땅을 넘어가지 않도록 설정
+						float min = monster_zone[m->GetGroundNum()]->LeftVX();
+						float max = monster_zone[m->GetGroundNum()]->RightVX();
+						if (m->pos.x > max) {
+							m->pos.x -= 300.0f * DELTA;
+						}
+						if (m->pos.x < min) {
+							m->pos.x += 300.0f * DELTA;
+						}
 					}
 				}
 			}
 		}
 	}
+
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			if (!m->Islive()) {
+				monster_zen_count[m->GetGroundNum()]--;
+			}
+		}
+	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			if (!m->Islive()) {
+				monster_zen_count[m->GetGroundNum()]--;
+			}
+		}
+	}
+
 
 
 	for (RectCollider* g : left_col) {
@@ -499,13 +546,15 @@ void MapleIslandField::Render()
 
 void MapleIslandField::PostRender()
 {
-	ImGui::SliderFloat2("p.pos", (float*)&player->pos, 0, WIN_WIDTH);
-	UINT count = 0;
-	for (Snail* s : snail) {
-		if (s != NULL) {
-			ImGui::SliderFloat2(to_string(count).c_str(), (float*)&s->pos, -WIN_WIDTH*3, WIN_WIDTH*3);
-			count++;
+	player->PostRender();
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			m->PostRender();
 		}
 	}
-	player->PostRender();
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			m->PostRender();
+		}
+	}
 }

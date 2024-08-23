@@ -34,6 +34,14 @@ Snail::Snail(wstring file)
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
 	frames.clear();
 	//워크상태 끝
+	
+	//히트 CHAR_STATUS::HIT
+	init_pos = { 7,96 };
+	this_frame_size = { 41,39 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f / 3.0f));
+	frames.clear();
+	//히트상태끝
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
 
@@ -51,6 +59,7 @@ Snail::Snail(wstring file)
 	move_pos = 0;
 	is_live = false;
 	hit_point = 5;
+
 }
 
 Snail::~Snail()
@@ -74,7 +83,7 @@ void Snail::landing()
 		//땅에 착지시에 점프 상태를 변경
 		jump_speed = 0;
 		pos.y += jump_speed * DELTA * 5.0f;
-		if (action_status != CHAR_STATUS::WALK) {
+		if (action_status != CHAR_STATUS::WALK && action_status != CHAR_STATUS::HIT) {
 			SetClip(CHAR_STATUS::IDLE);
 		}
 		move_pos = 0;
@@ -92,6 +101,11 @@ void Snail::ResetJumpSpeed()
 
 void Snail::Update()
 {
+	if (hit_count != 0) {
+		if (hit_count < Timer::Get()->GetRunTime()) {
+			SetClip(CHAR_STATUS::IDLE);
+		}
+	}
 	if (zen_count != 0) {
 		if (zen_count < Timer::Get()->GetRunTime()) {
 			//is_live = true;
@@ -117,7 +131,11 @@ void Snail::Update()
 		if (rand_count(gen) <= 2) {
 			if (now_ground != NULL) {
 				if (loading_end) {
-					SetClip(CHAR_STATUS::WALK);
+					if (action_status != CHAR_STATUS::HIT) {
+						SetClip(CHAR_STATUS::WALK);
+					}
+
+					
 					int min = now_ground->LeftVX();
 					int max = now_ground->RightVX();
 					std::uniform_int_distribution<int> rand_count(min + 10, max - 10);
@@ -129,7 +147,10 @@ void Snail::Update()
 		else if (rand_count(gen) > 2) {
 			move_pos = 0;
 			move_speed = 0;
-			SetClip(CHAR_STATUS::IDLE);
+			if (action_status != CHAR_STATUS::HIT) {
+				SetClip(CHAR_STATUS::IDLE);
+			}
+			
 		}
 		move_check = 0;
 	}
@@ -144,7 +165,10 @@ void Snail::Update()
 			move_speed = 20.0f;
 			is_looking_left = false;
 		}
-		SetClip(CHAR_STATUS::WALK);
+		if (action_status != CHAR_STATUS::HIT) {
+			SetClip(CHAR_STATUS::WALK);
+		}
+		
 	}
 
 	if (now_ground != NULL) {
@@ -195,7 +219,10 @@ void Snail::Update()
 				move_pos = 0;
 				move_speed = 0;
 				move = 0;
-				SetClip(CHAR_STATUS::IDLE);
+				if (action_status != CHAR_STATUS::HIT) {
+					SetClip(CHAR_STATUS::IDLE);
+				}
+				
 			}
 		}
 
@@ -204,7 +231,9 @@ void Snail::Update()
 				move_pos = 0;
 				move_speed = 0;
 				move = 0;
-				SetClip(CHAR_STATUS::IDLE);
+				if (action_status != CHAR_STATUS::HIT) {
+					SetClip(CHAR_STATUS::IDLE);
+				}
 			}
 		}
 	}
@@ -225,13 +254,10 @@ void Snail::Update()
 		hit_collider->WorldUpdate();
 		foot_collider->WorldUpdate();
 	}
-	
-
 }
 
 void Snail::Render()
 {
-	
 		VS->Set();
 		PS->Set();
 
@@ -259,10 +285,15 @@ void Snail::IsCreate()
 }
 void Snail::IsHit()
 {
-	hit_point--;
-	if (hit_point <= 0) {
-		is_live = false;
-	}
+	if (action_status != CHAR_STATUS::HIT) {
+		hit_point--;
+		hit_count = Timer::Get()->GetRunTime() + 1;
+		SetClip(CHAR_STATUS::HIT);
+		if (hit_point <= 0) {
+			is_live = false;
+		}
+		
+	}	
 }
 void Snail::SetClip(CHAR_STATUS stat)
 {
@@ -278,6 +309,11 @@ void Snail::SetClip(CHAR_STATUS stat)
 		clips[(UINT)action_status]->Play();
 		break;
 	case Snail::CHAR_STATUS::WALK://걷는 상태가 될 경우
+		clips[(UINT)action_status]->Stop();
+		action_status = stat;
+		clips[(UINT)action_status]->Play();
+		break;
+	case Snail::CHAR_STATUS::HIT://걷는 상태가 될 경우
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

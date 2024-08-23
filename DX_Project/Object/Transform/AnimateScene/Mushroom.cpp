@@ -39,9 +39,17 @@ Mushroom::Mushroom(wstring file)
 	init_pos = { 73,72 };
 	this_frame_size = { 62,64 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f / 3.0f));
 	frames.clear();
 	//점프 상태 끝
+
+	//히트 CHAR_STATUS::HIT
+	init_pos = { 6,141 };
+	this_frame_size = { 62,65 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f / 3.0f));
+	frames.clear();
+	//히트 상태 끝
 
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
@@ -83,7 +91,7 @@ void Mushroom::landing()
 		//땅에 착지시에 점프 상태를 변경
 		jump_speed = 0;
 		pos.y += jump_speed * DELTA * 5.0f;
-		if (action_status != CHAR_STATUS::WALK) {
+		if (action_status != CHAR_STATUS::WALK && action_status != CHAR_STATUS::HIT) {
 			SetClip(CHAR_STATUS::IDLE);
 		}
 		move_pos = 0;
@@ -101,128 +109,144 @@ void Mushroom::ResetJumpSpeed()
 
 void Mushroom::Update()
 {
-	if (zen_count != 0) {
-		if (zen_count < Timer::Get()->GetRunTime()) {
-			//is_live = true;
-			hit_point = 5;
-			zen_count = 0;
+	if (hit_count != 0) {
+		if (hit_count < Timer::Get()->GetRunTime()) {
+			SetClip(CHAR_STATUS::IDLE);
 		}
 	}
+		if (zen_count != 0) {
+			if (zen_count < Timer::Get()->GetRunTime()) {
+				//is_live = true;
+				hit_point = 10;
+				zen_count = 0;
+			}
+		}
 
-	if (hit_point <= 0) {
-		is_live = false;
-		return;
-	}
+		if (hit_point <= 0) {
+			is_live = false;
+			return;
+		}
 
-	std::random_device rd;
-	std::mt19937_64 gen(rd());
-	if (move_check == 0) {
-		move_check = Timer::Get()->GetRunTime() + 2;
-	}
-	if (move_check < Timer::Get()->GetRunTime()) {
-		std::uniform_int_distribution<int> rand_count(0, 5);
-		
-		//이동
-		if (rand_count(gen) <= 2) {
-			if (now_ground != NULL) {
-				if (loading_end) {
-					SetClip(CHAR_STATUS::WALK);
-					int min = now_ground->LeftVX();
-					int max = now_ground->RightVX();
-					std::uniform_int_distribution<int> rand_count(min + 10, max - 10);
-					move = rand_count(gen);
+		std::random_device rd;
+		std::mt19937_64 gen(rd());
+		if (move_check == 0) {
+			move_check = Timer::Get()->GetRunTime() + 2;
+		}
+		if (move_check < Timer::Get()->GetRunTime()) {
+			std::uniform_int_distribution<int> rand_count(0, 5);
+
+			//이동
+			if (rand_count(gen) <= 2) {
+				if (now_ground != NULL) {
+					if (loading_end) {
+						if (action_status != CHAR_STATUS::HIT) {
+							SetClip(CHAR_STATUS::WALK);
+						}
+
+						int min = now_ground->LeftVX();
+						int max = now_ground->RightVX();
+						std::uniform_int_distribution<int> rand_count(min + 10, max - 10);
+						move = rand_count(gen);
+					}
+				}
+			}
+			//멈춤
+			/*else if (rand_count(gen) == 1) {
+				move_pos = 0;
+				move_speed = 0;
+			}*/
+
+			//점프
+			else if (rand_count(gen) >= 2) {
+				if (action_status != CHAR_STATUS::JUMP && action_status != CHAR_STATUS::HIT) {
+					//점프 관련 설정을 변경
+					jump_speed = 100.0f;
+					SetClip(CHAR_STATUS::JUMP);
+				}
+			}
+			move_check = 0;
+		}
+		if (move != 0) {
+			if (pos.x < move) {
+				move_pos = 40.0f;
+				move_speed = -40.0f;
+				is_looking_left = true;
+			}
+			if (pos.x >= move) {
+				move_pos = -40.0f;
+				move_speed = 40.0f;
+				is_looking_left = false;
+			}
+			if (action_status != CHAR_STATUS::HIT) {
+				SetClip(CHAR_STATUS::WALK);
+			}
+
+		}
+
+		if (now_ground != NULL) {
+			float min = now_ground->LeftVX();
+			float max = now_ground->RightVX();
+
+			if (pos.x > max) {
+				pos.x -= 300.0f * DELTA;
+			}
+			if (pos.x < min) {
+				pos.x += 300.0f * DELTA;
+			}
+		}
+		//중력 적용
+		if (loading_end) {
+			if (is_live) {
+				jump_speed -= 9.8f * 20.0f * DELTA;
+				if (jump_speed <= -250.0f) {
+					jump_speed = -250.0f;
+				}
+				pos.y -= jump_speed * DELTA * 5.0f;
+			}
+		}
+		//이동 관성 적용
+		if (action_status != CHAR_STATUS::IDLE && action_status != CHAR_STATUS::HIT) {
+			move_speed -= 9.8f * move_pos * DELTA;
+			if (move_speed < -50.0f) {
+				move_speed = -50.0f;
+			}
+			if (move_speed > 50.0f) {
+				move_speed = 50.0f;
+			}
+			if (move_pos == 0) {
+				if (move_speed > 0.0f) {
+					move_speed -= 9.8f * DELTA * 20.0f;
+				}
+				else if (move_speed < 0.0f) {
+					move_speed += 9.8f * DELTA * 20.0f;
+				}
+			}
+			if (move != 0) {
+				pos.x -= move_speed * DELTA * 5.0f;
+			}
+			if (move_pos == 40.0f) {
+				if (pos.x >= move - 5) {
+					move_pos = 0;
+					move_speed = 0;
+					move = 0;
+					if (action_status != CHAR_STATUS::HIT) {
+						SetClip(CHAR_STATUS::IDLE);
+					}
+				}
+			}
+
+			if (move_pos == -40.0f) {
+				if (pos.x <= move + 5) {
+					move_pos = 0;
+					move_speed = 0;
+					move = 0;
+					if (action_status != CHAR_STATUS::HIT) {
+						SetClip(CHAR_STATUS::IDLE);
+					}
 				}
 			}
 		}
-		//멈춤
-		/*else if (rand_count(gen) == 1) {
-			move_pos = 0;
-			move_speed = 0;
-		}*/
-		
-		//점프
-		else if (rand_count(gen) >= 2) {
-			if (action_status != CHAR_STATUS::JUMP) {
-				//점프 관련 설정을 변경
-				jump_speed = 100.0f;
-				SetClip(CHAR_STATUS::JUMP);
-			}
-		}
-		move_check = 0;
-	}
-	if (move != 0) {
-		if (pos.x < move) {
-			move_pos = 50.0f;
-			move_speed = -50.0f;
-			is_looking_left = true;
-		}
-		if (pos.x >= move) {
-			move_pos = -50.0f;
-			move_speed = 50.0f;
-			is_looking_left = false;
-		}
-		SetClip(CHAR_STATUS::WALK);
-	}
 	
-	if (now_ground != NULL) {
-		float min = now_ground->LeftVX();
-		float max = now_ground->RightVX();
-		
-		if (pos.x > max) {
-			pos.x -= 300.0f * DELTA;
-		}
-		if (pos.x < min) {
-			pos.x += 300.0f * DELTA;
-		}
-	}
-	//중력 적용
-	if (loading_end) {
-		if (is_live) {
-			jump_speed -= 9.8f * 20.0f * DELTA;
-			if (jump_speed <= -250.0f) {
-				jump_speed = -250.0f;
-			}
-			pos.y -= jump_speed * DELTA * 5.0f;
-		}
-	}
-	//이동 관성 적용
-	if (action_status != CHAR_STATUS::IDLE) {
-		move_speed -= 9.8f * move_pos * DELTA;
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
-		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
-		}
-		if (move_pos == 0) {
-			if (move_speed > 0.0f) {
-				move_speed -= 9.8f * DELTA * 20.0f;
-			}
-			else if (move_speed < 0.0f) {
-				move_speed += 9.8f * DELTA * 20.0f;
-			}
-		}
-		if (move != 0) {
-			pos.x -= move_speed * DELTA * 5.0f;
-		}
-		if (move_pos == 50.0f) {
-			if (pos.x >= move - 5) {
-				move_pos = 0;
-				move_speed = 0;
-				move = 0;
-				SetClip(CHAR_STATUS::IDLE);
-			}
-		}
-
-		if (move_pos == -50.0f) {
-			if (pos.x <= move + 5) {
-				move_pos = 0;
-				move_speed = 0;
-				move = 0;
-				SetClip(CHAR_STATUS::IDLE);
-			}
-		}
-	}
 	
 	
 	hit_collider->pos = pos + Vector2(0, 0);
@@ -239,8 +263,6 @@ void Mushroom::Update()
 		hit_collider->WorldUpdate();
 		foot_collider->WorldUpdate();
 	}
-	
-
 }
 
 void Mushroom::Render()
@@ -261,7 +283,7 @@ void Mushroom::Render()
 
 void Mushroom::PostRender()
 {
-
+	ImGui::SliderFloat("hit_point", (float*)&hit_point, 0, WIN_WIDTH);
 }
 void Mushroom::IsCreate()
 {
@@ -272,9 +294,13 @@ void Mushroom::IsCreate()
 }
 void Mushroom::IsHit()
 {
-	hit_point--;
-	if (hit_point <= 0) {
-		is_live = false;
+	if (action_status != CHAR_STATUS::HIT) {
+		hit_point--;
+		hit_count = Timer::Get()->GetRunTime() + 1;
+		SetClip(CHAR_STATUS::HIT);
+		if (hit_point <= 0) {
+			is_live = false;
+		}
 	}
 }
 void Mushroom::SetClip(CHAR_STATUS stat)
@@ -296,6 +322,11 @@ void Mushroom::SetClip(CHAR_STATUS stat)
 		clips[(UINT)action_status]->Play();
 		break;
 	case Mushroom::CHAR_STATUS::JUMP://점프하는 상태가 될 경우
+		clips[(UINT)action_status]->Stop();
+		action_status = stat;
+		clips[(UINT)action_status]->Play();
+		break;
+	case Mushroom::CHAR_STATUS::HIT://히트하는 상태가 될 경우
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

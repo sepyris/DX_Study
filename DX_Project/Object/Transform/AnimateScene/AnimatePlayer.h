@@ -22,7 +22,7 @@ private:
 
 	RectCollider* hit_collider;
 	RectCollider* foot_collider;
-	RectCollider* attack_collider;
+	ImageRect* attack_collider;
 
 	bool is_looking_left;
 
@@ -51,7 +51,14 @@ public:
 
 	RectCollider* GetCollider() { return foot_collider; }
 	RectCollider* GetHitCollider() { return hit_collider; }
-	RectCollider* GetAtkCollider() { return attack_collider; }
+	RectCollider* GetAtkCollider() { 
+		if (attack_collider != NULL) {
+			return attack_collider->GetCollider();
+		}
+		else {
+			return NULL;
+		}
+	}
 	void Update();
 	void Render();
 	void PostRender();

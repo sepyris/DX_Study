@@ -16,6 +16,8 @@ ImageRect::ImageRect(wstring file_loc,Vector2 p, Vector2 s, float a, Vector2 siz
 	//멤버변수 srv에 DEVICE와 img를 이용해 셰이더 리소스 뷰 라는것을 생성
 	// 이걸통해 셰이더에 사진데이터를 보냄
 	//이 srv부분을 통해 PixelShaderUV.hlsl에서 다루는 samp와 map등에 데이터를 보냄
+
+	collider = new RectCollider(p);
 	
 }
 
@@ -25,11 +27,14 @@ ImageRect::~ImageRect()
 	if (srv != nullptr) {
 		srv->Release();
 	}
+	delete collider;
 }
 
 void ImageRect::Update()
 {
+	collider->WorldUpdate();
 	WorldUpdate();
+
 }
 
 void ImageRect::Render()
@@ -38,6 +43,7 @@ void ImageRect::Render()
 	DVC->PSSetShaderResources(0, 1, &srv);
 	//디바이스 컨텍스트 사진데이터가 들어가 있는 셰이더 리소스 뷰를 입력
 	//이를 통해서 PixelUV.hlsl의 samp,map에 데이터를 보낼수 있게 설정
+	collider->Render();
 	image->Render();
 
 }

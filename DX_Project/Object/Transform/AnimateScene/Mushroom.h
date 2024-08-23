@@ -6,6 +6,7 @@ private:
 		IDLE = 0,
 		WALK,
 		JUMP,
+		HIT,
 		MAX = 3
 	}action_status;
 
@@ -29,12 +30,14 @@ private:
 	float hit_point;
 	bool is_live;
 	bool loading_end = false;
-	float move_check;
 	bool is_moving_left = false;
 	float move = 0;
 	int ground_num = 0;
 
-	float zen_count = 0;
+	//타이머 설정 변수
+	float move_check = 0; // 다음움직임까지 설정을 위한 타이머
+	float zen_count = 0; // 사망후 다시 나오기까지 설정을 위한 타이머
+	float hit_count = 0; // 맞고나서 다음 맞기까지 설정을 위한 타이머
 
 	RectCollider* now_ground = NULL;
 

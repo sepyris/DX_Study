@@ -246,6 +246,7 @@
   <ItemGroup>
     <Image Include="DX_Framework.ico" />
     <Image Include="small.ico" />
+    <Image Include="Texture\Image\attack.png" />
     <Image Include="Texture\Image\char1.png" />
     <Image Include="Texture\Image\char2.png" />
     <Image Include="Texture\Image\flame.png" />

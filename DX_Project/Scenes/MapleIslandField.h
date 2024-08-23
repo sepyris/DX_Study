@@ -20,7 +20,7 @@ private:
 	AnimatePlayer* player;
 	Mushroom* mushroom[10];
 	Snail* snail[10];
-	
+
 public:
 	MapleIslandField(UINT area);
 	~MapleIslandField();

@@ -8,6 +8,8 @@ private:
 
 	ID3D11ShaderResourceView* srv;
 
+	RectCollider* collider = NULL;
+
 public:
 	ImageRect(wstring file_loc,
 		Vector2 p = Float2(0, 0),
@@ -19,5 +21,7 @@ public:
 
 	void Update();
 	void Render();
+
+	RectCollider* GetCollider() { return collider; }
 
 };

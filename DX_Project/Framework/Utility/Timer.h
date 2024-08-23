@@ -27,6 +27,7 @@ public:
 
 	float one_sec_count; //1초가 지났는지의 여부를 저장하는 변수
 	float run_time;//프로그램이 실행되기 시작한 후 부터 기록을 시작하는 프로그램의 총 가동 시간
+	unordered_map<string, int> timer;
 
 	Timer();
 	~Timer();
@@ -43,6 +44,5 @@ public:
 	// 작동하는 속도를 관리하게 될것
 	//
 	float GetRunTime() { return run_time; }
-	
 
 };

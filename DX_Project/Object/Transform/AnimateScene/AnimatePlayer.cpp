@@ -131,10 +131,10 @@ AnimatePlayer::AnimatePlayer(wstring file)
 	//메달리기 상태 끝
 
 	//공격 CHAR_STATUS::ATTACK
-	init_pos = { 3,445 };
+	init_pos = { 2,441 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 
-	init_pos += Vector2(88, 0);
+	init_pos += Vector2(84, 0);
 	for (int i = 0; i < 2; i++) {
 		frames.push_back(
 			new Frame(
@@ -353,7 +353,7 @@ void AnimatePlayer::Update()
 			}
 			SetClip(CHAR_STATUS::ATTACK);
 			if (attack_collider == NULL) {
-				attack_collider = new RectCollider(Vector2(80, 100));
+				attack_collider = new ImageRect(L"Texture/Image/attack.png",Vector2(80, 100));
 			}
 		}
 	}
@@ -507,9 +507,9 @@ void AnimatePlayer::Update()
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK:
 		if (attack_collider != NULL) {
-			attack_collider->pos = pos + Vector2(50, 0);
+			attack_collider->GetCollider()->pos = pos + Vector2(50, 0);
 			if (is_looking_left) {
-				attack_collider->pos.x = pos.x - 50;
+				attack_collider->GetCollider()->pos.x = pos.x - 50;
 			}
 			attack_collider->WorldUpdate();
 		}
@@ -592,11 +592,6 @@ void AnimatePlayer::Render()
 
 void AnimatePlayer::PostRender()
 {
-	ImGui::Text("animatePlayer");
-	ImGui::SliderFloat2("p.pos", (float*)&pos, 0, WIN_WIDTH);
-	ImGui::SliderFloat("jump_speed", (float*)&jump_speed, 0, WIN_WIDTH);
-	ImGui::SliderFloat("move_speed", (float*)&move_speed, 0, WIN_WIDTH);
-	ImGui::SliderFloat("move_pos", (float*)&move_pos, 0, WIN_WIDTH);
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)

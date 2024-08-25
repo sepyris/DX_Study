@@ -10,8 +10,9 @@ private:
 		RUN,
 		ROPE,
 		ATTACK,
+		HIT,
 		FLY,
-		MAX = 8
+		MAX = 9
 	}action_status;
 
 	VertexShader* VS;
@@ -39,6 +40,7 @@ private:
 	bool is_can_double_jump;
 	bool is_jump_attack;
 	bool loading_end = false;
+	bool is_live = true;
 
 public:
 	AnimatePlayer(wstring file);
@@ -63,7 +65,7 @@ public:
 	void Render();
 	void PostRender();
 	void LoadingEnd() { loading_end = true; }
-
+	void IsHit(bool is_left);
 	void SetColor(Float4 color) {
 		CB->data.colour = color;
 	}

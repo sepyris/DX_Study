@@ -251,6 +251,7 @@ void MapleIslandField::Update()
 		}
 	}
 	bool is_hit = false;
+
 	for (Mushroom* m : mushroom) {
 		if (m != NULL) {
 			Vector2 collision;
@@ -278,6 +279,14 @@ void MapleIslandField::Update()
 							m->pos.x += 300.0f * DELTA;
 						}
 					}
+				}
+			}
+			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
+				if (m->pos.x < player->pos.x) {
+					player->IsHit(true);
+				}
+				else if (m->pos.x > player->pos.x) {
+					player->IsHit(false);
 				}
 			}
 		}
@@ -309,7 +318,16 @@ void MapleIslandField::Update()
 							m->pos.x += 300.0f * DELTA;
 						}
 					}
+				}	
+			}
+			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
+				if (m->pos.x < player->pos.x) {
+					player->IsHit(true);
 				}
+				else if (m->pos.x > player->pos.x) {
+					player->IsHit(false);
+				}
+				
 			}
 		}
 	}
@@ -357,7 +375,7 @@ void MapleIslandField::Update()
 						if (m->pos.y < g->pos.y) {
 							if (m->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
 								m->pos.y -= collision.y * DELTA * 20.0f;
-								m->landing();								
+								m->landing();
 							}
 						}
 					}

@@ -68,6 +68,7 @@ AnimatePlayer::AnimatePlayer(wstring file)
 
 	//점프 CHAR_STATUS::JUMP
 	init_pos = { 3,181 };
+	this_frame_size = { 82,78 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP));
 	frames.clear();
@@ -150,9 +151,20 @@ AnimatePlayer::AnimatePlayer(wstring file)
 		//이미지 파일의 해당 영역만을 이용하여
 		//애니메이션의 한 프레임을 만들어내는 생성자
 	}
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f / 4.0f));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.15f));
 	frames.clear();
 	//공격 상태 끝
+
+	//히트 CHAR_STATUS::HIT
+	init_pos = { 3,181 };
+	this_frame_size = { 82,78 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	init_pos = { 3,5 };
+	this_frame_size = { 82,78 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.5f));
+	frames.clear();
+	//히트 상태 끝
 
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
@@ -206,7 +218,7 @@ void AnimatePlayer::landing()
 		jump_speed = 0;
 		pos.y += jump_speed * DELTA * 5.0f;
 		is_jump_attack = false;
-		if (action_status == CHAR_STATUS::ROPE) {
+		if (action_status == CHAR_STATUS::ROPE && action_status != CHAR_STATUS::HIT) {
 			if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
 				SetClip(CHAR_STATUS::IDLE);
 				is_can_double_jump = false;
@@ -266,13 +278,15 @@ void AnimatePlayer::SetIdle()
 
 void AnimatePlayer::Update()
 {
-	//제일 정석적인 방법은
-	// 충돌체를 밟고 있는 상황이라면 밝고 있다는 상태로 만들어 처리하는것
-	// =>바닥에 서 있는 상태를 구현해뒀다면
-	//  지진등이 일어났을때 일시적으로 움직이지 못하도록 하는 처리 등을 더 쉽게 구현할수 있기 때문
-	// (구현하지 않았다면 이에 해당되는 상태들을 나열해야 했으나 구현했다면 그냥 bool변수 하나로 처리할수 있기 때문)
-	//아예 조건식 자체를 삭제하고 항상 떨어지도록 만드는것으로 바닥을 밟지 않는 상태면 떨어지도록 하기
+	if (!is_live) {
 
+	}
+	if (action_status == CHAR_STATUS::HIT) {
+		if (!clips[(UINT)action_status]->isPlay()) {
+			clips[(UINT)action_status]->Play();
+			SetClip(CHAR_STATUS::IDLE);
+		}
+	}
 
 	if (pos.x > 2520) {
 		pos.x -= 300.0f * DELTA;
@@ -294,12 +308,12 @@ void AnimatePlayer::Update()
 	if (action_status != CHAR_STATUS::ROPE) {
 		move_speed -= 9.8f * move_pos * DELTA;
 
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
-		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
-		}
+			if (move_speed < -50.0f) {
+				move_speed = -50.0f;
+			}
+			if (move_speed > 50.0f) {
+				move_speed = 50.0f;
+			}
 		if (move_pos == 0) {
 			if (move_speed > 0.0f) {
 				move_speed -= 9.8f * DELTA * 20.0f;
@@ -323,7 +337,7 @@ void AnimatePlayer::Update()
 				}
 			}
 			//만약 점프 상태가 아니라면
-			if (action_status != CHAR_STATUS::JUMP &&action_status != CHAR_STATUS::ATTACK) {
+			if (action_status != CHAR_STATUS::JUMP &&action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 				//점프 관련 설정을 변경
 				jump_speed = 100.0f;
 				SetClip(CHAR_STATUS::JUMP);
@@ -334,7 +348,7 @@ void AnimatePlayer::Update()
 	//점프중에 점프를 누름
 	if (KEY_DOWN('C'))
 	{
-		if (action_status == CHAR_STATUS::JUMP && is_can_double_jump && action_status != CHAR_STATUS::ATTACK) {
+		if (action_status == CHAR_STATUS::JUMP && is_can_double_jump && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 			is_can_double_jump = false;
 			if (jump_speed < 0) {
 				jump_speed = 100.0f;
@@ -353,13 +367,14 @@ void AnimatePlayer::Update()
 			}
 			SetClip(CHAR_STATUS::ATTACK);
 			if (attack_collider == NULL) {
-				attack_collider = new ImageRect(L"Texture/Image/attack.png",Vector2(80, 100));
+				attack_collider = new ImageRect(L"Texture/Image/attack.png",Vector2(80,100));
 			}
 		}
 	}
-	if (action_status == CHAR_STATUS::ATTACK) {
+	if (action_status == CHAR_STATUS::ATTACK || action_status != CHAR_STATUS::HIT) {
 		if (!clips[(UINT)CHAR_STATUS::ATTACK]->isPlay()) {
-			SetClip(CHAR_STATUS::IDLE);
+			clips[(UINT)CHAR_STATUS::ATTACK]->Play();
+			SetClip(CHAR_STATUS::IDLE);			
 			is_jump_attack = false;
 			if (attack_collider != NULL) {
 				delete attack_collider;
@@ -369,7 +384,7 @@ void AnimatePlayer::Update()
 	}
 
 	//걸으면서 단차로 이동시 점프 상태로 변경
-	if (jump_speed < -10.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK) {
+	if (jump_speed < -10.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
 	
@@ -423,7 +438,7 @@ void AnimatePlayer::Update()
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
 		}
-		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT) && action_status != CHAR_STATUS::HIT) {
 			SetClip(CHAR_STATUS::IDLE);
 			move_pos = 0;
 		}
@@ -507,11 +522,13 @@ void AnimatePlayer::Update()
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK:
 		if (attack_collider != NULL) {
+			attack_collider->pos = pos + Vector2(50, 0);
 			attack_collider->GetCollider()->pos = pos + Vector2(50, 0);
 			if (is_looking_left) {
+				attack_collider->pos.x = pos.x - 50;
 				attack_collider->GetCollider()->pos.x = pos.x - 50;
 			}
-			attack_collider->WorldUpdate();
+			attack_collider->Update();
 		}
 		if (is_jump_attack) {
 			if (move_pos < 0) {
@@ -532,6 +549,26 @@ void AnimatePlayer::Update()
 			move_speed = 0;
 		}
 		break;
+	case AnimatePlayer::CHAR_STATUS::HIT: {
+		if (KEY_PRESS(VK_LEFT)) {
+			if (move_speed < 0) {
+				move_speed = 0.0f;
+			}
+			move_pos = -10.0f;
+			is_looking_left = true;
+		}
+		if (KEY_PRESS(VK_RIGHT)) {
+			if (move_speed > 0) {
+				move_speed = 0.0f;
+			}
+			move_pos = 10.0f;
+			is_looking_left = false;
+		}
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT) && action_status != CHAR_STATUS::HIT) {
+			move_pos = 0;
+		}
+	}
+		break;
 	case AnimatePlayer::CHAR_STATUS::MAX:
 		break;
 	default:
@@ -543,7 +580,10 @@ void AnimatePlayer::Update()
 	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
 	if (is_looking_left) {
 		scale.x *= -1;
-
+		if (attack_collider != NULL) {
+			attack_collider->GetCollider()->scale.x = -1;
+		}
+		
 		hit_collider->pos.x = pos.x - 3;
 		foot_collider->pos.x = pos.x - 3;
 	}
@@ -570,7 +610,31 @@ void AnimatePlayer::Update()
 
 	hit_collider->WorldUpdate();
 	foot_collider->WorldUpdate();
-	
+
+	if (attack_collider != NULL) {
+		attack_collider->Update();
+	}
+}
+
+void AnimatePlayer::IsHit(bool is_left)
+{
+	if (action_status != CHAR_STATUS::HIT) {
+		hit_point--;
+		move_speed = 0;
+		if (is_left) {
+			move_pos =7.0f;
+		}
+		else {
+			move_pos = -7.0f;
+		}
+		jump_speed = 50.0f;
+
+		SetClip(CHAR_STATUS::HIT);
+		if (hit_point <= 0) {
+			is_live = false;
+		}
+	}
+
 }
 
 void AnimatePlayer::Render()
@@ -592,6 +656,9 @@ void AnimatePlayer::Render()
 
 void AnimatePlayer::PostRender()
 {
+	ImGui::SliderFloat("movepos", (float*)&move_pos, -100, WIN_WIDTH);
+	ImGui::SliderFloat("movespeed", (float*)&move_speed, -100, WIN_WIDTH);
+	ImGui::SliderFloat("status", (float*)&action_status, -100, WIN_WIDTH);
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)
@@ -640,6 +707,11 @@ void AnimatePlayer::SetClip(CHAR_STATUS stat)
 		clips[(UINT)action_status]->Play();
 		break;
 	case AnimatePlayer::CHAR_STATUS::ATTACK://공격상태
+		clips[(UINT)action_status]->Stop();
+		action_status = stat;
+		clips[(UINT)action_status]->Play();
+		break;
+	case AnimatePlayer::CHAR_STATUS::HIT://히트상태
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

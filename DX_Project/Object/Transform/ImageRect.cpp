@@ -34,7 +34,6 @@ void ImageRect::Update()
 {
 	collider->WorldUpdate();
 	WorldUpdate();
-
 }
 
 void ImageRect::Render()

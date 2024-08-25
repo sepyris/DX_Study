@@ -47,7 +47,7 @@ Mushroom::Mushroom(wstring file)
 	init_pos = { 6,141 };
 	this_frame_size = { 62,65 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f / 3.0f));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.5f));
 	frames.clear();
 	//히트 상태 끝
 
@@ -109,8 +109,10 @@ void Mushroom::ResetJumpSpeed()
 
 void Mushroom::Update()
 {
-	if (hit_count != 0) {
-		if (hit_count < Timer::Get()->GetRunTime()) {
+
+	if (action_status == CHAR_STATUS::HIT) {
+		if (!clips[(UINT)action_status]->isPlay()) {
+			clips[(UINT)action_status]->Play();
 			SetClip(CHAR_STATUS::IDLE);
 		}
 	}
@@ -267,13 +269,13 @@ void Mushroom::Update()
 
 void Mushroom::Render()
 {
-	
+	if (is_live) {
 		VS->Set();
 		PS->Set();
 
 		WB->SetVS(0);
 		CB->SetPS(0);
-	if (is_live) {
+	
 		clips[(UINT)action_status]->Render();
 		//테두리 비표시를 위해 각주처리
 		hit_collider->Render();
@@ -283,7 +285,7 @@ void Mushroom::Render()
 
 void Mushroom::PostRender()
 {
-	ImGui::SliderFloat("hit_point", (float*)&hit_point, 0, WIN_WIDTH);
+	
 }
 void Mushroom::IsCreate()
 {
@@ -296,7 +298,6 @@ void Mushroom::IsHit()
 {
 	if (action_status != CHAR_STATUS::HIT) {
 		hit_point--;
-		hit_count = Timer::Get()->GetRunTime() + 1;
 		SetClip(CHAR_STATUS::HIT);
 		if (hit_point <= 0) {
 			is_live = false;

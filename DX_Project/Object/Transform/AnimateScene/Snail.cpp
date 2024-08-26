@@ -101,6 +101,9 @@ void Snail::ResetJumpSpeed()
 
 void Snail::Update()
 {
+	if (!loading_end) {
+		zen_count = 0;
+	}
 	if (action_status == CHAR_STATUS::HIT) {
 		if (!clips[(UINT)action_status]->isPlay()) {
 			clips[(UINT)action_status]->Play();
@@ -109,8 +112,10 @@ void Snail::Update()
 	}
 	if (zen_count != 0) {
 		if (zen_count < Timer::Get()->GetRunTime()) {
-			//is_live = true;
-			hit_point = 5;
+			if (hit_point <= 0) {
+				hit_point = 5;
+				is_live = true;
+			}
 			zen_count = 0;
 		}
 	}
@@ -123,7 +128,7 @@ void Snail::Update()
 	std::random_device rd;
 	std::mt19937_64 gen(rd());
 	if (move_check == 0) {
-		move_check = Timer::Get()->GetRunTime() + 2;
+		move_check = Timer::Get()->GetRunTime() + 2.0f;
 	}
 	if (move_check < Timer::Get()->GetRunTime()) {
 		std::uniform_int_distribution<int> rand_count(0, 5);
@@ -276,24 +281,23 @@ void Snail::Render()
 
 void Snail::PostRender()
 {
-
+	ImGui::SliderFloat("zen_count", (float*)&zen_count, 0, 30);
 }
 void Snail::IsCreate()
 {
 	if (zen_count == 0) {
-		zen_count = Timer::Get()->GetRunTime() + 5;
+		zen_count = Timer::Get()->GetRunTime() + 5.0f;
 	}
-	is_live = true;
+	if (hit_point > 0) {
+		is_live = true;
+	}
+	SetClip(CHAR_STATUS::IDLE);
 }
 void Snail::IsHit()
 {
 	if (action_status != CHAR_STATUS::HIT) {
 		hit_point--;
-		SetClip(CHAR_STATUS::HIT);
-		if (hit_point <= 0) {
-			is_live = false;
-		}
-		
+		SetClip(CHAR_STATUS::HIT);	
 	}	
 }
 void Snail::SetClip(CHAR_STATUS stat)

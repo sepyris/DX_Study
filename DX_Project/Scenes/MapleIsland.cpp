@@ -34,9 +34,9 @@ MapleIsland::MapleIsland(float area)
 	ground[8]->pos = Vector2(Vector2(-1012,725));
 	ground[9]->pos = Vector2(Vector2(-390,650));
 
-	//hill_ground[0] = new RectCollider(Vector2(770, 1));
-	//hill_ground[0]->pos = Vector2(Vector2(850, 820));
-	//hill_ground[0]->rot.z = 0.46f;
+	hill_ground[0] = new RectCollider(Vector2(770, 1));
+	hill_ground[0]->pos = Vector2(Vector2(850, 820));
+	hill_ground[0]->rot.z = 0.46f;
 
 	left_col[0] = new RectCollider(Vector2(10, 75));
 	left_col[1] = new RectCollider(Vector2(10, 75));

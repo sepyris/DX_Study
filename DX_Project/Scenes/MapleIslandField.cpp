@@ -281,14 +281,6 @@ void MapleIslandField::Update()
 					}
 				}
 			}
-			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
-				if (m->pos.x < player->pos.x) {
-					player->IsHit(true);
-				}
-				else if (m->pos.x > player->pos.x) {
-					player->IsHit(false);
-				}
-			}
 		}
 	}
 	for (Snail* m : snail) {
@@ -320,14 +312,35 @@ void MapleIslandField::Update()
 					}
 				}	
 			}
+		}
+	}
+	for (Mushroom* m : mushroom) {
+		if (m != NULL) {
+			Vector2 collision;
 			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
-				if (m->pos.x < player->pos.x) {
-					player->IsHit(true);
+				if (m->Islive()) {
+					if (m->pos.x < player->pos.x) {
+						player->IsHit(true);
+					}
+					else if (m->pos.x > player->pos.x) {
+						player->IsHit(false);
+					}
 				}
-				else if (m->pos.x > player->pos.x) {
-					player->IsHit(false);
+			}
+		}
+	}
+	for (Snail* m : snail) {
+		if (m != NULL) {
+			Vector2 collision;
+			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
+				if (m->Islive()) {
+					if (m->pos.x < player->pos.x) {
+						player->IsHit(true);
+					}
+					else if (m->pos.x > player->pos.x) {
+						player->IsHit(false);
+					}
 				}
-				
 			}
 		}
 	}
@@ -336,6 +349,7 @@ void MapleIslandField::Update()
 		if (m != NULL) {
 			if (!m->Islive()) {
 				monster_zen_count[m->GetGroundNum()]--;
+
 			}
 		}
 	}

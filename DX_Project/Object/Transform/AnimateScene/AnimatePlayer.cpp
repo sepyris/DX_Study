@@ -656,9 +656,6 @@ void AnimatePlayer::Render()
 
 void AnimatePlayer::PostRender()
 {
-	ImGui::SliderFloat("movepos", (float*)&move_pos, -100, WIN_WIDTH);
-	ImGui::SliderFloat("movespeed", (float*)&move_speed, -100, WIN_WIDTH);
-	ImGui::SliderFloat("status", (float*)&action_status, -100, WIN_WIDTH);
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)

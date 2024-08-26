@@ -33,6 +33,7 @@ private:
 	bool is_moving_left = false;
 	float move = 0;
 	int ground_num = 0;
+	bool is_dead = false;
 
 	//타이머 설정 변수
 	float move_check = 0; // 다음움직임까지 설정을 위한 타이머

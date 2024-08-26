@@ -101,9 +101,6 @@ void Snail::ResetJumpSpeed()
 
 void Snail::Update()
 {
-	if (!loading_end) {
-		zen_count = 0;
-	}
 	if (action_status == CHAR_STATUS::HIT) {
 		if (!clips[(UINT)action_status]->isPlay()) {
 			clips[(UINT)action_status]->Play();
@@ -114,7 +111,6 @@ void Snail::Update()
 		if (zen_count < Timer::Get()->GetRunTime()) {
 			if (hit_point <= 0) {
 				hit_point = 5;
-				is_live = true;
 			}
 			zen_count = 0;
 		}
@@ -285,7 +281,7 @@ void Snail::PostRender()
 }
 void Snail::IsCreate()
 {
-	if (zen_count == 0) {
+	if (zen_count == 0 && hit_point <= 0) {
 		zen_count = Timer::Get()->GetRunTime() + 5.0f;
 	}
 	if (hit_point > 0) {

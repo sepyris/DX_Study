@@ -361,8 +361,6 @@ void MapleIslandField::Update()
 		}
 	}
 
-
-
 	for (RectCollider* g : left_col) {
 		if (g != NULL) {
 			Vector2 collision;

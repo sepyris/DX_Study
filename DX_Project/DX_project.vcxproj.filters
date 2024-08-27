@@ -144,6 +144,12 @@
     <ClInclude Include="Object\Transform\AnimateScene\Mushroom.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Transform\AnimateScene\Star.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\StarBridge.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX_Framework.cpp">
@@ -243,6 +249,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object\Transform\AnimateScene\Snail.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Transform\AnimateScene\Star.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\StarBridge.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

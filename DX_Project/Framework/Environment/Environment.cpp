@@ -168,16 +168,6 @@ void Environment::CreateRasterizerState()
 
 void Environment::Update()
 {
-	if (KEY_PRESS(VK_F3)) {
-		size_x = Vector2(WIN_WIDTH/3, (WIN_WIDTH/3)*2);
-		size_y = Vector2(WIN_HEIGHT/2, WIN_HEIGHT / 4);
-		orthographic = XMMatrixOrthographicOffCenterLH
-		(
-			size_x.x, size_x.y, // X좌표 : 0 ~ (창의 가로 크기)
-			size_y.x, size_y.y, // Y좌표 : (창의 세로 크기) ~ 0
-			-1.0f, 1.0f // Z좌표 : -1.0f ~ 1.0f(초기값)
-		);
-	}
 	if (KEY_PRESS(VK_LCONTROL) && KEY_PRESS(VK_OEM_PLUS) &&
 		size_x.x < size_x.y) {
 
@@ -210,5 +200,47 @@ void Environment::Update()
 	}
 
 	projection->Set(orthographic);
+	projection->SetVS(2);
+}
+
+void Environment::SetVerticalScreen()
+{
+	projection = new MatrixBuffer();
+
+	size_x = Vector2(0.0f, (float)WIN_HEIGHT);
+	size_y = Vector2((float)WIN_WIDTH, 0.0f);
+
+
+	orthographic = XMMatrixOrthographicOffCenterLH
+	(
+		size_x.x, size_x.y, // X좌표 : 0 ~ (창의 가로 크기)
+		size_y.x, size_y.y, // Y좌표 : (창의 세로 크기) ~ 0
+		-1.0f, 1.0f // Z좌표 : -1.0f ~ 1.0f(초기값)
+	);
+
+
+	projection->Set(orthographic);
+
+	//view->SetVS(1);
+	projection->SetVS(2);
+}
+
+void Environment::SetHorizonScreen()
+{
+	projection = new MatrixBuffer();
+	size_x = Vector2(0.0f, (float)WIN_WIDTH);
+	size_y = Vector2((float)WIN_HEIGHT, 0.0f);
+
+	orthographic = XMMatrixOrthographicOffCenterLH
+	(
+		size_x.x, size_x.y, // X좌표 : 0 ~ (창의 가로 크기)
+		size_y.x, size_y.y, // Y좌표 : (창의 세로 크기) ~ 0
+		-1.0f, 1.0f // Z좌표 : -1.0f ~ 1.0f(초기값)
+	);
+
+
+	projection->Set(orthographic);
+
+	//view->SetVS(1);
 	projection->SetVS(2);
 }

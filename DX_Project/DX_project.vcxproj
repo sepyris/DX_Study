@@ -187,6 +187,7 @@
     <ClInclude Include="Object\Transform\AnimateScene\AnimatePlayer.h" />
     <ClInclude Include="Object\Transform\AnimateScene\Mushroom.h" />
     <ClInclude Include="Object\Transform\AnimateScene\Snail.h" />
+    <ClInclude Include="Object\Transform\AnimateScene\Star.h" />
     <ClInclude Include="Object\Transform\BackGroundUV.h" />
     <ClInclude Include="Object\Transform\ImageRect.h" />
     <ClInclude Include="Object\Transform\TransformList.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Scenes\RunningWaitting.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Scenes\SceneList.h" />
+    <ClInclude Include="Scenes\StarBridge.h" />
     <ClInclude Include="Scenes\StarBridgeWaitting.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -231,6 +233,7 @@
     <ClCompile Include="Object\Transform\AnimateScene\AnimatePlayer.cpp" />
     <ClCompile Include="Object\Transform\AnimateScene\Mushroom.cpp" />
     <ClCompile Include="Object\Transform\AnimateScene\Snail.cpp" />
+    <ClCompile Include="Object\Transform\AnimateScene\Star.cpp" />
     <ClCompile Include="Object\Transform\BackGroundUV.cpp" />
     <ClCompile Include="Object\Transform\ImageRect.cpp" />
     <ClCompile Include="Framework\Math\Transform.cpp" />
@@ -238,6 +241,7 @@
     <ClCompile Include="Scenes\MapleIsland.cpp" />
     <ClCompile Include="Scenes\MapleIslandField.cpp" />
     <ClCompile Include="Scenes\RunningWaitting.cpp" />
+    <ClCompile Include="Scenes\StarBridge.cpp" />
     <ClCompile Include="Scenes\StarBridgeWaitting.cpp" />
   </ItemGroup>
   <ItemGroup>

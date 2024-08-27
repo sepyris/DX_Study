@@ -277,7 +277,7 @@ void Mushroom::Render()
 
 void Mushroom::PostRender()
 {
-	ImGui::SliderFloat("zen_count", (float*)&zen_count, 0, 30);
+	
 	
 }
 void Mushroom::IsCreate()

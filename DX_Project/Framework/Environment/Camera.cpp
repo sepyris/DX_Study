@@ -98,13 +98,8 @@ void Camera::FreeMode()//카메라를 자유로이 움직일수 있는 모드
 }
 
 void Camera::FollowMode()
-{
-
-	float test = WIN_WIDTH;
-	float test2 = SCREEN_SIZE_X;
-
-	Vector2 target_pos = target->GlobalPos() - Vector2(SCREEN_SIZE_X / 2.0f, SCREEN_SIZE_Y / 2.0f);
-	
+{	
+	Vector2 target_pos = target->GlobalPos() - Vector2(SCREEN_SIZE_X / 2.0f, SCREEN_SIZE_Y / 2.0f);	
 
 	if (target_pos.y >= -(WIN_HEIGHT - SCREEN_SIZE_Y * 2)-10.0f) {
 		target_pos.y = -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f;

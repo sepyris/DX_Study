@@ -35,12 +35,18 @@ private:
 	float move_speed;
 	float move_pos;
 
+	float moveup_speed;
+	float moveup_pos;
+
 	float hit_point;
 
 	bool is_can_double_jump;
 	bool is_jump_attack;
 	bool loading_end = false;
 	bool is_live = true;
+
+	bool is_star = false;
+	bool is_running = false;
 
 public:
 	AnimatePlayer(wstring file);
@@ -66,6 +72,23 @@ public:
 	void PostRender();
 	void LoadingEnd() { loading_end = true; }
 	void IsHit(bool is_left);
+
+	void SetNormal() {
+		is_star = false;
+		is_running = true;
+		is_can_double_jump = false;
+	}
+
+	void SetStar() { 
+		is_star = true;
+	}
+
+	void SetRunning() {
+		is_running = true;
+		is_can_double_jump = true;
+	}
+
+
 	void SetColor(Float4 color) {
 		CB->data.colour = color;
 	}

@@ -20,6 +20,9 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 	center_portal = new RectCollider(Vector2(180, 60));
 	center_portal->pos = Vector2(Vector2(WIN_CENTER_X-180, 1150));
 
+	left_portal = new RectCollider(Vector2(180, 60));
+	left_portal->pos = Vector2(Vector2(-470, 1150));
+
 	player->Update();
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
@@ -27,6 +30,7 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 		}
 	}
 	center_portal->WorldUpdate();
+	left_portal->WorldUpdate();
 }
 
 StarBridgeWaitting::~StarBridgeWaitting()
@@ -40,6 +44,7 @@ StarBridgeWaitting::~StarBridgeWaitting()
 		}
 	}
 	delete center_portal;
+	delete left_portal;
 }
 
 void StarBridgeWaitting::Update()
@@ -72,6 +77,14 @@ void StarBridgeWaitting::Update()
 			}
 		}
 	}
+	if (left_portal != NULL) {
+		if (player->GetCollider()->isCollision(left_portal)) {
+			if (KEY_DOWN(VK_UP)) {
+				program->CreateScene(5, 0);
+				return;
+			}
+		}
+	}
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -80,6 +93,7 @@ void StarBridgeWaitting::Update()
 		}
 	}
 	center_portal->WorldUpdate();
+	left_portal->WorldUpdate();
 	player->LoadingEnd();
 }
 
@@ -92,6 +106,7 @@ void StarBridgeWaitting::Render()
 		}
 	}
 	center_portal->Render();
+	left_portal->Render();
 	player->Render();
 }
 

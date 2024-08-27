@@ -103,7 +103,7 @@ void Program::Delete()
 void Program::CreateScene(UINT map_code, UINT area)
 {
 	delete scene;
-
+	Environment::Get()->SetHorizonScreen();
 	if (map_code == 1) {
 		scene = new MapleIsland(area);
 	}
@@ -115,6 +115,13 @@ void Program::CreateScene(UINT map_code, UINT area)
 	}
 	else if (map_code == 4) {
 		scene = new RunningWaitting(area);
+	}
+	else if (map_code == 5) {
+		Environment::Get()->SetVerticalScreen();
+		scene = new StarBridge();
+	}
+	else if (map_code == 6) {
+		//scene = new Running();
 	}
 	if (scene == NULL) {
 		scene = new MapleIsland(3);

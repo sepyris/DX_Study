@@ -1,15 +1,13 @@
 #pragma once
-class StarBridgeWaitting :public Scene {
+class StarBridge :public Scene {
 private:
 	BackGroundUV* bg;
-	RectCollider* ground[20];
-	RectCollider* center_portal;
-	RectCollider* left_portal;
+	Star* star[10][20];
 
 	AnimatePlayer* player;
 public:
-	StarBridgeWaitting(float area);
-	~StarBridgeWaitting();
+	StarBridge();
+	~StarBridge();
 
 	// Scene을(를) 통해 상속됨
 	virtual void Update() override;

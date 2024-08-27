@@ -32,9 +32,11 @@ private:
 public:
 	void Update();
 
+	void SetVerticalScreen();
+	void SetHorizonScreen();
+
 	Camera* GetMainCamera() { return main_camera; }
 
 	float GetScreenSizeX() { return size_x.y - size_x.x; }
 	float GetScreenSizeY() { return size_y.x - size_y.y; }
-
 };

@@ -26,6 +26,10 @@ public:
 	void Render();
 	void PostRender();
 
+	bool IsActive();
+	void SetActive();
+	bool IsComplate();
+
 	void SetColor(Float4 color) {
 		CB->data.colour = color;
 	}

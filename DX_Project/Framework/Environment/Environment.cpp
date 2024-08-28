@@ -205,6 +205,7 @@ void Environment::Update()
 
 void Environment::SetVerticalScreen()
 {
+	is_horizon_mode = false;
 	projection = new MatrixBuffer();
 
 	size_x = Vector2(0.0f, (float)WIN_HEIGHT);
@@ -227,6 +228,7 @@ void Environment::SetVerticalScreen()
 
 void Environment::SetHorizonScreen()
 {
+	is_horizon_mode = true;
 	projection = new MatrixBuffer();
 	size_x = Vector2(0.0f, (float)WIN_WIDTH);
 	size_y = Vector2((float)WIN_HEIGHT, 0.0f);

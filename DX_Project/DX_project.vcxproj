@@ -256,6 +256,7 @@
     <Image Include="Texture\Image\flame.png" />
     <Image Include="Texture\Image\map.png" />
     <Image Include="Texture\AnimateScene\Animation\sprite.png" />
+    <Image Include="Texture\Image\star_line.png" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\PixelShader\PixelShader.hlsl">

@@ -101,18 +101,35 @@ void Camera::FollowMode()
 {	
 	Vector2 target_pos = target->GlobalPos() - Vector2(SCREEN_SIZE_X / 2.0f, SCREEN_SIZE_Y / 2.0f);	
 
-	if (target_pos.y >= -(WIN_HEIGHT - SCREEN_SIZE_Y * 2)-10.0f) {
-		target_pos.y = -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f;
+	if (Environment::Get()->GetScreenMode()) {
+		if (target_pos.y >= -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f) {
+			target_pos.y = -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f;
+		}
+		if (target_pos.y <= (WIN_HEIGHT - SCREEN_SIZE_Y * 2) + 10.0f) {
+			target_pos.y = (WIN_HEIGHT - SCREEN_SIZE_Y * 2) + 10.0f;
+		}
+		if (target_pos.x >= -(WIN_WIDTH - SCREEN_SIZE_X * 2) - 10.0f) {
+			target_pos.x = -(WIN_WIDTH - SCREEN_SIZE_X * 2) - 10.0f;
+		}
+		if (target_pos.x <= (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f) {
+			target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f;
+		}
 	}
-	if (target_pos.y <= (WIN_HEIGHT - SCREEN_SIZE_Y * 2) + 10.0f) {
-		target_pos.y = (WIN_HEIGHT - SCREEN_SIZE_Y * 2) + 10.0f;
+	else {
+		if (target_pos.y >= -(WIN_WIDTH - SCREEN_SIZE_Y * 2) - 10.0f) {
+			target_pos.y = -(WIN_WIDTH - SCREEN_SIZE_Y * 2) - 10.0f;
+		}
+		if (target_pos.y <= (WIN_WIDTH - SCREEN_SIZE_Y * 2) + 10.0f) {
+			target_pos.y = (WIN_WIDTH - SCREEN_SIZE_Y * 2) + 10.0f;
+		}
+		if (target_pos.x >= -(WIN_HEIGHT - SCREEN_SIZE_X * 2) - 10.0f) {
+			target_pos.x = -(WIN_HEIGHT - SCREEN_SIZE_X * 2) - 10.0f;
+		}
+		if (target_pos.x <= (WIN_HEIGHT - SCREEN_SIZE_X * 2) + 10.0f) {
+			target_pos.x = (WIN_HEIGHT - SCREEN_SIZE_X * 2) + 10.0f;
+		}
 	}
-	if (target_pos.x >= -(WIN_WIDTH - SCREEN_SIZE_X * 2) - 10.0f) {
-		target_pos.x = -(WIN_WIDTH - SCREEN_SIZE_X * 2) - 10.0f;
-	}
-	if (target_pos.x <= (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f) {
-		target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f;
-	}
+	
 	//LERP(s,e,t)(s+(e-s)*t)
 	// 
 	pos = LERP(pos, target_pos, speed / 100.0f * DELTA);

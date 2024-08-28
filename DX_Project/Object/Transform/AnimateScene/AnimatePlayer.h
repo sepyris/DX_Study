@@ -71,6 +71,10 @@ public:
 	void Render();
 	void PostRender();
 	void LoadingEnd() { loading_end = true; }
+
+	void NormalMove();
+	void FlyMove();
+
 	void IsHit(bool is_left);
 
 	void SetNormal() {

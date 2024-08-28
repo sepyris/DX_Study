@@ -289,58 +289,66 @@ void AnimatePlayer::SetIdle()
 void AnimatePlayer::Update()
 {
 	if (is_star) {
-		SetClip(CHAR_STATUS::FLY);
-		if (KEY_PRESS(VK_UP)) {
-			moveup_pos = -10.0f;
-		}
-		if (KEY_PRESS(VK_DOWN)) {
-			moveup_pos = 10.0f;
-		}
-		if (KEY_PRESS(VK_LEFT)) {
-			is_looking_left = true;
-			move_pos = -10.0f;
-		}
-		if (KEY_PRESS(VK_RIGHT)) {
-			is_looking_left = false;
-			move_pos = 10.0f;
-		}
-		if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
-			moveup_pos = 0;
-		}
-		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
-			move_pos = 0;
-		}
-		if (loading_end) {
-			move_speed -= 9.8f * move_pos * DELTA;
-			moveup_speed -= 9.8f * moveup_pos * DELTA;
-			if (move_speed < -50.0f) {
-				move_speed = -50.0f;
-			}
-			if (move_speed > 50.0f) {
-				move_speed = 50.0f;
-			}
-			if (moveup_speed < -70.0f) {
-				moveup_speed = -70.0f;
-			}
-			if (moveup_speed > 70.0f) {
-				moveup_speed = 70.0f;
-			}
-			pos.x -= move_speed * DELTA * 5.0f;
-			pos.y -= moveup_speed * DELTA * 5.0f;
-		}
+		FlyMove();
+	}
+	else {
+		NormalMove();
+	}
+}
 
-		clips[(UINT)action_status]->Update();
-		scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
-		hit_collider->scale = Vector2(3, 3);
-		hit_collider->pos = pos + Vector2(0, 0);
-		hit_collider->WorldUpdate();
-		if (is_looking_left) {
-			scale.x *= -1;
+void AnimatePlayer::IsHit(bool is_left)
+{
+	if (action_status != CHAR_STATUS::HIT) {
+		hit_point--;
+		move_speed = 0;
+		if (is_left) {
+			move_pos =7.0f;
 		}
-		WorldUpdate();
-		return;
+		else {
+			move_pos = -7.0f;
+		}
+		jump_speed = 50.0f;
+
+		SetClip(CHAR_STATUS::HIT);
+		if (hit_point <= 0) {
+			is_live = false;
+		}
 	}
 
+}
+
+void AnimatePlayer::Render()
+{
+	VS->Set();
+	PS->Set();
+
+	WB->SetVS(0);
+	CB->SetPS(0);
+
+	clips[(UINT)action_status]->Render();
+	//테두리 비표시를 위해 각주처리
+	hit_collider->Render();
+	if (!is_star) {
+		foot_collider->Render();
+	}
+	if (attack_collider != NULL) {
+		attack_collider->Render();
+	}	
+}
+
+void AnimatePlayer::PostRender()
+{
+	ImGui::SliderFloat2("p.pos", (float*)&pos, -3000, 3000);
+
+	ImGui::SliderFloat("move_pos", (float*)&move_pos, -3000, 3000);
+	ImGui::SliderFloat("moveup_pos", (float*)&moveup_pos, -3000, 3000);
+
+	ImGui::SliderFloat("move_speed", (float*)&move_speed, -3000, 3000);
+	ImGui::SliderFloat("move_up_speed", (float*)&moveup_speed, -3000, 3000);
+}
+
+void AnimatePlayer::NormalMove()
+{
 	if (!is_live) {
 
 	}
@@ -367,7 +375,7 @@ void AnimatePlayer::Update()
 			pos.y -= jump_speed * DELTA * 5.0f;
 		}
 	}
-	
+
 	if (action_status != CHAR_STATUS::ROPE) {
 		move_speed -= 9.8f * move_pos * DELTA;
 
@@ -381,14 +389,14 @@ void AnimatePlayer::Update()
 			if (move_speed > 0.0f) {
 				move_speed -= 9.8f * DELTA * 20.0f;
 			}
-			else if(move_speed < 0.0f) {
+			else if (move_speed < 0.0f) {
 				move_speed += 9.8f * DELTA * 20.0f;
 			}
 		}
-		pos.x -= move_speed * DELTA*5.0f;
+		pos.x -= move_speed * DELTA * 5.0f;
 	}
-	
-	
+
+
 	//엎드린 상태에서 점프가 불가하므로 조건 설정
 	if (action_status != CHAR_STATUS::PRONE) {
 		//점프키를 누름
@@ -400,7 +408,7 @@ void AnimatePlayer::Update()
 				}
 			}
 			//만약 점프 상태가 아니라면
-			if (action_status != CHAR_STATUS::JUMP &&action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
+			if (action_status != CHAR_STATUS::JUMP && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 				//점프 관련 설정을 변경
 				jump_speed = 100.0f;
 				SetClip(CHAR_STATUS::JUMP);
@@ -429,14 +437,14 @@ void AnimatePlayer::Update()
 			}
 			SetClip(CHAR_STATUS::ATTACK);
 			if (attack_collider == NULL) {
-				attack_collider = new ImageRect(L"Texture/Image/attack.png",Vector2(80,100));
+				attack_collider = new ImageRect(L"Texture/Image/attack.png", Vector2(80, 100));
 			}
 		}
 	}
 	if (action_status == CHAR_STATUS::ATTACK || action_status != CHAR_STATUS::HIT) {
 		if (!clips[(UINT)CHAR_STATUS::ATTACK]->isPlay()) {
 			clips[(UINT)CHAR_STATUS::ATTACK]->Play();
-			SetClip(CHAR_STATUS::IDLE);			
+			SetClip(CHAR_STATUS::IDLE);
 			is_jump_attack = false;
 			if (attack_collider != NULL) {
 				delete attack_collider;
@@ -449,7 +457,7 @@ void AnimatePlayer::Update()
 	if (jump_speed < -10.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
-	
+
 
 	switch (action_status)
 	{
@@ -472,7 +480,7 @@ void AnimatePlayer::Update()
 		else {
 			move_pos = 0.0f;
 		}
-		
+
 
 		if (KEY_DOWN('C')) {
 			SetClip(CHAR_STATUS::JUMP);
@@ -521,7 +529,7 @@ void AnimatePlayer::Update()
 		}
 		if (KEY_PRESS(VK_LEFT)) {
 			is_looking_left = true;
-		}	
+		}
 		if (move_speed < 0) {
 			if (KEY_PRESS(VK_RIGHT)) {
 				move_pos = 20.0f;
@@ -533,7 +541,7 @@ void AnimatePlayer::Update()
 		if (KEY_PRESS(VK_RIGHT)) {
 			is_looking_left = false;
 		}
-		
+
 		break;
 	case AnimatePlayer::CHAR_STATUS::PRONE:
 		//엎드린 상태에서 좌우 이동시 이동 상태로 변경
@@ -564,7 +572,7 @@ void AnimatePlayer::Update()
 	case AnimatePlayer::CHAR_STATUS::RUN:
 		break;
 	case AnimatePlayer::CHAR_STATUS::ROPE:
-		
+
 		if (KEY_PRESS(VK_UP)) {
 			pos.y -= 300.0f * DELTA;
 			move_pos = 0.0f;
@@ -611,7 +619,7 @@ void AnimatePlayer::Update()
 			move_speed = 0;
 		}
 		break;
-	case AnimatePlayer::CHAR_STATUS::HIT: {
+	case AnimatePlayer::CHAR_STATUS::HIT:
 		if (KEY_PRESS(VK_LEFT)) {
 			if (move_speed < 0) {
 				move_speed = 0.0f;
@@ -629,13 +637,12 @@ void AnimatePlayer::Update()
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT) && action_status != CHAR_STATUS::HIT) {
 			move_pos = 0;
 		}
-	}
 		break;
 	case AnimatePlayer::CHAR_STATUS::MAX:
 		break;
 	default:
 		break;
-	}	
+	}
 	hit_collider->pos = pos + Vector2(10, 0);
 	foot_collider->pos = pos + Vector2(10, 50);
 	clips[(UINT)action_status]->Update();
@@ -645,7 +652,7 @@ void AnimatePlayer::Update()
 		if (attack_collider != NULL) {
 			attack_collider->GetCollider()->scale.x = -1;
 		}
-		
+
 		hit_collider->pos.x = pos.x - 3;
 		foot_collider->pos.x = pos.x - 3;
 	}
@@ -666,8 +673,6 @@ void AnimatePlayer::Update()
 			foot_collider->pos.y -= 3.0f;
 		}
 	}
-
-
 	WorldUpdate();
 	hit_collider->WorldUpdate();
 	foot_collider->WorldUpdate();
@@ -677,49 +682,90 @@ void AnimatePlayer::Update()
 	}
 }
 
-void AnimatePlayer::IsHit(bool is_left)
+void AnimatePlayer::FlyMove()
 {
-	if (action_status != CHAR_STATUS::HIT) {
-		hit_point--;
-		move_speed = 0;
-		if (is_left) {
-			move_pos =7.0f;
-		}
-		else {
-			move_pos = -7.0f;
-		}
-		jump_speed = 50.0f;
-
-		SetClip(CHAR_STATUS::HIT);
-		if (hit_point <= 0) {
-			is_live = false;
-		}
+	if (pos.x > 1380) {
+		pos.x -= 300.0f * DELTA;
+		move_pos = 0;
+	}
+	if (pos.x < -660) {
+		pos.x += 300.0f * DELTA;
+		move_pos = 0;
 	}
 
-}
-
-void AnimatePlayer::Render()
-{
-	VS->Set();
-	PS->Set();
-
-	WB->SetVS(0);
-	CB->SetPS(0);
-
-	clips[(UINT)action_status]->Render();
-	//테두리 비표시를 위해 각주처리
-	hit_collider->Render();
-	if (!is_star) {
-		foot_collider->Render();
+	if (pos.y > -1220) {
+		pos.y -= 500.0f * DELTA;
+		moveup_pos = 0;
 	}
-	if (attack_collider != NULL) {
-		attack_collider->Render();
-	}	
-}
+	if (pos.y < 2500) {
+		pos.y += 500.0f * DELTA;
+		moveup_pos = 0;
+	}
 
-void AnimatePlayer::PostRender()
-{
-	ImGui::SliderFloat2("p.pos", (float*)&pos, -3000, 3000);
+	SetClip(CHAR_STATUS::FLY);
+	if (KEY_PRESS(VK_UP)) {
+		moveup_pos = -10.0f;
+	}
+	if (KEY_PRESS(VK_DOWN)) {
+		moveup_pos = 10.0f;
+	}
+	if (KEY_PRESS(VK_LEFT)) {
+		is_looking_left = true;
+		move_pos = -10.0f;
+	}
+	if (KEY_PRESS(VK_RIGHT)) {
+		is_looking_left = false;
+		move_pos = 10.0f;
+	}
+	if (loading_end) {
+
+		move_speed -= (9.8f * DELTA) * move_pos;
+		moveup_speed -= (9.8f * DELTA) * moveup_pos;
+
+		if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
+			moveup_pos = 0;
+			if (moveup_speed > 0) {
+				moveup_speed -= (9.8f * DELTA)*5.0f;
+			}
+			else {
+				moveup_speed += (9.8f * DELTA) * 5.0f;
+			}
+		}
+		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
+			move_pos = 0;
+			if (move_speed < 0) {
+				move_speed += (9.8f * DELTA) * 5.0f;
+			}
+			else {
+				move_speed -= (9.8f * DELTA) * 5.0f;
+			}
+		}
+
+		if (move_speed < -50.0f) {
+			move_speed = -50.0f;
+		}
+		if (move_speed > 50.0f) {
+			move_speed = 50.0f;
+		}
+		if (moveup_speed < -70.0f) {
+			moveup_speed = -70.0f;
+		}
+		if (moveup_speed > 70.0f) {
+			moveup_speed = 70.0f;
+		}
+		pos.x -= move_speed * DELTA * 5.0f;
+		pos.y -= moveup_speed * DELTA * 5.0f;
+	}
+
+	clips[(UINT)action_status]->Update();
+	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
+	hit_collider->scale = Vector2(3, 3);
+	hit_collider->pos = pos + Vector2(0, 0);
+	hit_collider->WorldUpdate();
+	if (is_looking_left) {
+		scale.x *= -1;
+	}
+	WorldUpdate();
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)

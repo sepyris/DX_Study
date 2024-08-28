@@ -15,6 +15,7 @@ private:
 	MatrixBuffer* projection;
 	Matrix orthographic;
 	Vector2 size_x, size_y;
+	bool is_horizon_mode = true;
 
 	ID3D11SamplerState* samplerstate;
 	ID3D11BlendState* blendstate;
@@ -39,4 +40,6 @@ public:
 
 	float GetScreenSizeX() { return size_x.y - size_x.x; }
 	float GetScreenSizeY() { return size_y.x - size_y.y; }
+
+	bool GetScreenMode() { return is_horizon_mode; }
 };

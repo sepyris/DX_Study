@@ -14,15 +14,15 @@ Star::Star(wstring file)
 	//대기 상태 끝
 	
 	//누른상태 CHAR_STATUS::SET
-	init_pos = { 8,37 };
-	this_frame_size = { 33,32 };
+	init_pos = { 11,38 };
+	this_frame_size = { 32,32 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
 	frames.clear();
 	//누른 상태 끝
 	
 	//완료 CHAR_STATUS::COMP
-	init_pos = { 10,74 };
+	init_pos = { 11,74 };
 	this_frame_size = { 32,32 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 1.0f / 3.0f));
@@ -34,12 +34,13 @@ Star::Star(wstring file)
 
 	CB = new ColourBuffer();
 
-	collider = new RectCollider(Vector2(50, 50));
+	collider = new RectCollider(Vector2(50, 100));
+	
 
 
 	clip_cursor = 0;
 	action_status = CHAR_STATUS::IDLE;
-	this->scale.x = 2;
+	//this->scale.y = 0.5f;
 }
 
 Star::~Star()
@@ -55,7 +56,7 @@ Star::~Star()
 
 void Star::Update()
 {
-
+	collider->pos = pos;
 	WorldUpdate();
 	collider->WorldUpdate();
 	
@@ -75,6 +76,28 @@ void Star::Render()
 void Star::PostRender()
 {
 	
+}
+bool Star::IsActive()
+{
+	if (action_status == CHAR_STATUS::SET) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
+}
+void Star::SetActive()
+{
+	if (action_status == CHAR_STATUS::IDLE || action_status == CHAR_STATUS::COMP) {
+		if (KEY_DOWN(VK_SPACE)) {
+			SetClip(CHAR_STATUS::SET);
+		}
+	}
+}
+bool Star::IsComplate()
+{
+	return false;
 }
 void Star::SetClip(CHAR_STATUS stat)
 {

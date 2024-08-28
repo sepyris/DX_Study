@@ -2,7 +2,8 @@
 class StarBridge :public Scene {
 private:
 	BackGroundUV* bg;
-	Star* star[10][20];
+	Star* star[10][12];
+	ImageRect* star_line;
 
 	AnimatePlayer* player;
 public:

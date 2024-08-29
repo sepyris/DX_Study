@@ -7,10 +7,10 @@ StarBridge::StarBridge()
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	player->SetStar();
 	player->pos = Vector2(0, 0);
-	CAM->pos = Vector2(-500, -500);
+	CAM->pos = Vector2(-360, -640);
 	player->Update();
 
-	float init_x_pos = -520;
+	float init_x_pos = -540;
 	float init_y_pos = -1000;
 	float x_pos = 0;
 	float y_pos = 0;
@@ -22,7 +22,11 @@ StarBridge::StarBridge()
 			star[i][j]->pos = Vector2(x_pos, y_pos);
 		}
 	}
-	star_line = new ImageRect(L"Texture/Image/starline.png");
+	for (int i = 0; i < 20; i++) {
+		star_line[i] = new StarLine(L"Texture/Image/starline.png");
+		star_line[i]->GetCollider()->scale.y = 0.5f;
+	}
+	
 
 }
 
@@ -44,16 +48,13 @@ void StarBridge::Update()
 					tmp->SetActive();
 				}
 				if (tmp->IsActive()) {
-					if (star_line != NULL) {
-
-						star_line->pos = (player->pos + tmp->pos)/2;
-						star_line->rot.z = (tmp->pos - player->pos).Normalized().Angle();
-						star_line->GetCollider()->pos = (player->pos + tmp->pos)/2;
-						star_line->GetCollider()->rot.z = (tmp->pos - player->pos).Normalized().Angle();
-						star_line->Update();
-						star_line->GetCollider()->WorldUpdate();
-
-					}
+					star_line[0]->GetCollider()->pos = (player->pos + tmp->pos) / 2;
+					star_line[0]->GetCollider()->rot.z = (tmp->pos - player->pos).Normalized().Angle();
+					star_line[0]->SetSize((tmp->pos - player->pos).GetLength());
+					star_line[0]->Update();
+					star_line[0]->GetCollider()->WorldUpdate();
+					
+					//star_line[0]->SetLine();
 				}
 			}
 		}
@@ -80,10 +81,13 @@ void StarBridge::Render()
 			Star* tmp = star[i][j];
 			if (tmp != NULL) {
 				if (tmp->IsActive()) {
+					star_line[0]->Render();
+					star_line[0]->GetCollider()->Render();
+					/*
 					if (star_line != NULL) {
-						star_line->Render();
-						star_line->GetCollider()->Render();
+						
 					}
+					*/
 				}
 				tmp->Render();
 				
@@ -95,17 +99,7 @@ void StarBridge::Render()
 
 void StarBridge::PostRender()
 {
-	ImGui::SliderFloat2("star_line.pos", (float*)&star_line->pos, -3000, 3000);
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 12; j++) {
-			Star* tmp = star[i][j];
-			if (tmp != NULL) {
-				if (tmp->IsActive()) {
-					ImGui::SliderFloat2("tmp", (float*)&tmp->pos, -3000, 3000);
-				}
-			}
-		}
-	}
-
+	ImGui::SliderFloat2("star_line.pos", (float*)&star_line[0]->pos, -3000, 3000);
+	ImGui::SliderFloat2("star_line.scale", (float*)&star_line[0]->scale, -3000, 3000);
 	player->PostRender();
 }

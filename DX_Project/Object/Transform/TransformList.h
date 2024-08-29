@@ -5,3 +5,4 @@
 #include"AnimateScene/Snail.h"
 #include"AnimateScene/Mushroom.h"
 #include"AnimateScene/Star.h"
+#include "StarLine.h"

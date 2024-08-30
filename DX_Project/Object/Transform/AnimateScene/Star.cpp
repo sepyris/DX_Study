@@ -34,13 +34,13 @@ Star::Star(wstring file)
 
 	CB = new ColourBuffer();
 
-	collider = new RectCollider(Vector2(50, 100));
+	collider = new RectCollider(Vector2(100, 100));
 	
 
 
 	clip_cursor = 0;
 	action_status = CHAR_STATUS::IDLE;
-	//this->scale.y = 0.5f;
+	this->scale.y = 0.5f;
 }
 
 Star::~Star()

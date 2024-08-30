@@ -208,9 +208,8 @@ void Environment::SetVerticalScreen()
 	is_horizon_mode = false;
 	projection = new MatrixBuffer();
 
-	size_x = Vector2(0.0f, (float)WIN_HEIGHT);
-	size_y = Vector2((float)WIN_WIDTH, 0.0f);
-
+	size_x = Vector2(0.0f, (float)WIN_WIDTH*2);
+	size_y = Vector2((float)WIN_HEIGHT*2, 0.0f);
 
 	orthographic = XMMatrixOrthographicOffCenterLH
 	(

@@ -220,20 +220,22 @@ bool RectCollider::isOBB(RectCollider* rect)
 존재하지 않는다면 충돌한 것이라고 판단하는 충돌 검사 알고리즘
 */
 {
+	
 	ObbDesc this_obb = GetObbDesc();
 	ObbDesc rect_obb = rect->GetObbDesc();
 
 	Vector2 nea1 = this_obb.Axis[0];
 	Vector2 nea2 = this_obb.Axis[1];
-	Vector2 ea1 = nea1 * this_obb.half_size;
-	Vector2 ea2 = nea2 * this_obb.half_size;
+	Vector2 ea1 = nea1 * this_obb.half_size.x;
+	Vector2 ea2 = nea2 * this_obb.half_size.y;
 
 	Vector2 neb1 = rect_obb.Axis[0];
 	Vector2 neb2 = rect_obb.Axis[1];
-	Vector2 eb1 = neb1 * rect_obb.half_size;
-	Vector2 eb2 = neb2 * rect_obb.half_size;
-
+	Vector2 eb1 = neb1 * rect_obb.half_size.x;
+	Vector2 eb2 = neb2 * rect_obb.half_size.y;
 	Vector2 distance = this_obb.pos - rect_obb.pos;
+
+	//테스트축:nea1(A.RIGHT())
 	float lengthA = ea1.GetLength();
 	float lengthB = separateAxis(nea1, eb1, eb2);
 	float length = abs(Vector2::Dot(distance, nea1));

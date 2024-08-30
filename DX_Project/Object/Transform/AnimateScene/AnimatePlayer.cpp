@@ -345,6 +345,8 @@ void AnimatePlayer::PostRender()
 
 	ImGui::SliderFloat("move_speed", (float*)&move_speed, -3000, 3000);
 	ImGui::SliderFloat("move_up_speed", (float*)&moveup_speed, -3000, 3000);
+	ImGui::SliderFloat("jump_speed", (float*)&jump_speed, -3000, 3000);
+	
 }
 
 void AnimatePlayer::NormalMove()
@@ -454,7 +456,7 @@ void AnimatePlayer::NormalMove()
 	}
 
 	//걸으면서 단차로 이동시 점프 상태로 변경
-	if (jump_speed < -10.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
+	if (jump_speed < -50.0f && action_status != CHAR_STATUS::ROPE && action_status != CHAR_STATUS::ATTACK && action_status != CHAR_STATUS::HIT) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
 
@@ -684,24 +686,28 @@ void AnimatePlayer::NormalMove()
 
 void AnimatePlayer::FlyMove()
 {
-	if (pos.x > 1380) {
-		pos.x -= 300.0f * DELTA;
+	if (pos.x > 2800) {
+		pos.x -= 500.0f * DELTA;
 		move_pos = 0;
+		move_speed = 0;
 	}
-	if (pos.x < -660) {
-		pos.x += 300.0f * DELTA;
+	if (pos.x < -1100) {
+		pos.x += 500.0f * DELTA;
 		move_pos = 0;
+		move_speed = 0;
 	}
 
-	if (pos.y > -1220) {
-		pos.y -= 500.0f * DELTA;
-		moveup_pos = 0;
-	}
-	if (pos.y < 2500) {
+	if (pos.y < -1400) {
 		pos.y += 500.0f * DELTA;
 		moveup_pos = 0;
+		moveup_speed = 0;
 	}
-
+	if (pos.y > 2850) {
+		pos.y -= 500.0f * DELTA;
+		moveup_pos = 0;
+		moveup_speed = 0;
+	}
+	
 	SetClip(CHAR_STATUS::FLY);
 	if (KEY_PRESS(VK_UP)) {
 		moveup_pos = -10.0f;
@@ -741,17 +747,17 @@ void AnimatePlayer::FlyMove()
 			}
 		}
 
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
+		if (move_speed < -100.0f) {
+			move_speed = -100.0f;
 		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
+		if (move_speed > 100.0f) {
+			move_speed = 100.0f;
 		}
-		if (moveup_speed < -70.0f) {
-			moveup_speed = -70.0f;
+		if (moveup_speed < -100.0f) {
+			moveup_speed = -100.0f;
 		}
-		if (moveup_speed > 70.0f) {
-			moveup_speed = 70.0f;
+		if (moveup_speed > 100.0f) {
+			moveup_speed = 100.0f;
 		}
 		pos.x -= move_speed * DELTA * 5.0f;
 		pos.y -= moveup_speed * DELTA * 5.0f;

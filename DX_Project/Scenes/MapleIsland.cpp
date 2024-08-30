@@ -34,7 +34,7 @@ MapleIsland::MapleIsland(float area)
 	ground[8]->pos = Vector2(Vector2(-1012,725));
 	ground[9]->pos = Vector2(Vector2(-390,650));
 
-	hill_ground[0] = new RectCollider(Vector2(770, 1));
+	hill_ground[0] = new RectCollider(Vector2(770, 3));
 	hill_ground[0]->pos = Vector2(Vector2(850, 820));
 	hill_ground[0]->rot.z = 0.46f;
 
@@ -164,7 +164,7 @@ void MapleIsland::Update()
 	for (RectCollider* g : hill_ground) {
 		if (g != NULL) {
 			if (player->GetCollider()->isCollision(g)) {
-				player->pos.y -= DELTA * 100.0f;
+				player->pos.y -= DELTA * 300.0f;
 				player->landing();
 			}
 		}

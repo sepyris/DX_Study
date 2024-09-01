@@ -230,6 +230,10 @@ void StarBridge::Update()
 
 
 	for (int i = 0; i < 10; i++) {
+		//현재 라인 상태 표시
+		//눌렀을때
+		
+
 		//스테이지 라인 생성
 		int star1_x = stage_star_line[i]->GetStarOne().x;
 		int star1_y = stage_star_line[i]->GetStarOne().y;
@@ -245,8 +249,6 @@ void StarBridge::Update()
 		stage_star_line[i]->Update();
 		stage_star_line[i]->GetCollider()->WorldUpdate();
 
-		//현재 라인 상태 표시
-		//눌렀을때
 		if (star_line[i]->GetLineStatus() == StarLine::LINE_STATUS::SETTING) {
 			int star1_x = star_line[i]->GetStarOne().x;
 			int star1_y = star_line[i]->GetStarOne().y;
@@ -262,8 +264,8 @@ void StarBridge::Update()
 			int star1_x = star_line[i]->GetStarOne().x;
 			int star1_y = star_line[i]->GetStarOne().y;
 			Vector2 star1_pos = star[star1_x][star1_y]->pos;
-			int star2_x = stage_star_line[i]->GetStarTwo().x;
-			int star2_y = stage_star_line[i]->GetStarTwo().y;
+			int star2_x = star_line[i]->GetStarTwo().x;
+			int star2_y = star_line[i]->GetStarTwo().y;
 			Vector2 star2_pos = star[star2_x][star2_y]->pos;
 
 			star_line[i]->GetCollider()->pos = (star1_pos + star2_pos) / 2;
@@ -293,15 +295,17 @@ void StarBridge::Render()
 	for (int i = 0; i < 10; i++) {
 		//미니맵생성전까지 렌더링
 		stage_star_line[i]->Render();
-		stage_star_line[i]->GetCollider()->Render();
-
-		//라인이 표시되면 렌더링
+		stage_star_line[i]->GetCollider()->Render();	
+	}
+	//라인이 표시되면 렌더링
+	for (int i = 0; i < 10; i++) {
 		if (star_line[i]->GetLineStatus() != StarLine::LINE_STATUS::NONE) {
 			star_line[i]->Render();
 			star_line[i]->GetCollider()->Render();
 		}
-		
 	}
+	
+
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 12; j++) {
 			Star* tmp = star[i][j];

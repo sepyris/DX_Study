@@ -34,7 +34,7 @@ Star::Star(wstring file)
 
 	CB = new ColourBuffer();
 
-	collider = new RectCollider(Vector2(100, 100));
+	collider = new RectCollider(Vector2(130, 130));
 	
 
 
@@ -90,14 +90,25 @@ bool Star::IsActive()
 void Star::SetActive()
 {
 	if (action_status == CHAR_STATUS::IDLE || action_status == CHAR_STATUS::COMP) {
-		if (KEY_DOWN(VK_SPACE)) {
-			SetClip(CHAR_STATUS::SET);
-		}
+		tmp_status = action_status;
+		SetClip(CHAR_STATUS::SET);
 	}
+}
+void Star::SetComp()
+{
+	SetClip(CHAR_STATUS::COMP);
+}
+void Star::SetNone()
+{
+	SetClip(CHAR_STATUS::IDLE);
 }
 bool Star::IsComplate()
 {
 	return false;
+}
+void Star::ResetStatus()
+{
+	SetClip(tmp_status);
 }
 void Star::SetClip(CHAR_STATUS stat)
 {

@@ -7,13 +7,17 @@ private:
 	};
 
 	BackGroundUV* bg;
-	Star* star[10][12];
-	StarLine* star_line[20];
-
 	AnimatePlayer* player;
 
-	//stagecount_starcount
-	S_STAGE stage[10][10];
+	Star* star[10][12];
+	StarLine* star_line[20];
+	S_STAGE select_star;
+	
+	//starcount
+	S_STAGE stage_star[10];
+	StarLine* stage_star_line[20];
+	int active_star_count = 0;
+	//RectCollider* exit_button;
 	
 public:
 	StarBridge();
@@ -21,10 +25,10 @@ public:
 
 	void CreateStage();
 
+	void ResetStage();
+
 	// Scene을(를) 통해 상속됨
 	virtual void Update() override;
 	virtual void Render() override;
 	virtual void PostRender() override;
-
-
 };

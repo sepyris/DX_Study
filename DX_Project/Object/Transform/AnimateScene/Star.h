@@ -8,7 +8,7 @@ private:
 		COMP,
 		MAX = 3
 	}action_status;
-
+	CHAR_STATUS tmp_status;
 	VertexShader* VS;
 	PixelShader* PS;
 	ColourBuffer* CB;
@@ -28,7 +28,10 @@ public:
 
 	bool IsActive();
 	void SetActive();
+	void SetComp();
+	void SetNone();
 	bool IsComplate();
+	void ResetStatus();
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

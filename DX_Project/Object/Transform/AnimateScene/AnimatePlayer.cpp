@@ -225,7 +225,7 @@ void AnimatePlayer::landing()
 		// 벽을 긁으면서 점프할 경우 충돌하는 영역이 가로가 세로보다 커지는 상황은
 		// 분명히 발생할수 있음
 		//땅에 착지시에 점프 상태를 변경
-		jump_speed = 0;
+		jump_speed = -35;
 		pos.y += jump_speed * DELTA * 5.0f;
 		is_jump_attack = false;
 		if (action_status == CHAR_STATUS::ROPE && action_status != CHAR_STATUS::HIT) {
@@ -557,12 +557,6 @@ void AnimatePlayer::NormalMove()
 			SetClip(CHAR_STATUS::WALK);
 			is_looking_left = false;
 		}
-		if (KEY_PRESS(VK_DOWN)) {
-			foot_collider->pos.y += 5.0f;
-		}
-		else {
-			foot_collider->pos.y = pos.y;
-		}
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			move_pos = 0;
 		}
@@ -664,15 +658,15 @@ void AnimatePlayer::NormalMove()
 	}
 	if (action_status == AnimatePlayer::CHAR_STATUS::IDLE) {
 		if (KEY_PRESS(VK_UP)) {
-			foot_collider->pos.y += 1.0f;
+			foot_collider->pos.y -= 1.0f;
 		}
 		if (KEY_PRESS(VK_DOWN)) {
-			foot_collider->pos.y -= 3.0f;
+			foot_collider->pos.y += 5.0f;
 		}
 	}
 	if (action_status == AnimatePlayer::CHAR_STATUS::PRONE) {
 		if (KEY_PRESS(VK_DOWN)) {
-			foot_collider->pos.y -= 3.0f;
+			foot_collider->pos.y += 5.0f;
 		}
 	}
 	WorldUpdate();
@@ -686,6 +680,17 @@ void AnimatePlayer::NormalMove()
 
 void AnimatePlayer::FlyMove()
 {
+	if (star_fail != 0) {
+		if (star_fail < Timer::Get()->GetRunTime()) {
+			star_fail = 0;
+			move_pos = 0;
+			move_speed = 0;
+			moveup_pos = 0;
+			moveup_speed = 0;
+		}
+		return;
+	}
+
 	if (pos.x > 2800) {
 		pos.x -= 500.0f * DELTA;
 		move_pos = 0;
@@ -772,6 +777,13 @@ void AnimatePlayer::FlyMove()
 		scale.x *= -1;
 	}
 	WorldUpdate();
+}
+
+void AnimatePlayer::StarFail()
+{
+	if (star_fail == 0) {
+		star_fail = Timer::Get()->GetRunTime() + 2.0f;
+	}
 }
 
 void AnimatePlayer::SetClip(CHAR_STATUS stat)

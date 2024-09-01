@@ -37,7 +37,7 @@ RunningWaitting::RunningWaitting(float area)
 	ground[5]->pos = Vector2(Vector2(165, 590));
 	ground[6]->pos = Vector2(Vector2(525, 730));
 	ground[7]->pos = Vector2(Vector2(605, 810));
-	ground[8]->pos = Vector2(Vector2(860, 1138));
+	ground[8]->pos = Vector2(Vector2(870, 1138));
 	ground[9]->pos = Vector2(Vector2(1175, 1082));
 	ground[10]->pos = Vector2(Vector2(1250, 1027));
 	ground[11]->pos = Vector2(Vector2(1325, 972));
@@ -45,6 +45,10 @@ RunningWaitting::RunningWaitting(float area)
 	ground[13]->pos = Vector2(Vector2(1470, 862));
 	ground[14]->pos = Vector2(Vector2(1540, 807));
 	ground[15]->pos = Vector2(Vector2(2056, 752));
+
+	hill_ground[0] = new RectCollider(Vector2(200, 3));
+	hill_ground[0]->pos = Vector2(Vector2(490, 1200));
+	hill_ground[0]->rot.z = -0.65f;
 	
 	left_col[0] = new RectCollider(Vector2(30, 55));
 	left_col[1] = new RectCollider(Vector2(30, 55));
@@ -183,7 +187,7 @@ void RunningWaitting::Update()
 	for (RectCollider* g : hill_ground) {
 		if (g != NULL) {
 			if (player->GetCollider()->isCollision(g)) {
-				player->pos.y -= DELTA * 100.0f;
+				player->pos.y -= DELTA * 300.0f;
 				player->landing();
 			}
 		}

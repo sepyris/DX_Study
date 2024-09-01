@@ -102,7 +102,7 @@ void Device::Clear()
 // 화면을 초기화하는 함수
 {
     //float clear_color[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-    float clear_color[4] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
     device_context->ClearRenderTargetView(render_target_view, clear_color);
     // 배경색을 지정한 후, 그 값을 이용해 화면 전체를 채우는 식으로 화면 초기화
 }

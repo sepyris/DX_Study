@@ -48,6 +48,9 @@ private:
 	bool is_star = false;
 	bool is_running = false;
 
+	//타이머 설정 변수
+	float star_fail = 0; // 다음움직임까지 설정을 위한 타이머
+
 public:
 	AnimatePlayer(wstring file);
 	~AnimatePlayer();
@@ -74,6 +77,17 @@ public:
 
 	void NormalMove();
 	void FlyMove();
+
+	void StarFail();
+	bool IsStarFail() {
+		if (star_fail == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
 
 	void IsHit(bool is_left);
 

@@ -736,19 +736,19 @@ void AnimatePlayer::FlyMove()
 		if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
 			moveup_pos = 0;
 			if (moveup_speed > 0) {
-				moveup_speed -= (9.8f * DELTA)*5.0f;
+				moveup_speed -= (9.8f * DELTA)*10.0f;
 			}
 			else {
-				moveup_speed += (9.8f * DELTA) * 5.0f;
+				moveup_speed += (9.8f * DELTA) * 10.0f;
 			}
 		}
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			move_pos = 0;
 			if (move_speed < 0) {
-				move_speed += (9.8f * DELTA) * 5.0f;
+				move_speed += (9.8f * DELTA) * 10.0f;
 			}
 			else {
-				move_speed -= (9.8f * DELTA) * 5.0f;
+				move_speed -= (9.8f * DELTA) * 10.0f;
 			}
 		}
 

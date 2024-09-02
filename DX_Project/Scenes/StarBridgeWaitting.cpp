@@ -6,9 +6,13 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	CAM->SetTarget(player);
-	if (area == 2) {
+	if (area == 1) {
+		player->pos = Vector2(-470, 1000);
+		CAM->pos = Vector2(-1100, 700);
+	}
+	else if (area == 2) {
 		player->pos = Vector2(WIN_CENTER_X-180, 1000);
-		CAM->pos = Vector2(-200, 600);
+		CAM->pos = Vector2(-200, 700);
 	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);

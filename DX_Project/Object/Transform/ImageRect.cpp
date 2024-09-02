@@ -17,7 +17,7 @@ ImageRect::ImageRect(wstring file_loc,Vector2 p, Vector2 s, float a, Vector2 siz
 	// 이걸통해 셰이더에 사진데이터를 보냄
 	//이 srv부분을 통해 PixelShaderUV.hlsl에서 다루는 samp와 map등에 데이터를 보냄
 
-	collider = new RectCollider(p);
+	collider = new RectCollider(size);
 	
 }
 

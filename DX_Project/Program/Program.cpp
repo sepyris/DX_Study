@@ -127,5 +127,4 @@ void Program::CreateScene(UINT map_code, UINT area)
 	if (scene == NULL) {
 		scene = new MapleIsland(3);
 	}
-	
 }

@@ -9,8 +9,8 @@ StarBridge::StarBridge()
 	player->pos = Vector2(880, 700);
 	CAM->pos = Vector2(-400, -20);
 	player->Update();
-	//exit_button = new RectCollider(Vector2(200, 100));
-	
+	exit_button = new ImageRect(L"Texture/Image/exit_button.png",Vector2(0, 0),Vector2(1,1),0.0f,Vector2(200,100));
+	mouse_object = new RectCollider(Vector2(10, 10));
 
 	float init_x_pos = -540;
 	float init_y_pos = -1000;
@@ -97,12 +97,6 @@ void StarBridge::CreateStage()
 			stage_star[i].star1 = stage_star[i - 1].star2;
 			stage_star[i].star2 = Vector2(star2_x, star2_y);
 		}
-		/*
-		int x_pos = stage_star[i].star1.x;
-		int y_pos = stage_star[i].star1.y;
-		Star* tmp = star[x_pos][y_pos];
-		tmp->SetComp();
-		*/
 		stage_star_line[i]->SetStarOne(stage_star[i].star1);
 		stage_star_line[i]->SetStarTwo(stage_star[i].star2);
 	}
@@ -126,18 +120,18 @@ void StarBridge::ResetStage()
 
 void StarBridge::Update()
 {
-	/*
-	exit_button->pos = player->pos + Vector2(800, 620);
-	if (exit_button->pos.x > SCREEN_SIZE_X+200) {
-		exit_button->pos.x = SCREEN_SIZE_X+200;
-	}
-	if (exit_button->pos.y > SCREEN_SIZE_Y*2 - 100) {
-		exit_button->pos.y = SCREEN_SIZE_Y*2 - 100;
-	}
-	*/
+	exit_button->GetCollider()->pos = CAM->GlobalPos() + Vector2(2300, 1300);
+
 	CAM->SetTarget(player);
 	bg->WorldUpdate();
-	
+	mouse_object->pos = CAM->GlobalPos()+(mouse_pos*2);
+	Vector2 collision;
+	if (mouse_object->isCollision(exit_button->GetCollider(),&collision)) {
+		if (KEY_DOWN(VK_LBUTTON)) {
+			program->CreateScene(3, 1);
+			return;
+		}
+	}
 	
 	//라인을 먼저 생성
 	StarLine* check_line = NULL;
@@ -230,10 +224,6 @@ void StarBridge::Update()
 
 
 	for (int i = 0; i < 10; i++) {
-		//현재 라인 상태 표시
-		//눌렀을때
-		
-
 		//스테이지 라인 생성
 		int star1_x = stage_star_line[i]->GetStarOne().x;
 		int star1_y = stage_star_line[i]->GetStarOne().y;
@@ -249,6 +239,8 @@ void StarBridge::Update()
 		stage_star_line[i]->Update();
 		stage_star_line[i]->GetCollider()->WorldUpdate();
 
+		//현재 라인 상태 표시
+		//눌렀을때
 		if (star_line[i]->GetLineStatus() == StarLine::LINE_STATUS::SETTING) {
 			int star1_x = star_line[i]->GetStarOne().x;
 			int star1_y = star_line[i]->GetStarOne().y;
@@ -285,7 +277,8 @@ void StarBridge::Update()
 	
 
 	player->Update();
-	//exit_button->WorldUpdate();
+	exit_button->Update();
+	mouse_object->WorldUpdate();
 	player->LoadingEnd();
 }
 
@@ -304,7 +297,6 @@ void StarBridge::Render()
 			star_line[i]->GetCollider()->Render();
 		}
 	}
-	
 
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 12; j++) {
@@ -315,8 +307,8 @@ void StarBridge::Render()
 		}
 	}
 	player->Render();
-
-	//exit_button->Render();
+	exit_button->Render();
+	mouse_object->Render();
 }
 
 void StarBridge::PostRender()
@@ -325,6 +317,9 @@ void StarBridge::PostRender()
 		ImGui::SliderFloat2("stage[0].star1", (float*)&stage_star[i].star1, -3000, 3000);
 		ImGui::SliderFloat2("stage[0].star2", (float*)&stage_star[i].star2, -3000, 3000);
 	}
+	ImGui::SliderFloat2("mouse", (float*)&mouse_object->pos, -3000, 3000);
+	ImGui::SliderFloat2("exit", (float*)&exit_button->GetCollider()->pos, -3000, 3000);
+	
 	
 	player->PostRender();
 }

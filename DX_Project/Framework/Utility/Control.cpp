@@ -20,6 +20,7 @@ void Control::Update()
 	// -> 업데이트를 하는 시점에 cur_state의 값을 old_state로 넘기기
 
 	GetKeyboardState(cur_state);
+
 	// BYTE[255] 배열에 현 시점의 키보드 중 어느 키가 눌렸는지에 대한 정보를
 	// 전부 기록하는 함수
 	// 이를 통해 키보드의 각 키(+마우스의 키)가 현재 눌려있는지의 여부를 저장
@@ -77,3 +78,4 @@ void Control::Update()
 		}
 	}
 }
+

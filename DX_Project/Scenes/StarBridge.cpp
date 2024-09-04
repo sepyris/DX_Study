@@ -3,6 +3,7 @@
 StarBridge::StarBridge()
 {
 	bg = new BackGroundUV(L"Texture/Image/starbridge.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_Y, WIN_CENTER_X), Vector2(3,3), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y+200));
+	mini_map = new MiniMap(L"Texture/Image/minimap.png");
 	Vector2 test = Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	player->SetStar();
@@ -100,6 +101,7 @@ void StarBridge::CreateStage()
 		stage_star_line[i]->SetStarOne(stage_star[i].star1);
 		stage_star_line[i]->SetStarTwo(stage_star[i].star2);
 	}
+	mini_map->SetStar(stage_star);
 }
 
 void StarBridge::ResetStage()
@@ -121,9 +123,10 @@ void StarBridge::ResetStage()
 void StarBridge::Update()
 {
 	exit_button->GetCollider()->pos = CAM->GlobalPos() + Vector2(2300, 1300);
-
+	mini_map->pos = CAM->GlobalPos() + Vector2(2350, 250);
 	CAM->SetTarget(player);
 	bg->WorldUpdate();
+	mini_map->Update();
 	mouse_object->pos = CAM->GlobalPos()+(mouse_pos*2);
 	Vector2 collision;
 	if (mouse_object->isCollision(exit_button->GetCollider(),&collision)) {
@@ -202,6 +205,9 @@ void StarBridge::Update()
 				if (check_line->CheckLineComp(Vector2(star1_x, star1_y), Vector2(star2_x, star2_y))) {
 					star[star1_x][star1_y]->SetComp();
 					star[star2_x][star2_y]->SetComp();
+					S_STAGE minimap_star;
+					minimap_star.SetStar(star1_x, star1_y, star2_x, star2_y);
+					mini_map->SetCompStar(minimap_star);
 					comp_line = true;
 					break;
 				}
@@ -285,6 +291,7 @@ void StarBridge::Update()
 void StarBridge::Render()
 {
 	bg->Render();
+	
 	for (int i = 0; i < 10; i++) {
 		//미니맵생성전까지 렌더링
 		stage_star_line[i]->Render();
@@ -309,6 +316,7 @@ void StarBridge::Render()
 	player->Render();
 	exit_button->Render();
 	mouse_object->Render();
+	mini_map->Render();
 }
 
 void StarBridge::PostRender()

@@ -19,6 +19,7 @@ public:
 		D3D11_PRIMITIVE_TOPOLOGY t = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	~ImageRect();
 
+	void ChangeImage(wstring file_loc);
 	void Update();
 	void Render();
 

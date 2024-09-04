@@ -5,4 +5,6 @@
 #include"AnimateScene/Snail.h"
 #include"AnimateScene/Mushroom.h"
 #include"AnimateScene/Star.h"
+#include "S_STAGE.h"
 #include "StarLine.h"
+#include "MiniMap.h"

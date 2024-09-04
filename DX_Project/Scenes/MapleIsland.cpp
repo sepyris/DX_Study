@@ -5,6 +5,7 @@ MapleIsland::MapleIsland(float area)
 	bg = new BackGroundUV(L"Texture/Image/mapleisland.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y),Vector2(3,3),0.0f,Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
+
 	CAM->SetTarget(player);
 	if (area == 3) {
 		player->pos = Vector2(2145, 850);
@@ -61,7 +62,7 @@ MapleIsland::MapleIsland(float area)
 	player->Update();
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
-			g->WorldUpdate();
+			g->WorldUpdate();			
 		}
 	}
 	for (RectCollider* g : left_col) {

@@ -190,7 +190,9 @@
     <ClInclude Include="Object\Transform\AnimateScene\Star.h" />
     <ClInclude Include="Object\Transform\BackGroundUV.h" />
     <ClInclude Include="Object\Transform\ImageRect.h" />
+    <ClInclude Include="Object\Transform\MiniMap.h" />
     <ClInclude Include="Object\Transform\StarLine.h" />
+    <ClInclude Include="Object\Transform\S_STAGE.h" />
     <ClInclude Include="Object\Transform\TransformList.h" />
     <ClInclude Include="Program\Program.h" />
     <ClInclude Include="Resource.h" />
@@ -238,6 +240,7 @@
     <ClCompile Include="Object\Transform\BackGroundUV.cpp" />
     <ClCompile Include="Object\Transform\ImageRect.cpp" />
     <ClCompile Include="Framework\Math\Transform.cpp" />
+    <ClCompile Include="Object\Transform\MiniMap.cpp" />
     <ClCompile Include="Object\Transform\StarLine.cpp" />
     <ClCompile Include="Program\Program.cpp" />
     <ClCompile Include="Scenes\MapleIsland.cpp" />

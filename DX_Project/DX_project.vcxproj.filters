@@ -153,6 +153,12 @@
     <ClInclude Include="Object\Transform\StarLine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Transform\MiniMap.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Transform\S_STAGE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX_Framework.cpp">
@@ -261,6 +267,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object\Transform\StarLine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Transform\MiniMap.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -30,6 +30,17 @@ ImageRect::~ImageRect()
 	delete collider;
 }
 
+void ImageRect::ChangeImage(wstring file_loc)
+{
+	ScratchImage img;
+	LoadFromWICFile(wstring(file_loc).c_str(),
+		WIC_FLAGS_NONE, nullptr, img);
+	//실존하는 파일을 불러와서 img에 저장하는 함수
+	//제대로 실행 됬으면 img의 값이 변경됨
+
+	CreateShaderResourceView(DEVICE, img.GetImages(), img.GetImageCount(), img.GetMetadata(), &srv);
+}
+
 void ImageRect::Update()
 {
 	collider->WorldUpdate();

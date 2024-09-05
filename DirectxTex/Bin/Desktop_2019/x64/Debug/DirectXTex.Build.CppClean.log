@@ -23,6 +23,8 @@ d:\project\dx_study\directxtex\bin\desktop_2019\x64\debug\bc.obj
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.pch
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.pdb
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexutil.obj
+c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexwic.obj
+c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtextga.obj
 d:\project\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.lib
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\bc.obj
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\bc4bc5.obj
@@ -40,8 +42,6 @@ c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexmisc.obj
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexnormalmaps.obj
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexpmalpha.obj
-c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtexresize.obj
-c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtextga.obj
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.tlog\cl.command.1.tlog
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.tlog\cl.read.1.tlog
 c:\users\사토밀피유\desktop\새 폴더 (2)\dx_study\directxtex\bin\desktop_2019\x64\debug\directxtex.tlog\cl.write.1.tlog

@@ -8,7 +8,7 @@ private:
 		COMP,
 		MAX = 3
 	}action_status;
-	CHAR_STATUS tmp_status;
+	CHAR_STATUS tmp_status = CHAR_STATUS::IDLE;
 	VertexShader* VS;
 	PixelShader* PS;
 	ColourBuffer* CB;

@@ -17,17 +17,19 @@ MiniMap::MiniMap(wstring file_loc, Vector2 start_uv, Vector2 end_uv, Vector2 p, 
 	// 이걸통해 셰이더에 사진데이터를 보냄
 	//이 srv부분을 통해 PixelShaderUV.hlsl에서 다루는 samp와 map등에 데이터를 보냄
 
+
+	
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 12; j++) {
 			star[i][j] = new Star(L"Texture/AnimateScene/Animation/star.png");
+			//미니맵에 맞게 별 사이즈 조정
 			star[i][j]->scale.x = 0.2f;
 			star[i][j]->scale.y = 0.1f;
-			//star[i][j]->GetCollider()->scale.x = 0.1f;
-			//star[i][j]->GetCollider()->scale.y = 0.1f;
 		}
 	}
 	for (int i = 0; i < 20; i++) {
 		stage_star_line[i] = new StarLine(L"Texture/Image/stagestarline.png");
+		//미니맵에 맞게 라인 사이즈 조정
 		stage_star_line[i]->GetCollider()->scale.y = 0.06f;
 	}
 }
@@ -38,13 +40,17 @@ MiniMap::~MiniMap()
 	srv->Release();
 }
 
-void MiniMap::SetStar(S_STAGE stage_star[])
+void MiniMap::SetStar(S_STAGE stage_star[],int line_count)
 {
-	for (int i = 0; i < 10; i++) {
+	stage_line_count = line_count;
+
+	//스테이지에 있는 별의 위치를 복사
+	for (int i = 0; i < stage_line_count; i++) {
 		minimap_stage[i] = stage_star[i];
 	}
 	
-	for (int i = 0; i < 10; i++) {
+	//미니맵을 그리기 위해 라인에 별 설정
+	for (int i = 0; i < stage_line_count; i++) {
 		stage_star_line[i]->SetStarOne(minimap_stage[i].star1);
 		stage_star_line[i]->SetStarTwo(minimap_stage[i].star2);
 		stage_star_line[i]->ChangeImage(L"Texture/Image/stagestarline.png");
@@ -57,8 +63,8 @@ void MiniMap::SetCompStar(S_STAGE stage_star)
 	int star1_y = stage_star.star1.y;
 	int star2_x = stage_star.star2.x;
 	int star2_y = stage_star.star2.y;
-
-	for (int i = 0; i < 10; i++) {
+	//완료된 라인의 이미지 설정
+	for (int i = 0; i < stage_line_count; i++) {
 		if (stage_star_line[i]->CheckLineComp(Vector2(star1_x, star1_y), Vector2(star2_x, star2_y))) {
 			stage_star_line[i]->ChangeImage(L"Texture/Image/starline.png");
 		}
@@ -67,8 +73,8 @@ void MiniMap::SetCompStar(S_STAGE stage_star)
 
 void MiniMap::Update()
 {
-	
 	WorldUpdate();
+	//미니맵 사이즈에 맞게 별 위치 설정
 	float init_x_pos = -140;
 	float init_y_pos = -155;
 	float x_pos = 0;
@@ -83,7 +89,8 @@ void MiniMap::Update()
 		}
 	}
 
-	for (int i = 0; i < 10; i++) {
+	//미니맵에는 라인이 보이기에 라인 설정
+	for (int i = 0; i < stage_line_count; i++) {
 		//스테이지 라인 생성
 		int star1_x = stage_star_line[i]->GetStarOne().x;
 		int star1_y = stage_star_line[i]->GetStarOne().y;
@@ -107,11 +114,12 @@ void MiniMap::Render()
 	DVC->PSSetShaderResources(0, 1, &srv);
 	image->Render();
 
-	for (int i = 0; i < 10; i++) {
+	//라인 렌더링
+	for (int i = 0; i < stage_line_count; i++) {
 		stage_star_line[i]->Render();
 		stage_star_line[i]->GetCollider()->Render();
 	}
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < stage_line_count; i++) {
 		//해당 별만 렌더링
 		int star1_x = stage_star_line[i]->GetStarOne().x;
 		int star1_y = stage_star_line[i]->GetStarOne().y;

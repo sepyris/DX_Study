@@ -10,10 +10,12 @@ private:
 	S_STAGE select_star;
 	
 	//starcount
-	S_STAGE stage_star[10];
-	S_STAGE stage_star_fix[10][10];
+	S_STAGE stage_star[20];
+	S_STAGE stage_star_fix[20][20];
 	StarLine* stage_star_line[20];
 	int active_star_count = 0;
+	int now_stage = 99;
+	int star_line_count = 0;
 
 
 	ImageRect* exit_button;
@@ -22,6 +24,7 @@ public:
 	StarBridge();
 	~StarBridge();
 
+	void InitStage();
 	void CreateStage();
 
 	void ResetStage();

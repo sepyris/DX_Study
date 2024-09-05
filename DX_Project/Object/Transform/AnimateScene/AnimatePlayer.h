@@ -12,7 +12,8 @@ private:
 		ATTACK,
 		HIT,
 		FLY,
-		MAX = 9
+		FLY_STUN,
+		MAX = 10
 	}action_status;
 
 	VertexShader* VS;

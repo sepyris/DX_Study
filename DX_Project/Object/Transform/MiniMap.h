@@ -6,9 +6,9 @@ private:
 	ID3D11ShaderResourceView* srv;
 
 	Star* star[10][12];
-	S_STAGE minimap_stage[10];
+	S_STAGE minimap_stage[20];
 	StarLine* stage_star_line[20];
-	
+	int stage_line_count = 0;
 public:
 	MiniMap(wstring file_loc, 
 		Vector2 start_uv = Vector2(0, 0),
@@ -20,7 +20,7 @@ public:
 		D3D11_PRIMITIVE_TOPOLOGY t = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	~MiniMap();
 
-	void SetStar(S_STAGE stage_star[]);
+	void SetStar(S_STAGE stage_star[],int stage);
 	void SetCompStar(S_STAGE stage_star);
 
 	void Update();

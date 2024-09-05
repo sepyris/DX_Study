@@ -133,14 +133,15 @@ AnimatePlayer::AnimatePlayer(wstring file)
 
 	//공격 CHAR_STATUS::ATTACK
 	init_pos = { 2,441 };
+	this_frame_size = { 82,79 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
 
-	init_pos += Vector2(84, 0);
+	init_pos += Vector2(88, 0);
 	for (int i = 0; i < 2; i++) {
 		frames.push_back(
 			new Frame(
 				file,
-				init_pos.x + i * (this_frame_size.x + 6),
+				init_pos.x + i * (this_frame_size.x),
 				init_pos.y,
 				this_frame_size.x,
 				this_frame_size.y
@@ -159,20 +160,33 @@ AnimatePlayer::AnimatePlayer(wstring file)
 	init_pos = { 3,181 };
 	this_frame_size = { 82,78 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	init_pos = { 3,5 };
-	this_frame_size = { 82,78 };
-	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.5f));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 1.0f));
 	frames.clear();
 	//히트 상태 끝
 
 	//플라이 CHAR_STATUS::FLY
-	init_pos = { 3,181 };
-	this_frame_size = { 82,78 };
+	init_pos = { 2,529 };
+	this_frame_size = { 82,85 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.5f));
+
+	init_pos = { 90,529 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 0.5f));
 	frames.clear();
 	//플라이 상태 끝
+
+	//플라이스턴 CHAR_STATUS::FLY
+	init_pos = { 2,622 };
+	this_frame_size = { 82,85 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
+	init_pos = { 90,622 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::LOOP, 0.5f));
+	frames.clear();
+	//플라이스턴 상태 끝
 
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
@@ -687,7 +701,11 @@ void AnimatePlayer::FlyMove()
 			move_speed = 0;
 			moveup_pos = 0;
 			moveup_speed = 0;
+			SetClip(CHAR_STATUS::FLY);
+			
 		}
+		clips[(UINT)action_status]->Update();
+		WorldUpdate();
 		return;
 	}
 
@@ -736,19 +754,19 @@ void AnimatePlayer::FlyMove()
 		if (!KEY_PRESS(VK_UP) && !KEY_PRESS(VK_DOWN)) {
 			moveup_pos = 0;
 			if (moveup_speed > 0) {
-				moveup_speed -= (9.8f * DELTA)*10.0f;
+				moveup_speed -= (9.8f * DELTA)*20.0f;
 			}
 			else {
-				moveup_speed += (9.8f * DELTA) * 10.0f;
+				moveup_speed += (9.8f * DELTA) * 20.0f;
 			}
 		}
 		if (!KEY_PRESS(VK_LEFT) && !KEY_PRESS(VK_RIGHT)) {
 			move_pos = 0;
 			if (move_speed < 0) {
-				move_speed += (9.8f * DELTA) * 10.0f;
+				move_speed += (9.8f * DELTA) * 20.0f;
 			}
 			else {
-				move_speed -= (9.8f * DELTA) * 10.0f;
+				move_speed -= (9.8f * DELTA) * 20.0f;
 			}
 		}
 
@@ -783,6 +801,7 @@ void AnimatePlayer::StarFail()
 {
 	if (star_fail == 0) {
 		star_fail = Timer::Get()->GetRunTime() + 2.0f;
+		SetClip(CHAR_STATUS::FLY_STUN);
 	}
 }
 
@@ -842,6 +861,11 @@ void AnimatePlayer::SetClip(CHAR_STATUS stat)
 		clips[(UINT)action_status]->Play();
 		break;
 	case AnimatePlayer::CHAR_STATUS::FLY://플라이상태
+		clips[(UINT)action_status]->Stop();
+		action_status = stat;
+		clips[(UINT)action_status]->Play();
+		break;
+	case AnimatePlayer::CHAR_STATUS::FLY_STUN://플라이상태
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

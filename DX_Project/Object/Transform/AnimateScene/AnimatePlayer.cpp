@@ -250,8 +250,15 @@ void AnimatePlayer::landing()
 			}
 		}
 		if (action_status == CHAR_STATUS::JUMP) {
-			SetClip(CHAR_STATUS::IDLE);
-			is_can_double_jump = false;
+			if (is_running) {
+				SetClip(CHAR_STATUS::WALK);
+				is_can_double_jump = true;
+			}
+			else {
+				SetClip(CHAR_STATUS::IDLE);
+				is_can_double_jump = false;
+			}
+			
 			move_pos = 0;
 		}
 	}
@@ -304,6 +311,9 @@ void AnimatePlayer::Update()
 {
 	if (is_star) {
 		FlyMove();
+	}
+	else if (is_running) {
+		RunnningMove();
 	}
 	else {
 		NormalMove();
@@ -795,6 +805,124 @@ void AnimatePlayer::FlyMove()
 		scale.x *= -1;
 	}
 	WorldUpdate();
+}
+
+void AnimatePlayer::RunnningMove()
+{
+	//가속도 설정
+	if (loading_end) {
+		if (action_status != CHAR_STATUS::ROPE) {
+			jump_speed -= 9.8f * 20.0f * DELTA;
+			if (jump_speed <= -250.0f) {
+				jump_speed = -250.0f;
+			}
+			pos.y -= jump_speed * DELTA * 5.0f;
+		}
+	}
+
+	if (action_status != CHAR_STATUS::ROPE) {
+		move_speed -= 9.8f * move_pos * DELTA;
+
+		if (move_speed < -50.0f) {
+			move_speed = -50.0f;
+		}
+		if (move_speed > 50.0f) {
+			move_speed = 50.0f;
+		}
+		if (move_pos == 0) {
+			if (move_speed > 0.0f) {
+				move_speed -= 9.8f * DELTA * 20.0f;
+			}
+			else if (move_speed < 0.0f) {
+				move_speed += 9.8f * DELTA * 20.0f;
+			}
+		}
+		pos.x -= move_speed * DELTA * 5.0f;
+	}
+
+
+	//엎드린 상태에서 점프가 불가하므로 조건 설정
+	//점프키를 누름
+	if (KEY_PRESS('C'))
+	{
+		//만약 점프 상태가 아니라면
+		if (action_status != CHAR_STATUS::JUMP) {
+			//점프 관련 설정을 변경
+			jump_speed = 100.0f;
+			SetClip(CHAR_STATUS::JUMP);
+		}
+	}
+	//점프중에 점프를 누름
+	if (KEY_DOWN('C'))
+	{
+		if (action_status == CHAR_STATUS::JUMP && is_can_double_jump) {
+			is_can_double_jump = false;
+			if (jump_speed < 0) {
+				jump_speed = 100.0f;
+			}
+			else {
+				jump_speed += 100.0f;
+			}
+		}
+	}
+
+	//걸으면서 단차로 이동시 점프 상태로 변경
+	if (jump_speed < -50.0f) {
+		SetClip(CHAR_STATUS::JUMP);
+	}
+
+	move_pos = 10.0f;
+	switch (action_status)
+	{
+	case AnimatePlayer::CHAR_STATUS::IDLE:
+		if (KEY_DOWN('C')) {
+			SetClip(CHAR_STATUS::JUMP);
+		}
+		if (KEY_PRESS(VK_DOWN)) {
+			SetClip(CHAR_STATUS::PRONE);
+		}
+		break;
+	case AnimatePlayer::CHAR_STATUS::WALK:
+		if (KEY_DOWN('C')) {
+			SetClip(CHAR_STATUS::JUMP);
+		}
+		if (KEY_PRESS(VK_DOWN)) {
+			SetClip(CHAR_STATUS::PRONE);
+		}
+		break;
+	case AnimatePlayer::CHAR_STATUS::JUMP:
+		break;
+	case AnimatePlayer::CHAR_STATUS::PRONE:
+		//엎드린 상태일때 아래키를 누르지 않으면 대기상태로 변경
+		if (!KEY_PRESS(VK_DOWN)) {
+			SetClip(CHAR_STATUS::WALK);
+		}
+		break;
+	case AnimatePlayer::CHAR_STATUS::RUN:
+		break;
+	case AnimatePlayer::CHAR_STATUS::ROPE:
+		break;
+	case AnimatePlayer::CHAR_STATUS::ATTACK:
+		break;
+	case AnimatePlayer::CHAR_STATUS::HIT:
+		break;
+	case AnimatePlayer::CHAR_STATUS::MAX:
+		break;
+	default:
+		break;
+	}
+	hit_collider->pos = pos + Vector2(10, 0);
+	foot_collider->pos = pos + Vector2(10, 50);
+	clips[(UINT)action_status]->Update();
+	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
+	if (action_status == AnimatePlayer::CHAR_STATUS::PRONE) {
+		if (KEY_PRESS(VK_DOWN)) {
+			hit_collider->pos.y += 40.0f;
+		}
+	}
+	WorldUpdate();
+	hit_collider->WorldUpdate();
+	foot_collider->WorldUpdate();
 }
 
 void AnimatePlayer::StarFail()

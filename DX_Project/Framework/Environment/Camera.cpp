@@ -98,10 +98,10 @@ void Camera::FreeMode()//카메라를 자유로이 움직일수 있는 모드
 }
 
 void Camera::FollowMode()
-{	
-	Vector2 target_pos = target->GlobalPos() - Vector2(SCREEN_SIZE_X / 2.0f, SCREEN_SIZE_Y / 2.0f);	
+{
+	Vector2 target_pos = target->GlobalPos() - Vector2(SCREEN_SIZE_X / 2.0f, SCREEN_SIZE_Y / 2.0f);
 
-	if (Environment::Get()->GetScreenMode()) {
+	if (Environment::Get()->GetScreenMode() == Environment::CAM_STATUS::HORIZON) {
 		if (target_pos.y >= -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f) {
 			target_pos.y = -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f;
 		}
@@ -115,7 +115,7 @@ void Camera::FollowMode()
 			target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f;
 		}
 	}
-	else {
+	else if (Environment::Get()->GetScreenMode() == Environment::CAM_STATUS::VERTICAL) {
 		if (target_pos.y >= -(WIN_WIDTH - SCREEN_SIZE_Y * 2) - 100.0f) {
 			target_pos.y = -(WIN_WIDTH - SCREEN_SIZE_Y * 2) - 100.0f;
 		}
@@ -127,6 +127,14 @@ void Camera::FollowMode()
 		}
 		if (target_pos.x <= (WIN_HEIGHT - SCREEN_SIZE_X * 2) + 3200.0f) {
 			target_pos.x = (WIN_HEIGHT - SCREEN_SIZE_X * 2) + 3200.0f;
+		}
+	}
+	else if (Environment::Get()->GetScreenMode() == Environment::CAM_STATUS::RUNNING) {
+		target_pos.x = target->GlobalPos().x + 400 - (SCREEN_SIZE_X / 2.0f);
+
+		target_pos.y = -(WIN_HEIGHT - SCREEN_SIZE_Y * 2) - 10.0f;
+		if (target_pos.x <= (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f) {
+			target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f;
 		}
 	}
 	

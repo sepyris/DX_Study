@@ -31,9 +31,16 @@ private:
 	~Environment();
 
 public:
+	enum class CAM_STATUS {
+		HORIZON = 0,
+		VERTICAL,
+		RUNNING,//달리기 모드 우측으로 제한이 없음
+	}cam_mode;
+
 	void Update();
 
 	void SetVerticalScreen();
+	void SetRunningScreen();
 	void SetHorizonScreen();
 
 	Camera* GetMainCamera() { return main_camera; }
@@ -41,5 +48,5 @@ public:
 	float GetScreenSizeX() { return size_x.y - size_x.x; }
 	float GetScreenSizeY() { return size_y.x - size_y.y; }
 
-	bool GetScreenMode() { return is_horizon_mode; }
+	CAM_STATUS GetScreenMode() { return cam_mode; }
 };

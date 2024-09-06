@@ -205,7 +205,7 @@ void Environment::Update()
 
 void Environment::SetVerticalScreen()
 {
-	is_horizon_mode = false;
+	cam_mode = CAM_STATUS::VERTICAL;
 	projection = new MatrixBuffer();
 
 	size_x = Vector2(0.0f, (float)WIN_WIDTH*2);
@@ -225,9 +225,30 @@ void Environment::SetVerticalScreen()
 	projection->SetVS(2);
 }
 
+void Environment::SetRunningScreen()
+{
+	cam_mode = CAM_STATUS::RUNNING;
+	projection = new MatrixBuffer();
+	size_x = Vector2(0.0f, (float)WIN_WIDTH);
+	size_y = Vector2((float)WIN_HEIGHT, 0.0f);
+
+	orthographic = XMMatrixOrthographicOffCenterLH
+	(
+		size_x.x, size_x.y, // X좌표 : 0 ~ (창의 가로 크기)
+		size_y.x, size_y.y, // Y좌표 : (창의 세로 크기) ~ 0
+		-1.0f, 1.0f // Z좌표 : -1.0f ~ 1.0f(초기값)
+	);
+
+
+	projection->Set(orthographic);
+
+	//view->SetVS(1);
+	projection->SetVS(2);
+}
+
 void Environment::SetHorizonScreen()
 {
-	is_horizon_mode = true;
+	cam_mode = CAM_STATUS::HORIZON;
 	projection = new MatrixBuffer();
 	size_x = Vector2(0.0f, (float)WIN_WIDTH);
 	size_y = Vector2((float)WIN_HEIGHT, 0.0f);

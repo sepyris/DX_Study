@@ -78,6 +78,7 @@ public:
 
 	void NormalMove();
 	void FlyMove();
+	void RunnningMove();
 
 	void StarFail();
 	bool IsStarFail() {

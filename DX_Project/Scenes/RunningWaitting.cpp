@@ -9,6 +9,10 @@ RunningWaitting::RunningWaitting(float area)
 		player->pos = Vector2(-1190, 800);
 		CAM->pos = Vector2(-1270, 500);
 	}
+	else if (area == 3) {
+		player->pos = Vector2(2440, 600);
+		CAM->pos = Vector2(1270, 330);
+	}
 	else {
 		player->pos = Vector2(WIN_CENTER_X, WIN_CENTER_Y);
 	}
@@ -82,6 +86,9 @@ RunningWaitting::RunningWaitting(float area)
 	left_portal = new RectCollider(Vector2(60, 20));
 	left_portal->pos = Vector2(Vector2(-1190, 1020));
 
+	right_portal = new RectCollider(Vector2(60, 20));
+	right_portal->pos = Vector2(Vector2(2440, 750));
+
 	player->Update();
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
@@ -109,6 +116,7 @@ RunningWaitting::RunningWaitting(float area)
 		}
 	}
 	left_portal->WorldUpdate();
+	right_portal->WorldUpdate();
 
 }
 
@@ -143,6 +151,7 @@ RunningWaitting::~RunningWaitting()
 		}
 	}
 	delete left_portal;
+	delete right_portal;
 }
 
 void RunningWaitting::Update()
@@ -216,6 +225,14 @@ void RunningWaitting::Update()
 			}
 		}
 	}
+	if (right_portal != NULL) {
+		if (player->GetCollider()->isCollision(right_portal)) {
+			if (KEY_DOWN(VK_UP)) {
+				program->CreateScene(6, 1);
+				return;
+			}
+		}
+	}
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -244,6 +261,7 @@ void RunningWaitting::Update()
 		}
 	}
 	left_portal->WorldUpdate();
+	right_portal->WorldUpdate();
 	player->LoadingEnd();
 }
 
@@ -276,6 +294,7 @@ void RunningWaitting::Render()
 		}
 	}
 	left_portal->Render();
+	right_portal->Render();
 	player->Render();
 }
 

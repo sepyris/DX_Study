@@ -101,6 +101,7 @@ void Star::SetComp()
 void Star::SetNone()
 {
 	SetClip(CHAR_STATUS::IDLE);
+	tmp_status = CHAR_STATUS::IDLE;
 }
 bool Star::IsComplate()
 {

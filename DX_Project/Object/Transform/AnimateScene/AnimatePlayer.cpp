@@ -318,6 +318,13 @@ void AnimatePlayer::Update()
 	else {
 		NormalMove();
 	}
+
+	if (KEY_PRESS(VK_F8)) {
+		hit_collider->SetColor(0.7f, 0.7f, 0.99f, 0);
+	}
+	if (KEY_PRESS(VK_F9)) {
+		hit_collider->SetColor(0.7f, 0.7f, 0.99f, 1);
+	}
 }
 
 void AnimatePlayer::IsHit(bool is_left)

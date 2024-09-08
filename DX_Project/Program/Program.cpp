@@ -5,8 +5,7 @@
 Program::Program()
 {
 	Create();
-	CreateScene(4, 3);
-	//CreateScene(5, 0);
+	CreateScene(1, 3);
 	// 바로 이 부분을 통해 프로그램이 어떤 Scene을 사용할 것인지를 설정
 	// DX를 다루는 초반 구간에서는 Scene을 많아봐야 하나만 사용할 것이므로
 	// 그 Scene을 여기서 설정하고, 나중에 필요하면 기존 Scene은 놔둔 채

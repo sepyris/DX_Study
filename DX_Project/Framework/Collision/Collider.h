@@ -64,8 +64,8 @@ public:
 	virtual bool isCircleCollision(class CircleCollider* collider) = 0;
 	virtual bool isRectCollision(class RectCollider* collider, Vector2* overwrap = NULL) = 0;
 
-	void SetColor(float r, float g, float b) {
-		CB->data.colour = Float4(r, g, b, 1);
+	void SetColor(float r, float g, float b, float a) {
+		CB->data.colour = Float4(r, g, b, a);
 	}
 protected:
 	virtual void CreateLine() = 0;

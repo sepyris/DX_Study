@@ -1,10 +1,17 @@
 #pragma once
+#define IMAGE_Y_POS 1400
+#define GROUND_IMAGE_SIZE Vector2(172, 150)
+#define GROUND_IMAGE_LOC L"Texture/Image/footholdloop.png"
+#define WALL_IMAGE_SIZE Vector2(174, 200)
+#define WALL_IMAGE_LOC L"Texture/Image/wallloop.png"
+
 class Running :public Scene {
 private:
 	BackGroundUV* bg;
 	AnimatePlayer* player;
 
-	LoopImageRect* main_ground;
+	LoopImageRect* ground[100];
+	LoopImageRect* wall[100];
 
 	ImageRect* exit_button;
 	RectCollider* mouse_object;

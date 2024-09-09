@@ -25,7 +25,13 @@ LoopImageRect::LoopImageRect(wstring file_loc, Vector2 image_size, Vector2 size,
 	//멤버변수 srv에 DEVICE와 img를 이용해 셰이더 리소스 뷰 라는것을 생성
 	// 이걸통해 셰이더에 사진데이터를 보냄
 	//이 srv부분을 통해 PixelShaderUV.hlsl에서 다루는 samp와 map등에 데이터를 보냄
-	collider = new RectCollider(size);
+	if (file_loc == L"Texture/Image/footholdloop.png") {
+		collider = new RectCollider(Vector2(size.x, 3));
+	}
+	else if (file_loc == L"Texture/Image/wallloop.png") {
+		collider = new RectCollider(size);
+	}
+	
 }
 
 LoopImageRect::~LoopImageRect()
@@ -37,14 +43,15 @@ LoopImageRect::~LoopImageRect()
 
 void LoopImageRect::Update()
 {
-	collider->WorldUpdate();
 	WorldUpdate();
+	collider->WorldUpdate();
+	
 }
 
 void LoopImageRect::Render()
 {
 	WB->SetVS(0);
 	DVC->PSSetShaderResources(0, 1, &srv);
-	collider->Render();
 	image->Render();
+	collider->Render();
 }

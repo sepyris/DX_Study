@@ -14,17 +14,54 @@ Running::Running()
 	exit_button = new ImageRect(L"Texture/Image/exit_button.png", Vector2(0, 0), Vector2(1, 1), 0.0f, Vector2(150, 75));
 	mouse_object = new RectCollider(Vector2(10, 10));
 
-	
-	main_ground = new LoopImageRect(L"Texture/Image/footholdloop.png",Vector2(172,150), Vector2(100000, 150));
-	main_ground->pos = Vector2(Vector2(WIN_CENTER_X, 1400));
-	main_ground->GetCollider()->pos = Vector2(Vector2(WIN_CENTER_X, 1360));
+	//초기x위치:-1000
+	ground[0] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(3000, GROUND_IMAGE_SIZE.y));
+	ground[1] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(1000, GROUND_IMAGE_SIZE.y));
+	ground[2] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(2000, GROUND_IMAGE_SIZE.y));
 
+	wall[0] = new LoopImageRect(WALL_IMAGE_LOC, WALL_IMAGE_SIZE, Vector2(500, 600));
+	
+	//1단점프 틈:200
+	//2단점프 틈:400
+	//발판 충돌 위치 설정
+	ground[0]->GetCollider()->pos = Vector2(Vector2(500, 1330));
+	ground[1]->GetCollider()->pos = Vector2(Vector2(2700, 1330));
+	ground[2]->GetCollider()->pos = Vector2(Vector2(4500, 1330));
+
+	wall[0]->GetCollider()->pos = Vector2(Vector2(4700, 1000));
+
+	//이미지 위치 수정
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			g->pos = Vector2(g->GetCollider()->pos.x, IMAGE_Y_POS);
+		}
+	}
+	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			g->pos = Vector2(g->GetCollider()->pos.x, 1000);
+		}
+	}
+
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			g->WorldUpdate();
+		}
+	}
 	player->Update();
 }
 
 Running::~Running()
 {
-	delete main_ground;
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			delete g;
+		}
+	}
+	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			delete g;
+		}
+	}
 	delete bg;
 }
 
@@ -50,23 +87,47 @@ void Running::Update()
 		}
 	}
 	if (player->pos.y > WIN_HEIGHT * 3) {
-		player->pos = Vector2(WIN_CENTER_X + 545, 500);
+		
+		player->pos = Vector2(player->pos.x + 200, 700);
 	}
 	bg->Update();
 
-	if (main_ground != NULL) {
-		Vector2 collision;
-		if (player->GetCollider()->isCollision(main_ground->GetCollider(), &collision)) {
-			if (player->pos.y < main_ground->pos.y) {
-				if (player->GetCollider()->BottomVX() > main_ground->GetCollider()->TopVX() - 1.0f) {
-					player->pos.y -= collision.y * DELTA * 20.0f;
-					player->landing();
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			Vector2 collision;
+			if (player->GetCollider()->isCollision(g->GetCollider(), &collision)) {
+				if (player->pos.y < g->pos.y) {
+					if (player->GetCollider()->BottomVX() > g->GetCollider()->TopVX() - 1.0f) {
+						player->pos.y -= collision.y * DELTA * 20.0f;
+						player->landing();
+					}
 				}
 			}
 		}
 	}
-	main_ground->Update();
+	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			Vector2 collision;
+			if (player->GetHitCollider()->isCollision(g->GetCollider(), &collision)) {
+				//충돌 관련 내용 수정 필요
+				player->IsHit(true);
+			}
+		}
+	}
 	player->Update();
+
+
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			g->Update();
+		}
+	}
+	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			g->Update();
+		}
+	}
+	
 	exit_button->Update();
 	mouse_object->WorldUpdate();
 	player->LoadingEnd();
@@ -75,7 +136,16 @@ void Running::Update()
 void Running::Render()
 {
 	bg->Render();
-	main_ground->Render();
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			g->Render();
+		}
+	}
+	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			g->Render();
+		}
+	}
 	exit_button->Render();
 	mouse_object->Render();
 	player->Render();
@@ -83,4 +153,5 @@ void Running::Render()
 
 void Running::PostRender()
 {
+	player->PostRender();
 }

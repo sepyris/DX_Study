@@ -309,6 +309,12 @@ void AnimatePlayer::SetIdle()
 
 void AnimatePlayer::Update()
 {
+	if (is_hit_count != 0) {
+		if (is_hit_count < Timer::Get()->GetRunTime()) {
+			is_hit_count = 0;
+		}
+	}
+
 	if (is_star) {
 		FlyMove();
 	}
@@ -329,7 +335,8 @@ void AnimatePlayer::Update()
 
 void AnimatePlayer::IsHit(bool is_left)
 {
-	if (action_status != CHAR_STATUS::HIT) {
+	if (is_hit_count == 0) {
+		is_hit_count = Timer::Get()->GetRunTime() + 2.0f;
 		hit_point--;
 		move_speed = 0;
 		if (is_left) {
@@ -340,7 +347,6 @@ void AnimatePlayer::IsHit(bool is_left)
 		}
 		jump_speed = 50.0f;
 
-		SetClip(CHAR_STATUS::HIT);
 		if (hit_point <= 0) {
 			is_live = false;
 		}
@@ -369,15 +375,7 @@ void AnimatePlayer::Render()
 
 void AnimatePlayer::PostRender()
 {
-	ImGui::SliderFloat2("p.pos", (float*)&pos, -3000, 3000);
-
-	ImGui::SliderFloat("move_pos", (float*)&move_pos, -3000, 3000);
-	ImGui::SliderFloat("moveup_pos", (float*)&moveup_pos, -3000, 3000);
-
-	ImGui::SliderFloat("move_speed", (float*)&move_speed, -3000, 3000);
-	ImGui::SliderFloat("move_up_speed", (float*)&moveup_speed, -3000, 3000);
-	ImGui::SliderFloat("jump_speed", (float*)&jump_speed, -3000, 3000);
-	
+	ImGui::SliderFloat2("p.pos", (float*)&pos, -3000, 3000);	
 }
 
 void AnimatePlayer::NormalMove()

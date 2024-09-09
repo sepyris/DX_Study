@@ -7,7 +7,7 @@ Collider::Collider()
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderPos.hlsl");
 
 	CB = new ColourBuffer();
-	CB->data.colour = { 0.7f,0.7f,0.99f,0 };
+	CB->data.colour = { 0.7f,0.7f,0.99f,1 };
 
 	WB = new MatrixBuffer();
 }

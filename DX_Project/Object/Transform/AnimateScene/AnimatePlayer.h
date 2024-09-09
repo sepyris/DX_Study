@@ -50,6 +50,7 @@ private:
 	bool is_running = false;
 
 	//타이머 설정 변수
+	float is_hit_count = 0; // 피격 설정 타이머
 	float star_fail = 0; // 다음움직임까지 설정을 위한 타이머
 
 public:

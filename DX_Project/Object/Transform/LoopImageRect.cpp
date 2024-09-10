@@ -31,6 +31,14 @@ LoopImageRect::LoopImageRect(wstring file_loc, Vector2 image_size, Vector2 size,
 	else if (file_loc == L"Texture/Image/wallloop.png") {
 		collider = new RectCollider(size);
 	}
+	else if (file_loc == L"Texture/Image/footholduphillloop.png") {
+		collider = new RectCollider(Vector2(size.x+70, 3));
+		collider->rot.z = -0.58f;
+	}
+	else if (file_loc == L"Texture/Image/footholddownhillloop.png") {
+		collider = new RectCollider(Vector2(size.x+70, 3));
+		collider->rot.z = 0.58f;
+	}
 	
 }
 

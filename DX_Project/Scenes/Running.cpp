@@ -18,8 +18,13 @@ Running::Running()
 	ground[0] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(3000, GROUND_IMAGE_SIZE.y));
 	ground[1] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(1000, GROUND_IMAGE_SIZE.y));
 	ground[2] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(2000, GROUND_IMAGE_SIZE.y));
+	ground[3] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(3000, GROUND_IMAGE_SIZE.y));
+	ground[4] = new LoopImageRect(GROUND_IMAGE_LOC, GROUND_IMAGE_SIZE, Vector2(1000, GROUND_IMAGE_SIZE.y));
 
 	wall[0] = new LoopImageRect(WALL_IMAGE_LOC, WALL_IMAGE_SIZE, Vector2(500, 600));
+
+	hill[0] = new LoopImageRect(HILL_UP_IMAGE_LOC, HILL_IMAGE_SIZE, HILL_IMAGE_SIZE);
+	hill[1] = new LoopImageRect(HILL_DOWN_IMAGE_LOC, HILL_IMAGE_SIZE, HILL_IMAGE_SIZE);
 	
 	//1단점프 틈:200
 	//2단점프 틈:400
@@ -27,24 +32,29 @@ Running::Running()
 	ground[0]->GetCollider()->pos = Vector2(Vector2(500, 1330));
 	ground[1]->GetCollider()->pos = Vector2(Vector2(2700, 1330));
 	ground[2]->GetCollider()->pos = Vector2(Vector2(4500, 1330));
+	ground[3]->GetCollider()->pos = Vector2(Vector2(7200, 1330));
+	ground[4]->GetCollider()->pos = Vector2(Vector2(7145, 1135));
+
 
 	wall[0]->GetCollider()->pos = Vector2(Vector2(4700, 1000));
+
+	hill[0]->GetCollider()->pos = Vector2(Vector2(6500, 1233));
+	hill[1]->GetCollider()->pos = Vector2(Vector2(7790, 1233));
 
 	//이미지 위치 수정
 	for (LoopImageRect* g : ground) {
 		if (g != NULL) {
-			g->pos = Vector2(g->GetCollider()->pos.x, IMAGE_Y_POS);
+			g->pos = Vector2(g->GetCollider()->pos.x, g->GetCollider()->pos.y+70);
 		}
 	}
 	for (LoopImageRect* g : wall) {
 		if (g != NULL) {
-			g->pos = Vector2(g->GetCollider()->pos.x, 1000);
+			g->pos = Vector2(g->GetCollider()->pos.x, g->GetCollider()->pos.y);
 		}
 	}
-
-	for (LoopImageRect* g : ground) {
+	for (LoopImageRect* g : hill) {
 		if (g != NULL) {
-			g->WorldUpdate();
+			g->pos = Vector2(g->GetCollider()->pos.x, g->GetCollider()->pos.y-20);
 		}
 	}
 	player->Update();
@@ -58,6 +68,11 @@ Running::~Running()
 		}
 	}
 	for (LoopImageRect* g : wall) {
+		if (g != NULL) {
+			delete g;
+		}
+	}
+	for (LoopImageRect* g : hill) {
 		if (g != NULL) {
 			delete g;
 		}
@@ -105,6 +120,14 @@ void Running::Update()
 			}
 		}
 	}
+	for (LoopImageRect* g : hill) {
+		if (g != NULL) {
+			if (player->GetCollider()->isCollision(g->GetCollider())) {
+				player->pos.y -= DELTA * 300.0f;
+				player->landing();
+			}
+		}
+	}
 	for (LoopImageRect* g : wall) {
 		if (g != NULL) {
 			Vector2 collision;
@@ -117,17 +140,23 @@ void Running::Update()
 	player->Update();
 
 
-	for (LoopImageRect* g : ground) {
-		if (g != NULL) {
-			g->Update();
-		}
-	}
+	
 	for (LoopImageRect* g : wall) {
 		if (g != NULL) {
 			g->Update();
 		}
 	}
+	for (LoopImageRect* g : hill) {
+		if (g != NULL) {
+			g->Update();
+		}
+	}
 	
+	for (LoopImageRect* g : ground) {
+		if (g != NULL) {
+			g->Update();
+		}
+	}
 	exit_button->Update();
 	mouse_object->WorldUpdate();
 	player->LoadingEnd();
@@ -136,12 +165,18 @@ void Running::Update()
 void Running::Render()
 {
 	bg->Render();
-	for (LoopImageRect* g : ground) {
+	
+	for (LoopImageRect* g : wall) {
 		if (g != NULL) {
 			g->Render();
 		}
 	}
-	for (LoopImageRect* g : wall) {
+	for (LoopImageRect* g : hill) {
+		if (g != NULL) {
+			g->Render();
+		}
+	}
+	for (LoopImageRect* g : ground) {
 		if (g != NULL) {
 			g->Render();
 		}

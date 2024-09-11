@@ -5,6 +5,7 @@ private:
 	RectUV* image;
 	ID3D11ShaderResourceView* srv;
 	RectCollider* collider;
+	Vector2 size;
 
 public:
 	LoopImageRect(wstring file_loc,
@@ -20,6 +21,8 @@ public:
 
 	void Update();
 	void Render();
+
+	Vector2 GetSize() { return size; }
 
 	RectCollider* GetCollider() { return collider; }
 

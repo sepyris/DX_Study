@@ -44,6 +44,7 @@ void Collider::Render()
 
 bool Collider::isCollision(Collider* collider, Vector2* overwrap)
 {
+	
 	switch (collider->GetType())
 		//입력받은 충돌 판정의 종류에 따라서
 		//사용하는 충돌 판정 방식이 서로 다르기 때문에

@@ -8,6 +8,7 @@
 #define WALL_IMAGE_LOC L"Texture/Image/wallloop.png"
 #define HILL_UP_IMAGE_LOC L"Texture/Image/footholduphillloop.png"
 #define HILL_DOWN_IMAGE_LOC L"Texture/Image/footholddownhillloop.png"
+#define BACKGROUND_IMAGE_LOC L"Texture/Image/backgroundimage.png"
 
 
 class Running :public Scene {
@@ -28,6 +29,7 @@ public:
 	Running();
 	~Running();
 
+	void GroundUpdate();
 	// Scene을(를) 통해 상속됨
 	virtual void Update() override;
 	virtual void Render() override;

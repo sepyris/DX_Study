@@ -319,7 +319,7 @@ void AnimatePlayer::Update()
 		FlyMove();
 	}
 	else if (is_running) {
-		RunnningMove();
+		RunningMove();
 	}
 	else {
 		NormalMove();
@@ -376,6 +376,8 @@ void AnimatePlayer::Render()
 void AnimatePlayer::PostRender()
 {
 	ImGui::SliderFloat2("p.pos", (float*)&pos, -3000, 3000);	
+	ImGui::SliderFloat("move_speed", (float*)&move_speed, -3000, 3000);
+	
 }
 
 void AnimatePlayer::NormalMove()
@@ -812,8 +814,24 @@ void AnimatePlayer::FlyMove()
 	WorldUpdate();
 }
 
-void AnimatePlayer::RunnningMove()
+void AnimatePlayer::RunningMove()
 {
+	if (KEY_PRESS(VK_F5)) {
+		auto_move = true;
+	}
+	if (KEY_PRESS(VK_F6)) {
+		auto_move = false;
+	}
+	//강제이동을 위한 속도 설정
+	if (auto_move) {
+		move_speed = 50.0f;
+		if (KEY_PRESS('A')) {
+			move_speed = 100.0f;
+		}
+		pos.x += move_speed * DELTA * 5.0f;
+	}
+
+
 	//가속도 설정
 	if (loading_end) {
 		if (action_status != CHAR_STATUS::ROPE) {
@@ -823,26 +841,6 @@ void AnimatePlayer::RunnningMove()
 			}
 			pos.y -= jump_speed * DELTA * 5.0f;
 		}
-	}
-
-	if (action_status != CHAR_STATUS::ROPE) {
-		move_speed -= 9.8f * move_pos * DELTA;
-
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
-		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
-		}
-		if (move_pos == 0) {
-			if (move_speed > 0.0f) {
-				move_speed -= 9.8f * DELTA * 20.0f;
-			}
-			else if (move_speed < 0.0f) {
-				move_speed += 9.8f * DELTA * 20.0f;
-			}
-		}
-		pos.x -= move_speed * DELTA * 5.0f;
 	}
 
 
@@ -876,7 +874,7 @@ void AnimatePlayer::RunnningMove()
 		SetClip(CHAR_STATUS::JUMP);
 	}
 
-	move_pos = 10.0f;
+	
 	switch (action_status)
 	{
 	case AnimatePlayer::CHAR_STATUS::IDLE:

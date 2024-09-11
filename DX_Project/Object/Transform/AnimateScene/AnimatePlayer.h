@@ -53,6 +53,9 @@ private:
 	float is_hit_count = 0; // 피격 설정 타이머
 	float star_fail = 0; // 다음움직임까지 설정을 위한 타이머
 
+	//디버그 변수
+	bool auto_move = true;
+
 public:
 	AnimatePlayer(wstring file);
 	~AnimatePlayer();
@@ -79,7 +82,7 @@ public:
 
 	void NormalMove();
 	void FlyMove();
-	void RunnningMove();
+	void RunningMove();
 
 	void StarFail();
 	bool IsStarFail() {

@@ -41,6 +41,10 @@ private:
 
 	RectCollider* now_ground = NULL;
 
+	//달리기맵에서 장애물로 사용하기 위해 변수 설정
+	bool is_running = false;
+
+
 public:
 	Mushroom(wstring file);
 	~Mushroom();
@@ -61,6 +65,9 @@ public:
 	int GetGroundNum() { return ground_num; }
 	void IsHit();
 
+	void SetRunning() {
+		is_running = true;
+	}
 
 
 	void SetColor(Float4 color) {

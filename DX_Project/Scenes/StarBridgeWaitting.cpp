@@ -19,13 +19,17 @@ StarBridgeWaitting::StarBridgeWaitting(float area)
 	}
 
 	ground[0] = new RectCollider(Vector2(WIN_WIDTH*3, 3));
-	ground[0]->pos = Vector2(Vector2(WIN_CENTER_X, 1175));
+	ground[0]->pos = Vector2(Vector2(680, 1175));
 
 	center_portal = new RectCollider(Vector2(180, 60));
-	center_portal->pos = Vector2(Vector2(WIN_CENTER_X-180, 1150));
+	center_portal->pos = Vector2(Vector2(460, 1150));
 
 	left_portal = new RectCollider(Vector2(180, 60));
 	left_portal->pos = Vector2(Vector2(-470, 1150));
+
+	info = new ImageRect(L"Texture/Image/star_info.png", Vector2(0, 0), Vector2(1, 1), 0.0f, Vector2(350, 260));
+	info->pos = Vector2(Vector2(-5, 800));
+	info->GetCollider()->pos = Vector2(Vector2(-5, 900));
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -96,6 +100,7 @@ void StarBridgeWaitting::Update()
 			g->WorldUpdate();
 		}
 	}
+	info->Update();
 	center_portal->WorldUpdate();
 	left_portal->WorldUpdate();
 	player->LoadingEnd();
@@ -109,6 +114,7 @@ void StarBridgeWaitting::Render()
 			g->Render();
 		}
 	}
+	info->Render();
 	center_portal->Render();
 	left_portal->Render();
 	player->Render();

@@ -5,6 +5,7 @@ private:
 	RectCollider* ground[20];
 	RectCollider* center_portal;
 	RectCollider* left_portal;
+	ImageRect* info;
 
 	AnimatePlayer* player;
 public:

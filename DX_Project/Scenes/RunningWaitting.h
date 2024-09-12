@@ -9,6 +9,7 @@ private:
 	RectCollider* ladder[20];
 	RectCollider* left_portal;
 	RectCollider* right_portal;
+	ImageRect* info;
 
 	AnimatePlayer* player;
 public:

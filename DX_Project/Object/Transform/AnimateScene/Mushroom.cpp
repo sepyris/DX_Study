@@ -109,6 +109,54 @@ void Mushroom::ResetJumpSpeed()
 
 void Mushroom::Update()
 {
+	if (is_running) {
+		RunningMove();
+	}
+	else {
+		NormalMove();
+	}
+}
+
+void Mushroom::Render()
+{
+	if (is_live) {
+		VS->Set();
+		PS->Set();
+
+		WB->SetVS(0);
+		CB->SetPS(0);
+	
+		clips[(UINT)action_status]->Render();
+		//테두리 비표시를 위해 각주처리
+		hit_collider->Render();
+		foot_collider->Render();
+	}
+}
+
+void Mushroom::PostRender()
+{
+	
+}
+void Mushroom::IsCreate()
+{
+	if (zen_count == 0 && hit_point <= 0) {
+		zen_count = Timer::Get()->GetRunTime() + 5.0f;
+	}
+
+	if (hit_point > 0) {
+		is_live = true;
+	}
+	SetClip(CHAR_STATUS::IDLE);
+}
+void Mushroom::IsHit()
+{
+	if (action_status != CHAR_STATUS::HIT) {
+		hit_point--;
+		SetClip(CHAR_STATUS::HIT);
+	}
+}
+void Mushroom::NormalMove()
+{
 	if (action_status == CHAR_STATUS::HIT) {
 		if (!clips[(UINT)action_status]->isPlay()) {
 			clips[(UINT)action_status]->Play();
@@ -136,7 +184,7 @@ void Mushroom::Update()
 	}
 	if (move_check < Timer::Get()->GetRunTime()) {
 		std::uniform_int_distribution<int> rand_count(0, 5);
-					//이동
+		//이동
 		if (rand_count(gen) <= 2) {
 			if (now_ground != NULL) {
 				if (loading_end) {
@@ -150,12 +198,7 @@ void Mushroom::Update()
 				}
 			}
 		}
-		//멈춤
-		/*else if (rand_count(gen) == 1) {
-			move_pos = 0;
-			move_speed = 0;
-		}*/
-			//점프
+		//점프
 		else if (rand_count(gen) >= 2) {
 			if (action_status != CHAR_STATUS::JUMP && action_status != CHAR_STATUS::HIT) {
 				//점프 관련 설정을 변경
@@ -256,47 +299,21 @@ void Mushroom::Update()
 
 		hit_collider->WorldUpdate();
 		foot_collider->WorldUpdate();
-	}
+	}	
 }
-
-void Mushroom::Render()
+void Mushroom::RunningMove()
 {
-	if (is_live) {
-		VS->Set();
-		PS->Set();
+	hit_collider->pos = pos + Vector2(0, 0);
+	foot_collider->pos = pos + Vector2(0, 45);
+	clips[(UINT)action_status]->Update();
+	scale = clips[(UINT)action_status]->GetFrameSize() * 1.5;
 
-		WB->SetVS(0);
-		CB->SetPS(0);
-	
-		clips[(UINT)action_status]->Render();
-		//테두리 비표시를 위해 각주처리
-		hit_collider->Render();
-		foot_collider->Render();
+	if (is_looking_left) {
+		scale.x *= -1;
 	}
-}
-
-void Mushroom::PostRender()
-{
-	
-	
-}
-void Mushroom::IsCreate()
-{
-	if (zen_count == 0 && hit_point <= 0) {
-		zen_count = Timer::Get()->GetRunTime() + 5.0f;
-	}
-
-	if (hit_point > 0) {
-		is_live = true;
-	}
-	SetClip(CHAR_STATUS::IDLE);
-}
-void Mushroom::IsHit()
-{
-	if (action_status != CHAR_STATUS::HIT) {
-		hit_point--;
-		SetClip(CHAR_STATUS::HIT);
-	}
+	WorldUpdate();
+	hit_collider->WorldUpdate();
+	foot_collider->WorldUpdate();
 }
 void Mushroom::SetClip(CHAR_STATUS stat)
 {

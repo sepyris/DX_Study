@@ -89,6 +89,10 @@ RunningWaitting::RunningWaitting(float area)
 	right_portal = new RectCollider(Vector2(60, 20));
 	right_portal->pos = Vector2(Vector2(2440, 750));
 
+	info = new ImageRect(L"Texture/Image/run_info.png", Vector2(0, 0), Vector2(1, 1), 0.0f, Vector2(350, 260));
+	info->pos = Vector2(Vector2(2056, 500));
+	info->GetCollider()->pos = Vector2(Vector2(2056, 500));
+
 	player->Update();
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
@@ -260,6 +264,7 @@ void RunningWaitting::Update()
 			g->WorldUpdate();
 		}
 	}
+	info->Update();
 	left_portal->WorldUpdate();
 	right_portal->WorldUpdate();
 	player->LoadingEnd();
@@ -293,6 +298,7 @@ void RunningWaitting::Render()
 			g->Render();
 		}
 	}
+	info->Render();
 	left_portal->Render();
 	right_portal->Render();
 	player->Render();

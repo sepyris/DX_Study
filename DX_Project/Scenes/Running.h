@@ -20,16 +20,21 @@ private:
 	LoopImageRect* wall[100];
 	LoopImageRect* hill[100];
 
+	Mushroom* mushroom[50];
+
 	ImageRect* exit_button;
 	RectCollider* mouse_object;
 
-
+	RectCollider* hp_background;
+	RectCollider* hp_object;
 
 public:
 	Running();
 	~Running();
+	void CreateObject();
+	void SetObjectPos();
 
-	void GroundUpdate();
+	void ObjectUpdate();
 	// Scene을(를) 통해 상속됨
 	virtual void Update() override;
 	virtual void Render() override;

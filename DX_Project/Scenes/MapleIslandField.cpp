@@ -319,11 +319,13 @@ void MapleIslandField::Update()
 			Vector2 collision;
 			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
 				if (m->Islive()) {
-					if (m->pos.x < player->pos.x) {
-						player->IsHit(true);
-					}
-					else if (m->pos.x > player->pos.x) {
-						player->IsHit(false);
+					if (!player->IsHitting()) {
+						if (m->pos.x < player->pos.x) {
+							player->IsHit(true);
+						}
+						else if (m->pos.x > player->pos.x) {
+							player->IsHit(false);
+						}
 					}
 				}
 			}
@@ -334,11 +336,13 @@ void MapleIslandField::Update()
 			Vector2 collision;
 			if (player->GetHitCollider()->isCollision(m->GetHitCollider(), &collision)) {
 				if (m->Islive()) {
-					if (m->pos.x < player->pos.x) {
-						player->IsHit(true);
-					}
-					else if (m->pos.x > player->pos.x) {
-						player->IsHit(false);
+					if (!player->IsHitting()) {
+						if (m->pos.x < player->pos.x) {
+							player->IsHit(true);
+						}
+						else if (m->pos.x > player->pos.x) {
+							player->IsHit(false);
+						}
 					}
 				}
 			}

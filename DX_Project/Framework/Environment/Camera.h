@@ -15,6 +15,8 @@ private:
 	//카메라가 가리키는 영역은 전체 화면과는 값이 다른 영역이 될수 있기에
 	//이를 계산하기 위해 사용하는 값
 
+	float running_pos;
+
 public:
 	Camera();
 	~Camera();
@@ -26,6 +28,7 @@ public:
 	void SetTarget(Transform* target) {
 		this->target = target;
 	};
+	void SetRunnuingLastPos(float pos) { running_pos = pos;}
 
 
 private:

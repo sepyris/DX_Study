@@ -28,17 +28,17 @@ LoopImageRect::LoopImageRect(wstring file_loc, Vector2 image_size, Vector2 size,
 	//이 srv부분을 통해 PixelShaderUV.hlsl에서 다루는 samp와 map등에 데이터를 보냄
 	
 	if (file_loc == L"Texture/Image/footholdloop.png") {
-		collider = new RectCollider(Vector2(this->size.x, 3));
+		collider = new RectCollider(Vector2(this->size.x, 10));
 	}
 	else if (file_loc == L"Texture/Image/wallloop.png") {
 		collider = new RectCollider(this->size);
 	}
 	else if (file_loc == L"Texture/Image/footholduphillloop.png") {
-		collider = new RectCollider(Vector2(this->size.x+55, 3));
+		collider = new RectCollider(Vector2(this->size.x+55, 10));
 		collider->rot.z = -0.58f;
 	}
 	else if (file_loc == L"Texture/Image/footholddownhillloop.png") {
-		collider = new RectCollider(Vector2(this->size.x+55, 3));
+		collider = new RectCollider(Vector2(this->size.x+55, 10));
 		collider->rot.z = 0.58f;
 	}
 	else {

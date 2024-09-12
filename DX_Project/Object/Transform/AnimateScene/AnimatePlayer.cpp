@@ -239,7 +239,14 @@ void AnimatePlayer::landing()
 		// 벽을 긁으면서 점프할 경우 충돌하는 영역이 가로가 세로보다 커지는 상황은
 		// 분명히 발생할수 있음
 		//땅에 착지시에 점프 상태를 변경
-		jump_speed = -35;
+		if (is_looking_left) {
+			jump_speed = -move_speed * 0.7;
+		}
+		else {
+			jump_speed = move_speed * 0.7;
+		}
+		
+
 		pos.y += jump_speed * DELTA * 5.0f;
 		is_jump_attack = false;
 		if (action_status == CHAR_STATUS::ROPE && action_status != CHAR_STATUS::HIT) {
@@ -310,8 +317,19 @@ void AnimatePlayer::SetIdle()
 void AnimatePlayer::Update()
 {
 	if (is_hit_count != 0) {
+		//히트시 반짝반짝 상태
+		if (hit_check) {
+			SetColor(Float4(0, 0, 0, 0));
+			hit_check = false;
+		}
+		else {
+			SetColor(Float4(1, 1, 1, 1));
+			hit_check = true;
+		}
 		if (is_hit_count < Timer::Get()->GetRunTime()) {
 			is_hit_count = 0;
+			SetColor(Float4(1, 1, 1, 1));
+			hit_check = true;
 		}
 	}
 
@@ -326,18 +344,18 @@ void AnimatePlayer::Update()
 	}
 
 	if (KEY_PRESS(VK_F8)) {
-		hit_collider->SetColor(0.7f, 0.7f, 0.99f, 0);
+		
 	}
 	if (KEY_PRESS(VK_F9)) {
-		hit_collider->SetColor(0.7f, 0.7f, 0.99f, 1);
+		
 	}
 }
 
-void AnimatePlayer::IsHit(bool is_left)
+void AnimatePlayer::IsHit(bool is_left, int damage)
 {
 	if (is_hit_count == 0) {
 		is_hit_count = Timer::Get()->GetRunTime() + 2.0f;
-		hit_point--;
+		hit_point -= damage;
 		move_speed = 0;
 		if (is_left) {
 			move_pos =7.0f;
@@ -824,18 +842,18 @@ void AnimatePlayer::RunningMove()
 	}
 	//강제이동을 위한 속도 설정
 	if (auto_move) {
-		move_speed = 50.0f;
+		move_speed = -70.0f;
 		if (KEY_PRESS('A')) {
-			move_speed = 100.0f;
+			move_speed = -100.0f;
 		}
-		pos.x += move_speed * DELTA * 5.0f;
+		pos.x -= move_speed * DELTA * 5.0f;
 	}
 
 
 	//가속도 설정
 	if (loading_end) {
 		if (action_status != CHAR_STATUS::ROPE) {
-			jump_speed -= 9.8f * 20.0f * DELTA;
+			jump_speed -= 9.8f * 30.0f * DELTA;
 			if (jump_speed <= -250.0f) {
 				jump_speed = -250.0f;
 			}
@@ -870,7 +888,7 @@ void AnimatePlayer::RunningMove()
 	}
 
 	//걸으면서 단차로 이동시 점프 상태로 변경
-	if (jump_speed < -50.0f) {
+	if (jump_speed < -100.0f) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
 

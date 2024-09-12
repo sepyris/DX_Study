@@ -136,6 +136,9 @@ void Camera::FollowMode()
 		if (target_pos.x <= (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f) {
 			target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + 10.0f;
 		}
+		if (target_pos.x >= (WIN_WIDTH - SCREEN_SIZE_X * 2) + running_pos-1000) {
+			target_pos.x = (WIN_WIDTH - SCREEN_SIZE_X * 2) + running_pos-1000;
+		}
 	}
 	
 	//LERP(s,e,t)(s+(e-s)*t)

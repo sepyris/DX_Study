@@ -52,6 +52,7 @@ private:
 	//타이머 설정 변수
 	float is_hit_count = 0; // 피격 설정 타이머
 	float star_fail = 0; // 다음움직임까지 설정을 위한 타이머
+	bool hit_check = false;
 
 	//디버그 변수
 	bool auto_move = true;
@@ -95,7 +96,9 @@ public:
 	}
 
 
-	void IsHit(bool is_left);
+	void IsHit(bool is_left,int damage = 1);
+
+
 
 	void SetNormal() {
 		is_star = false;
@@ -108,10 +111,20 @@ public:
 	}
 
 	void SetRunning() {
+		hit_point = 300;
 		is_running = true;
 		is_can_double_jump = true;
 	}
+	int GetHealth() { return hit_point; }
 
+	bool IsHitting() {
+		if (is_hit_count != 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	void SetColor(Float4 color) {
 		CB->data.colour = color;

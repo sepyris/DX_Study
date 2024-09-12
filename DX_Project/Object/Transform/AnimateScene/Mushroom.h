@@ -65,6 +65,9 @@ public:
 	int GetGroundNum() { return ground_num; }
 	void IsHit();
 
+	void NormalMove();
+	void RunningMove();
+
 	void SetRunning() {
 		is_running = true;
 	}

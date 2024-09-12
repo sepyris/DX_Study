@@ -35,6 +35,8 @@ MapleIsland::MapleIsland(float area)
 	ground[8]->pos = Vector2(Vector2(-1012,725));
 	ground[9]->pos = Vector2(Vector2(-390,650));
 
+	
+
 	hill_ground[0] = new RectCollider(Vector2(770, 3));
 	hill_ground[0]->pos = Vector2(Vector2(850, 820));
 	hill_ground[0]->rot.z = 0.46f;
@@ -58,6 +60,10 @@ MapleIsland::MapleIsland(float area)
 
 	right_portal = new RectCollider(Vector2(120, 40));
 	right_portal->pos = Vector2(Vector2(2145, 1000));
+
+	info = new ImageRect(L"Texture/Image/info.png", Vector2(0, 0), Vector2(1, 1), 0.0f, Vector2(350, 260));
+	info->pos = Vector2(Vector2(1730, 800));
+	info->GetCollider()->pos = Vector2(Vector2(1730, 800));
 
 	player->Update();
 	for (RectCollider* g : ground) {
@@ -222,6 +228,7 @@ void MapleIsland::Update()
 			g->WorldUpdate();
 		}
 	}
+	info->Update();
 	right_portal->WorldUpdate();
 	player->LoadingEnd();
 }
@@ -254,6 +261,7 @@ void MapleIsland::Render()
 			g->Render();
 		}
 	}
+	info->Render();
 	right_portal->Render();
 	player->Render();
 }

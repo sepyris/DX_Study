@@ -8,6 +8,7 @@ private:
 	RectCollider* hill_ground[20];
 	RectCollider* ladder[20];
 	RectCollider* right_portal;
+	ImageRect* info;
 
 	AnimatePlayer* player;
 	

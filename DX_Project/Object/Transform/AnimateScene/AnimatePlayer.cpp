@@ -239,7 +239,7 @@ void AnimatePlayer::landing()
 		// 벽을 긁으면서 점프할 경우 충돌하는 영역이 가로가 세로보다 커지는 상황은
 		// 분명히 발생할수 있음
 		//땅에 착지시에 점프 상태를 변경
-		if (is_looking_left) {
+		if (move_speed > 0) {
 			jump_speed = -move_speed * 0.7;
 		}
 		else {
@@ -316,6 +316,13 @@ void AnimatePlayer::SetIdle()
 
 void AnimatePlayer::Update()
 {
+	if (loading_time != 0) {
+		if (loading_time < Timer::Get()->GetRunTime()) {
+			loading_end = true;
+			loading_time = 0;
+		}
+	}
+
 	if (is_hit_count != 0) {
 		//히트시 반짝반짝 상태
 		if (hit_check) {
@@ -341,13 +348,6 @@ void AnimatePlayer::Update()
 	}
 	else {
 		NormalMove();
-	}
-
-	if (KEY_PRESS(VK_F8)) {
-		
-	}
-	if (KEY_PRESS(VK_F9)) {
-		
 	}
 }
 
@@ -398,6 +398,13 @@ void AnimatePlayer::PostRender()
 	
 }
 
+void AnimatePlayer::LoadingEnd()
+{
+	if (loading_time == 0) {
+		loading_time = Timer::Get()->GetRunTime() + 1.0f;
+	}
+}
+
 void AnimatePlayer::NormalMove()
 {
 	if (!is_live) {
@@ -426,26 +433,28 @@ void AnimatePlayer::NormalMove()
 			pos.y -= jump_speed * DELTA * 5.0f;
 		}
 	}
+	if (loading_end) {
+		if (action_status != CHAR_STATUS::ROPE) {
+			move_speed -= 9.8f * move_pos * DELTA;
 
-	if (action_status != CHAR_STATUS::ROPE) {
-		move_speed -= 9.8f * move_pos * DELTA;
-
-		if (move_speed < -50.0f) {
-			move_speed = -50.0f;
-		}
-		if (move_speed > 50.0f) {
-			move_speed = 50.0f;
-		}
-		if (move_pos == 0) {
-			if (move_speed > 0.0f) {
-				move_speed -= 9.8f * DELTA * 20.0f;
+			if (move_speed < -50.0f) {
+				move_speed = -50.0f;
 			}
-			else if (move_speed < 0.0f) {
-				move_speed += 9.8f * DELTA * 20.0f;
+			if (move_speed > 50.0f) {
+				move_speed = 50.0f;
 			}
+			if (move_pos == 0) {
+				if (move_speed > 0.0f) {
+					move_speed -= 9.8f * DELTA * 20.0f;
+				}
+				else if (move_speed < 0.0f) {
+					move_speed += 9.8f * DELTA * 20.0f;
+				}
+			}
+			pos.x -= move_speed * DELTA * 5.0f;
 		}
-		pos.x -= move_speed * DELTA * 5.0f;
 	}
+	
 
 
 	//엎드린 상태에서 점프가 불가하므로 조건 설정
@@ -767,21 +776,21 @@ void AnimatePlayer::FlyMove()
 	}
 	
 	SetClip(CHAR_STATUS::FLY);
-	if (KEY_PRESS(VK_UP)) {
-		moveup_pos = -10.0f;
-	}
-	if (KEY_PRESS(VK_DOWN)) {
-		moveup_pos = 10.0f;
-	}
-	if (KEY_PRESS(VK_LEFT)) {
-		is_looking_left = true;
-		move_pos = -10.0f;
-	}
-	if (KEY_PRESS(VK_RIGHT)) {
-		is_looking_left = false;
-		move_pos = 10.0f;
-	}
 	if (loading_end) {
+		if (KEY_PRESS(VK_UP)) {
+			moveup_pos = -10.0f;
+		}
+		if (KEY_PRESS(VK_DOWN)) {
+			moveup_pos = 10.0f;
+		}
+		if (KEY_PRESS(VK_LEFT)) {
+			is_looking_left = true;
+			move_pos = -10.0f;
+		}
+		if (KEY_PRESS(VK_RIGHT)) {
+			is_looking_left = false;
+			move_pos = 10.0f;
+		}
 
 		move_speed -= (9.8f * DELTA) * move_pos;
 		moveup_speed -= (9.8f * DELTA) * moveup_pos;
@@ -834,24 +843,24 @@ void AnimatePlayer::FlyMove()
 
 void AnimatePlayer::RunningMove()
 {
+	
 	if (KEY_PRESS(VK_F5)) {
 		auto_move = true;
 	}
 	if (KEY_PRESS(VK_F6)) {
 		auto_move = false;
 	}
-	//강제이동을 위한 속도 설정
-	if (auto_move) {
-		move_speed = -70.0f;
-		if (KEY_PRESS('A')) {
-			move_speed = -100.0f;
-		}
-		pos.x -= move_speed * DELTA * 5.0f;
-	}
-
-
-	//가속도 설정
+	
 	if (loading_end) {
+		//강제이동을 위한 속도 설정
+		if (auto_move) {
+			move_speed = -70.0f;
+			if (KEY_PRESS('A')) {
+				move_speed = -100.0f;
+			}
+			pos.x -= move_speed * DELTA * 5.0f;
+		}
+		//가속도 설정
 		if (action_status != CHAR_STATUS::ROPE) {
 			jump_speed -= 9.8f * 30.0f * DELTA;
 			if (jump_speed <= -250.0f) {
@@ -860,7 +869,6 @@ void AnimatePlayer::RunningMove()
 			pos.y -= jump_speed * DELTA * 5.0f;
 		}
 	}
-
 
 	//엎드린 상태에서 점프가 불가하므로 조건 설정
 	//점프키를 누름
@@ -879,10 +887,10 @@ void AnimatePlayer::RunningMove()
 		if (action_status == CHAR_STATUS::JUMP && is_can_double_jump) {
 			is_can_double_jump = false;
 			if (jump_speed < 0) {
-				jump_speed = 100.0f;
+				jump_speed = 80.0f;
 			}
 			else {
-				jump_speed += 100.0f;
+				jump_speed += 80.0f;
 			}
 		}
 	}
@@ -891,7 +899,6 @@ void AnimatePlayer::RunningMove()
 	if (jump_speed < -100.0f) {
 		SetClip(CHAR_STATUS::JUMP);
 	}
-
 	
 	switch (action_status)
 	{

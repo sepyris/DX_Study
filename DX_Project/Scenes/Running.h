@@ -3,6 +3,7 @@
 #define GROUND_IMAGE_SIZE Vector2(172, 150)
 #define WALL_IMAGE_SIZE Vector2(174, 200)
 #define HILL_IMAGE_SIZE Vector2(299, 300)
+#define BACKGROUND_IMAGE_SIZE Vector2(164, 159)
 
 #define GROUND_IMAGE_LOC L"Texture/Image/footholdloop.png"
 #define WALL_IMAGE_LOC L"Texture/Image/wallloop.png"
@@ -19,6 +20,8 @@ private:
 	LoopImageRect* ground[100];
 	LoopImageRect* wall[100];
 	LoopImageRect* hill[100];
+	LoopImageRect* back_ground[100];
+	RectCollider* safe_ground;
 
 	Mushroom* mushroom[50];
 

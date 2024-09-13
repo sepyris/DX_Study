@@ -52,6 +52,7 @@ private:
 	//타이머 설정 변수
 	float is_hit_count = 0; // 피격 설정 타이머
 	float star_fail = 0; // 다음움직임까지 설정을 위한 타이머
+	float loading_time = 0;
 	bool hit_check = false;
 
 	//디버그 변수
@@ -79,7 +80,7 @@ public:
 	void Update();
 	void Render();
 	void PostRender();
-	void LoadingEnd() { loading_end = true; }
+	void LoadingEnd();
 
 	void NormalMove();
 	void FlyMove();
@@ -111,6 +112,7 @@ public:
 	}
 
 	void SetRunning() {
+		SetClip(CHAR_STATUS::WALK);
 		hit_point = 300;
 		is_running = true;
 		is_can_double_jump = true;

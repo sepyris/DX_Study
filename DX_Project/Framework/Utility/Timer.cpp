@@ -38,6 +38,9 @@ void Timer::Update()
 	//마지막으로 기록된 성능카운터를 현재 시점의 성능카운터에서 빼고
 	//그렇게 구한 카운터의 변동치에 timescale를 곱해 실제 경과된 시간을 체크
 	time_elapsed = (float)(cur_time - last_time) * time_scale;
+	if (time_elapsed > 0.016f) {
+		time_elapsed = 0.016f;
+	}
 	
 	//여기까지 계산 했으면 과거 시각은 더이상 필요없으니 덮어 씌우기
 	last_time = cur_time;

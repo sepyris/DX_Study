@@ -439,7 +439,6 @@ void Running::Update()
 	hp_object->WorldUpdate();
 	mouse_object->WorldUpdate();
 	safe_ground->WorldUpdate();
-	player->LoadingEnd();
 }
 
 void Running::Render()

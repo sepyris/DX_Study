@@ -267,7 +267,6 @@ void RunningWaitting::Update()
 	info->Update();
 	left_portal->WorldUpdate();
 	right_portal->WorldUpdate();
-	player->LoadingEnd();
 }
 
 void RunningWaitting::Render()

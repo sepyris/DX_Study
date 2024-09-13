@@ -51,6 +51,20 @@ Mushroom::Mushroom(wstring file)
 	frames.clear();
 	//히트 상태 끝
 
+	//데드 CHAR_STATUS::DEAD
+	init_pos = { 8,215 };
+	this_frame_size = { 61,59 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	init_pos = { 75,218 };
+	this_frame_size = { 59,52 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	init_pos = { 141,222 };
+	this_frame_size = { 59,44 };
+	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 30.0f));
+	frames.clear();
+	//데드 상태 끝
+
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
 
@@ -158,10 +172,21 @@ void Mushroom::IsHit()
 void Mushroom::NormalMove()
 {
 	if (action_status == CHAR_STATUS::HIT) {
-		if (!clips[(UINT)action_status]->isPlay()) {
-			clips[(UINT)action_status]->Play();
-			SetClip(CHAR_STATUS::IDLE);
+		if (!clips[(UINT)CHAR_STATUS::HIT]->isPlay()) {
+			clips[(UINT)CHAR_STATUS::HIT]->Play();
+			if (hit_point <= 0) {
+				SetClip(CHAR_STATUS::DEAD);
+			}
+			else {
+				SetClip(CHAR_STATUS::IDLE);
+			}
 		}
+	}
+
+	if (!clips[(UINT)CHAR_STATUS::DEAD]->isPlay()) {
+		clips[(UINT)CHAR_STATUS::DEAD]->Play();
+		is_live = false;
+		return;
 	}
 	if (zen_count != 0) {
 		if (zen_count < Timer::Get()->GetRunTime()) {
@@ -172,10 +197,7 @@ void Mushroom::NormalMove()
 		}
 	}
 
-	if (hit_point <= 0) {
-		is_live = false;
-		return;
-	}
+	
 
 	std::random_device rd;
 	std::mt19937_64 gen(rd());
@@ -339,6 +361,11 @@ void Mushroom::SetClip(CHAR_STATUS stat)
 		clips[(UINT)action_status]->Play();
 		break;
 	case Mushroom::CHAR_STATUS::HIT://히트하는 상태가 될 경우
+		clips[(UINT)action_status]->Stop();
+		action_status = stat;
+		clips[(UINT)action_status]->Play();
+		break;
+	case Mushroom::CHAR_STATUS::DEAD://히트하는 상태가 될 경우
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

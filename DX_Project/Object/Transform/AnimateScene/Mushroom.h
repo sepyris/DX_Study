@@ -7,7 +7,8 @@ private:
 		WALK,
 		JUMP,
 		HIT,
-		MAX = 3
+		DEAD,
+		MAX = 4
 	}action_status;
 
 	VertexShader* VS;

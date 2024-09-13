@@ -6,7 +6,8 @@ private:
 		IDLE = 0,
 		WALK,
 		HIT,
-		MAX = 2
+		DEAD,
+		MAX = 3
 	}action_status;
 
 	VertexShader* VS;

@@ -103,7 +103,6 @@ void StarBridgeWaitting::Update()
 	info->Update();
 	center_portal->WorldUpdate();
 	left_portal->WorldUpdate();
-	player->LoadingEnd();
 }
 
 void StarBridgeWaitting::Render()

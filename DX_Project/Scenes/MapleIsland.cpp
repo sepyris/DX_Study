@@ -230,7 +230,6 @@ void MapleIsland::Update()
 	}
 	info->Update();
 	right_portal->WorldUpdate();
-	player->LoadingEnd();
 }
 
 void MapleIsland::Render()

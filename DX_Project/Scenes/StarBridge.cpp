@@ -416,7 +416,6 @@ void StarBridge::Update()
 	player->Update();
 	exit_button->Update();
 	mouse_object->WorldUpdate();
-	player->LoadingEnd();
 }
 
 void StarBridge::Render()

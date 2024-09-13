@@ -519,7 +519,6 @@ void MapleIslandField::Update()
 	center_portal->WorldUpdate();
 	right_portal->WorldUpdate();
 
-	player->LoadingEnd();
 	for (Mushroom* m : mushroom) {
 		if (m != NULL) {
 			m->LoadingEnd();

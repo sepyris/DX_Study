@@ -1,6 +1,8 @@
 #include "framework.h"
 
 MapleIslandField::MapleIslandField(UINT area)
+	:hill_ground(),
+	monster_zen_count()
 {
 	bg = new BackGroundUV(L"Texture/Image/field.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y), Vector2(3, 3), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
@@ -217,14 +219,14 @@ void MapleIslandField::Update()
 	std::mt19937_64 gen(rd());
 	for (int i = 0; i < monster_count; i++) {
 		std::uniform_int_distribution<int> rand_count(0,2);
-		std::uniform_int_distribution<int> rand_x(monster_zone[i]->LeftVX(), monster_zone[i]->RightVX());
-		std::uniform_int_distribution<int> rand_y(monster_zone[i]->TopVX(), monster_zone[i]->TopVX());
+		std::uniform_int_distribution<int> rand_x((int)monster_zone[i]->LeftVX(), (int)monster_zone[i]->RightVX());
+		std::uniform_int_distribution<int> rand_y((int)monster_zone[i]->TopVX(), (int)monster_zone[i]->TopVX());
 		while (monster_zen_count[i] != monster_zone_count[i]) {
 			if (rand_count(gen) > 1) {
 				for (Snail* m : snail) {
 					if (m != NULL) {
 						if (!m->Islive()) {
-							m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
+							m->pos = Vector2((float)rand_x(gen), (float)(rand_y(gen) - 100));
 							m->IsCreate();
 							monster_zen_count[i]++;
 							m->SetGroundNum(i);
@@ -238,7 +240,7 @@ void MapleIslandField::Update()
 				for (Mushroom* m : mushroom) {
 					if (m != NULL) {
 						if (!m->Islive()) {
-							m->pos = Vector2(rand_x(gen), rand_y(gen) - 100);
+							m->pos = Vector2((float)rand_x(gen), (float)(rand_y(gen) - 100));
 							m->IsCreate();
 							monster_zen_count[i]++;
 							m->SetGroundNum(i);

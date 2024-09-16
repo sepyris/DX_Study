@@ -9,9 +9,9 @@ private:
 	RectCollider* ladder[20];
 
 	RectCollider* monster_zone[5];
-	UINT monster_zone_count[5];
-	UINT monster_zen_count[5];
-	UINT monster_count = 5;
+	int monster_zone_count[5];
+	int monster_zen_count[5];
+	int monster_count = 5;
 
 	RectCollider* left_portal;
 	RectCollider* center_portal;

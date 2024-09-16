@@ -1,6 +1,7 @@
 #include "framework.h"
 
 Mushroom::Mushroom(wstring file)
+	:jump_height(0.0f)
 {
 	Texture* t = Texture::Add(file);
 	//파일명을 이용해 실제이미지 파일을 Texture로서 로딩
@@ -47,6 +48,7 @@ Mushroom::Mushroom(wstring file)
 	init_pos = { 6,141 };
 	this_frame_size = { 62,65 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
+
 	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.5f));
 	frames.clear();
 	//히트 상태 끝
@@ -61,12 +63,18 @@ Mushroom::Mushroom(wstring file)
 	init_pos = { 141,222 };
 	this_frame_size = { 59,44 };
 	frames.push_back(new Frame(file, init_pos.x, init_pos.y, this_frame_size.x, this_frame_size.y));
-	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 30.0f));
+
+	clips.push_back(new Clip(frames, Clip::CLIP_TYPE::END, 0.2f));
 	frames.clear();
 	//데드 상태 끝
 
-	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
-	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
+
+	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
+	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2, flags);
+	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl", flags);
 
 	CB = new ColourBuffer();
 
@@ -105,7 +113,7 @@ void Mushroom::landing()
 		//땅에 착지시에 점프 상태를 변경
 		jump_speed = 0;
 		pos.y += jump_speed * DELTA * 5.0f;
-		if (action_status != CHAR_STATUS::WALK && action_status != CHAR_STATUS::HIT) {
+		if (action_status != CHAR_STATUS::WALK && action_status != CHAR_STATUS::HIT && action_status != CHAR_STATUS::DEAD) {
 			SetClip(CHAR_STATUS::IDLE);
 		}
 		move_pos = 0;
@@ -159,12 +167,12 @@ void Mushroom::IsCreate()
 
 	if (hit_point > 0) {
 		is_live = true;
+		SetClip(CHAR_STATUS::IDLE);
 	}
-	SetClip(CHAR_STATUS::IDLE);
 }
 void Mushroom::IsHit()
 {
-	if (action_status != CHAR_STATUS::HIT) {
+	if (action_status != CHAR_STATUS::HIT && action_status != CHAR_STATUS::DEAD) {
 		hit_point--;
 		SetClip(CHAR_STATUS::HIT);
 	}
@@ -182,11 +190,12 @@ void Mushroom::NormalMove()
 			}
 		}
 	}
-
-	if (!clips[(UINT)CHAR_STATUS::DEAD]->isPlay()) {
-		clips[(UINT)CHAR_STATUS::DEAD]->Play();
-		is_live = false;
-		return;
+	if (action_status == CHAR_STATUS::DEAD) {
+		if (!clips[(UINT)CHAR_STATUS::DEAD]->isPlay()) {
+			clips[(UINT)CHAR_STATUS::DEAD]->Play();
+			is_live = false;
+			return;
+		}
 	}
 	if (zen_count != 0) {
 		if (zen_count < Timer::Get()->GetRunTime()) {
@@ -205,27 +214,29 @@ void Mushroom::NormalMove()
 		move_check = Timer::Get()->GetRunTime() + 2.0f;
 	}
 	if (move_check < Timer::Get()->GetRunTime()) {
-		std::uniform_int_distribution<int> rand_count(0, 5);
-		//이동
-		if (rand_count(gen) <= 2) {
-			if (now_ground != NULL) {
-				if (loading_end) {
-					if (action_status != CHAR_STATUS::HIT) {
-						SetClip(CHAR_STATUS::WALK);
+		if (action_status != CHAR_STATUS::HIT && action_status != CHAR_STATUS::DEAD) {
+			std::uniform_int_distribution<int> rand_count(0, 5);
+			//이동
+			if (rand_count(gen) <= 2) {
+				if (now_ground != NULL) {
+					if (loading_end) {
+						if (action_status != CHAR_STATUS::HIT) {
+							SetClip(CHAR_STATUS::WALK);
+						}
+						int min = (int)now_ground->LeftVX();
+						int max = (int)now_ground->RightVX();
+						std::uniform_int_distribution<int> rand_count(min + 10, max - 10);
+						move = (float)rand_count(gen);
 					}
-					int min = now_ground->LeftVX();
-					int max = now_ground->RightVX();
-					std::uniform_int_distribution<int> rand_count(min + 10, max - 10);
-					move = rand_count(gen);
 				}
 			}
-		}
-		//점프
-		else if (rand_count(gen) >= 2) {
-			if (action_status != CHAR_STATUS::JUMP && action_status != CHAR_STATUS::HIT) {
-				//점프 관련 설정을 변경
-				jump_speed = 100.0f;
-				SetClip(CHAR_STATUS::JUMP);
+			//점프
+			else if (rand_count(gen) >= 2) {
+				if (action_status != CHAR_STATUS::JUMP && action_status != CHAR_STATUS::HIT) {
+					//점프 관련 설정을 변경
+					jump_speed = 100.0f;
+					SetClip(CHAR_STATUS::JUMP);
+				}
 			}
 		}
 		move_check = 0;
@@ -241,7 +252,7 @@ void Mushroom::NormalMove()
 			move_speed = 40.0f;
 			is_looking_left = false;
 		}
-		if (action_status != CHAR_STATUS::HIT) {
+		if (action_status != CHAR_STATUS::HIT && action_status != CHAR_STATUS::DEAD) {
 			SetClip(CHAR_STATUS::WALK);
 		}
 	}
@@ -267,7 +278,7 @@ void Mushroom::NormalMove()
 		}
 	}
 	//이동 관성 적용
-	if (action_status != CHAR_STATUS::IDLE && action_status != CHAR_STATUS::HIT) {
+	if (action_status != CHAR_STATUS::IDLE && action_status != CHAR_STATUS::HIT && action_status != CHAR_STATUS::DEAD) {
 		move_speed -= 9.8f * move_pos * DELTA;
 		if (move_speed < -50.0f) {
 			move_speed = -50.0f;
@@ -365,7 +376,7 @@ void Mushroom::SetClip(CHAR_STATUS stat)
 		action_status = stat;
 		clips[(UINT)action_status]->Play();
 		break;
-	case Mushroom::CHAR_STATUS::DEAD://히트하는 상태가 될 경우
+	case Mushroom::CHAR_STATUS::DEAD://죽는 상태가 될 경우
 		clips[(UINT)action_status]->Stop();
 		action_status = stat;
 		clips[(UINT)action_status]->Play();

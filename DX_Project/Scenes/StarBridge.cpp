@@ -285,14 +285,14 @@ void StarBridge::Update()
 							if (check_line != NULL) {
 								if (check_line->GetLineStatus() == StarLine::LINE_STATUS::NONE && active_star_count == 0) {
 									tmp->SetActive();
-									check_line->SetStarOne(Vector2(i, j));
+									check_line->SetStarOne(Vector2((float)i, (float)j));
 									check_line->SetLine();
 									active_star_count++;
 								}
 								//별 하나가 활성화 된상태,활성화된 별과 다른 별 일때
 								if (check_line->GetLineStatus() == StarLine::LINE_STATUS::SETTING && !(check_line->GetStarOne().x == i && check_line->GetStarOne().y == j) && active_star_count == 1) {
 									//tmp->SetActive();
-									check_line->SetStarTwo(Vector2(i, j));
+									check_line->SetStarTwo(Vector2((float)i, (float)j));
 									active_star_count++;
 								}
 							}
@@ -324,11 +324,11 @@ void StarBridge::Update()
 			if (!is_duplication) {
 				//성공 체크
 				for (int i = 0; i < star_line_count; i++) {
-					int star1_x = stage_star_line[i]->GetStarOne().x;
-					int star1_y = stage_star_line[i]->GetStarOne().y;
-					int star2_x = stage_star_line[i]->GetStarTwo().x;
-					int star2_y = stage_star_line[i]->GetStarTwo().y;
-					if (check_line->CheckLineComp(Vector2(star1_x, star1_y), Vector2(star2_x, star2_y))) {
+					int star1_x = (int)stage_star_line[i]->GetStarOne().x;
+					int star1_y = (int)stage_star_line[i]->GetStarOne().y;
+					int star2_x = (int)stage_star_line[i]->GetStarTwo().x;
+					int star2_y = (int)stage_star_line[i]->GetStarTwo().y;
+					if (check_line->CheckLineComp(Vector2((float)star1_x, (float)star1_y), Vector2((float)star2_x, (float)star2_y))) {
 						star[star1_x][star1_y]->SetComp();
 						star[star2_x][star2_y]->SetComp();
 						S_STAGE minimap_star;
@@ -342,10 +342,10 @@ void StarBridge::Update()
 		}
 		//성공이 아닐시
 		if (!comp_line) {
-			int check_star1_x = check_line->GetStarOne().x;
-			int check_star1_y = check_line->GetStarOne().y;
-			int check_star2_x = check_line->GetStarTwo().x;
-			int check_star2_y = check_line->GetStarTwo().y;
+			int check_star1_x = (int)check_line->GetStarOne().x;
+			int check_star1_y = (int)check_line->GetStarOne().y;
+			int check_star2_x = (int)check_line->GetStarTwo().x;
+			int check_star2_y = (int)check_line->GetStarTwo().y;
 			star[check_star1_x][check_star1_y]->ResetStatus();
 			star[check_star2_x][check_star2_y]->ResetStatus();
 			check_line->ResetLine();
@@ -359,28 +359,11 @@ void StarBridge::Update()
 
 
 	for (int i = 0; i < star_line_count; i++) {
-		//스테이지 라인 생성
-		/*
-		int star1_x = stage_star_line[i]->GetStarOne().x;
-		int star1_y = stage_star_line[i]->GetStarOne().y;
-		Vector2 star1_pos = star[star1_x][star1_y]->pos;
-
-		int star2_x = stage_star_line[i]->GetStarTwo().x;
-		int star2_y = stage_star_line[i]->GetStarTwo().y;
-		Vector2 star2_pos = star[star2_x][star2_y]->pos;
-
-		stage_star_line[i]->GetCollider()->pos = (star1_pos + star2_pos) / 2;
-		stage_star_line[i]->GetCollider()->rot.z = (star1_pos - star2_pos).Normalized().Angle();
-		stage_star_line[i]->SetSize((star1_pos - star2_pos).GetLength());
-		stage_star_line[i]->Update();
-		stage_star_line[i]->GetCollider()->WorldUpdate();
-		*/
-
 		//현재 라인 상태 표시
 		//눌렀을때
 		if (star_line[i]->GetLineStatus() == StarLine::LINE_STATUS::SETTING) {
-			int star1_x = star_line[i]->GetStarOne().x;
-			int star1_y = star_line[i]->GetStarOne().y;
+			int star1_x = (int)star_line[i]->GetStarOne().x;
+			int star1_y = (int)star_line[i]->GetStarOne().y;
 			Vector2 star1_pos = star[star1_x][star1_y]->pos;
 			star_line[i]->GetCollider()->pos = (star1_pos + player->pos) / 2;
 			star_line[i]->GetCollider()->rot.z = (star1_pos - player->pos).Normalized().Angle();
@@ -390,11 +373,11 @@ void StarBridge::Update()
 		}
 		//완료 됬을때
 		if (star_line[i]->GetLineStatus() == StarLine::LINE_STATUS::COMP) {
-			int star1_x = star_line[i]->GetStarOne().x;
-			int star1_y = star_line[i]->GetStarOne().y;
+			int star1_x = (int)star_line[i]->GetStarOne().x;
+			int star1_y = (int)star_line[i]->GetStarOne().y;
 			Vector2 star1_pos = star[star1_x][star1_y]->pos;
-			int star2_x = star_line[i]->GetStarTwo().x;
-			int star2_y = star_line[i]->GetStarTwo().y;
+			int star2_x = (int)star_line[i]->GetStarTwo().x;
+			int star2_y = (int)star_line[i]->GetStarTwo().y;
 			Vector2 star2_pos = star[star2_x][star2_y]->pos;
 
 			star_line[i]->GetCollider()->pos = (star1_pos + star2_pos) / 2;

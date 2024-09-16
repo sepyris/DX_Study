@@ -16,7 +16,7 @@ public:
 		Vector2 p = Float2(0, 0),
 		Vector2 s = Float2(1, 1),
 		float a = 0.0f,
-		Vector2 size = Float2(WIN_WIDTH/3.5, WIN_HEIGHT/1.7),
+		Vector2 size = Float2((float)(WIN_WIDTH/3.5), (float)(WIN_HEIGHT/1.7)),
 		D3D11_PRIMITIVE_TOPOLOGY t = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	~MiniMap();
 

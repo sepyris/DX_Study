@@ -2,7 +2,7 @@
 
 Running::Running()
 {
-	bg = new BackGroundUV(L"Texture/Image/runningbackground.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X+WIN_WIDTH, WIN_CENTER_Y+WIN_HEIGHT), Vector2(2, 2), 0.0f, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
+	bg = new BackGroundUV(L"Texture/Image/runningbackground.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X+WIN_WIDTH, WIN_CENTER_Y+WIN_HEIGHT), Vector2(2, 2), 0, Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
 
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 	player->SetRunning();
@@ -11,7 +11,7 @@ Running::Running()
 	CAM->pos = Vector2(-700, 700);
 
 
-	exit_button = new ImageRect(L"Texture/Image/exit_button.png", Vector2(0, 0), Vector2(1, 1), 0.0f, Vector2(150, 75));
+	exit_button = new ImageRect(L"Texture/Image/exit_button.png", Vector2(0, 0), Vector2(1, 1), 0, Vector2(150, 75));
 	mouse_object = new RectCollider(Vector2(10, 10));
 
 	hp_background = new RectCollider(Vector2(500, 50));
@@ -189,7 +189,7 @@ void Running::SetObjectPos()
 	ground[32]->GetCollider()->pos = Vector2(Vector2(ground[31]->GetCollider()->pos.x + ground[31]->GetSize().x / 2 + ground[32]->GetSize().x / 2, 1340));
 	ground[33]->GetCollider()->pos = Vector2(Vector2(ground[32]->GetCollider()->pos.x + ground[32]->GetSize().x / 2 + ground[33]->GetSize().x / 2, 1000));
 	ground[34]->GetCollider()->pos = Vector2(Vector2(ground[33]->GetCollider()->pos.x + ground[33]->GetSize().x / 2 + ground[34]->GetSize().x / 2 + 400, 1340));
-	int y_pos = 1340;
+	float y_pos = 1340;
 	for (int i = 35; i < 50; i++) {
 		std::uniform_int_distribution<int> rand_count(0, 4);
 		switch (rand_count(gen)) {
@@ -350,7 +350,7 @@ void Running::Update()
 
 	//체력바 세팅
 	//체력바 길이
-	hp_object->scale.x = (float)((player->GetHealth()*1.5) / 450.0f);
+	hp_object->scale.x = (float)((player->GetHealth()*1.5) / 450);
 	//체력바 길이 줄어듬에 따라 위치 조정
 	hp_object->pos.x = hp_object->pos.x - ((450 - (float)(player->GetHealth()*1.5)) / 2);
 
@@ -387,8 +387,8 @@ void Running::Update()
 			Vector2 collision;
 			if (player->GetCollider()->isCollision(g->GetCollider(), &collision)) {
 				if (player->pos.y < g->pos.y) {
-					if (player->GetCollider()->BottomVX() > g->GetCollider()->TopVX() - 1.0f) {
-						player->pos.y -= collision.y * DELTA * 20.0f;
+					if (player->GetCollider()->BottomVX() > g->GetCollider()->TopVX() - 1) {
+						player->pos.y -= collision.y * DELTA * 20;
 						player->landing();
 					}
 				}
@@ -398,7 +398,7 @@ void Running::Update()
 	for (LoopImageRect* g : hill) {
 		if (g != NULL) {
 			if (player->GetCollider()->isCollision(g->GetCollider())) {
-				player->pos.y -= DELTA * 400.0f;
+				player->pos.y -= DELTA * 400;
 				player->landing();
 			}
 		}
@@ -423,8 +423,8 @@ void Running::Update()
 		Vector2 collision;
 		if (player->GetCollider()->isCollision(safe_ground, &collision)) {
 			if (player->pos.y < safe_ground->pos.y) {
-				if (player->GetCollider()->BottomVX() > safe_ground->TopVX() - 1.0f) {
-					player->pos.y -= collision.y * DELTA * 20.0f;
+				if (player->GetCollider()->BottomVX() > safe_ground->TopVX() - 1) {
+					player->pos.y -= collision.y * DELTA * 20;
 					player->landing();
 				}
 			}

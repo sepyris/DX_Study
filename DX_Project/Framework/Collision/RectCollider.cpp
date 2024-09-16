@@ -28,7 +28,7 @@ void RectCollider::CreateLine()
 	//시계 반대방향으로 정점이 만들어져있지만
 	//삼각형이 아니라 선을 긋는것이라 시계방향을 지킬필요가 없음
 
-	VB = new VertexBuffer(vertices.data(), sizeof(VertexPos), vertices.size());
+	VB = new VertexBuffer(vertices.data(), (UINT)sizeof(VertexPos), (UINT)vertices.size());
 }
 
 RectCollider::ObbDesc RectCollider::GetObbDesc()

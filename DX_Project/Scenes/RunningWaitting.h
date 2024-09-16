@@ -13,7 +13,7 @@ private:
 
 	AnimatePlayer* player;
 public:
-	RunningWaitting(float area);
+	RunningWaitting(UINT area);
 	~RunningWaitting();
 
 	// Scene을(를) 통해 상속됨

@@ -5,11 +5,11 @@ LoopImageRect::LoopImageRect(wstring file_loc, Vector2 image_size, Vector2 size,
 {
 	this->size = size;
 	if (image_size.x < this->size.x) {
-		int mag = this->size.x / image_size.x;
+		float mag = this->size.x / image_size.x;
 		end_uv.x = mag;
 	}
 	if (image_size.y < this->size.y) {
-		int mag = this->size.y / image_size.y;
+		float mag = this->size.y / image_size.y;
 		end_uv.y = mag;
 	}
 

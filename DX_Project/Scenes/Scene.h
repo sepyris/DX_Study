@@ -31,8 +31,8 @@ ex | 다크 소울의 경우, 게임이 실제로 진행되는 3D 공간을 출력하던 와중
 class Scene
 {
 protected:
-	VertexShader* VS;
-	PixelShader* PS;
+	//VertexShader* VS = NULL;
+	//PixelShader* PS = NULL;
 	// 지금은 출력을 Scene에서 전담하기 때문에 여기서 만들어진 것이지만,
 	// 앞으로는 우리가 만들 각 오브젝트가 알아서 출력을 담당할 예정
 

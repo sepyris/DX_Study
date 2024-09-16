@@ -15,7 +15,7 @@ private:
 	//프로그램 내에서 만들어질 VertexShader 인스턴스들을 저장할 맵 자료구조
 
 public:
-	VertexShader(wstring file_loc,UINT type = 0, DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG);
+	VertexShader(wstring file_loc,UINT type = 0, DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS);
 	//VertexShader(LPCWSTR file_loc, DWORD flags)
 	//	:VertexShader(file_loc, 0, flags) {};
 	// 매개 변수로 문자열과 셰이더 설정에 필요한 플래그를 받는다

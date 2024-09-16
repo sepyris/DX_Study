@@ -1,6 +1,9 @@
 #include "framework.h"
 
 AnimatePlayer::AnimatePlayer(wstring file)
+	:attack_collider(NULL),
+	hit_point(0),
+	jump_height(0)
 {
 	Texture* t = Texture::Add(file);
 	//파일명을 이용해 실제이미지 파일을 Texture로서 로딩
@@ -188,8 +191,13 @@ AnimatePlayer::AnimatePlayer(wstring file)
 	frames.clear();
 	//플라이스턴 상태 끝
 
-	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2);
-	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
+
+	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
+	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl", 2, flags);
+	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl", flags);
 
 	CB = new ColourBuffer();
 
@@ -240,10 +248,10 @@ void AnimatePlayer::landing()
 		// 분명히 발생할수 있음
 		//땅에 착지시에 점프 상태를 변경
 		if (move_speed > 0) {
-			jump_speed = -move_speed * 0.7;
+			jump_speed = -move_speed * 0.7f;
 		}
 		else {
-			jump_speed = move_speed * 0.7;
+			jump_speed = move_speed * 0.7f;
 		}
 		
 

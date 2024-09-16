@@ -26,8 +26,8 @@ Frame::Frame(wstring file, Vector2 startUV, Vector2 endUV)
 	indices = { 0, 1, 2, 2, 1, 3 };
 	// 정점과 인덱스를 등록
 
-	VB = new VertexBuffer(vertices.data(), sizeof(VertexUV), vertices.size());
-	IB = new IndexBuffer(indices.data(), indices.size());
+	VB = new VertexBuffer(vertices.data(), (UINT)sizeof(VertexUV), (UINT)vertices.size());
+	IB = new IndexBuffer(indices.data(), (UINT)indices.size());
 
 	frame_size = endUV - startUV;
 	// 전체 프레임의 크기 중 이 프레임이 차지하는 비율이 얼마나 되는지를 frame_size에 기록
@@ -75,8 +75,8 @@ Frame::Frame(wstring file, float x, float y, float w, float h)
 	indices = { 0, 1, 2, 2, 1, 3 };
 	// 정점과 인덱스를 등록
 
-	VB = new VertexBuffer(vertices.data(), sizeof(VertexUV), vertices.size());
-	IB = new IndexBuffer(indices.data(), indices.size());
+	VB = new VertexBuffer(vertices.data(), (UINT)sizeof(VertexUV), (UINT)vertices.size());
+	IB = new IndexBuffer(indices.data(), (UINT)indices.size());
 
 	frame_size = Vector2(w / texture->GetSize().x,
 		                 h / texture->GetSize().y);
@@ -106,7 +106,7 @@ void Frame::Render()
 	IB->Set();
 	texture->Set();
 
-	DVC->DrawIndexed(indices.size(), 0, 0);
+	DVC->DrawIndexed((UINT)indices.size(), 0, 0);
 	//이 클래스는 인덱스 버퍼를 이용하므로
 	// = 꼭지점을 무조건 한번만 쓴다는 보장이 없으므로
 	// 꼭지점의 개수 대신

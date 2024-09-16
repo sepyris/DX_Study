@@ -7,7 +7,7 @@ private:
 	static unordered_map<wstring, PixelShader*> shader_data;
 
 public:
-	PixelShader(wstring file_loc, DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG);
+	PixelShader(wstring file_loc, DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS);
 	// LPCWSTR = WCHAR = 유니코드 지원하는 문자 자료형
 	~PixelShader();
 

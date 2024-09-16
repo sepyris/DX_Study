@@ -45,14 +45,14 @@ bool CircleCollider::isRectCollision(RectCollider* collider, Vector2* overwrap)
 
 void CircleCollider::CreateLine()
 {
-	float angle = 2 * M_PI;	
+	float angle = (float)(2 * M_PI);	
 	for (int i = 0; i <= 50; i++)
 	{
 		vertices.emplace_back(-cos(angle) * radius, sin(angle) * radius);
 		vertices.emplace_back(cos(angle) * radius, -sin(angle) * radius);
-		angle -= 2 * M_PI / 50.0f;
+		angle -= (float)(2 * M_PI) / 50.0f;
 	}
-	VB = new VertexBuffer(vertices.data(), sizeof(VertexPos), vertices.size());
+	VB = new VertexBuffer(vertices.data(), (UINT)sizeof(VertexPos), (UINT)(vertices.size()));
 }
 
 bool CircleCollider::isAABB(RectCollider* collider)

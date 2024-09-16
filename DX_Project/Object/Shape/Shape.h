@@ -23,8 +23,8 @@ public:
 	Shape();
 
 	VertexBuffer** const GetBuffer() { return &VB; }
-	int GetVertexSize() { return vertices.size(); }
-	int GetVertexUVSize() { return vertices_uv.size(); }
+	int GetVertexSize() { return (int)vertices.size(); }
+	int GetVertexUVSize() { return (int)vertices_uv.size(); }
 
 	void SetColor(Float4 colour)
 	// 이 도형이 가져야 할 색을 지정해주는 지정자

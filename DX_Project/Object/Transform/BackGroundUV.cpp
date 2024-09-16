@@ -4,6 +4,7 @@ BackGroundUV::BackGroundUV(wstring file_loc, Vector2 start_uv,Vector2 end_uv, Ve
 	:Transform(p, s, a)
 {
 	image = new RectUV(size,start_uv,end_uv);
+	
 	ScratchImage img;
 	//실제 이미지 파일을 로딩해와서 저장하는 역할을 담당하는 클래스
 

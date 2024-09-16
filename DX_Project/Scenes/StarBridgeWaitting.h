@@ -9,7 +9,7 @@ private:
 
 	AnimatePlayer* player;
 public:
-	StarBridgeWaitting(float area);
+	StarBridgeWaitting(UINT area);
 	~StarBridgeWaitting();
 
 	// Scene을(를) 통해 상속됨

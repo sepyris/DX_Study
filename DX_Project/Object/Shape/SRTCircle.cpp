@@ -3,7 +3,7 @@
 SRTCircle::SRTCircle(Float2 size, int vertex_count, D3D11_PRIMITIVE_TOPOLOGY type)
 	: Shape(), type(type), size(size)
 {
-	float angle = 2 * M_PI;
+	float angle = 2 * (float)M_PI;
 	// 원에서 현재 내가 찍어야 할 점의 위치를 삼각함수를 통해 구하기 위해,
 	// 그 삼각함수에 넣을 좌표값을 계산해 저장하기 위한 변수를 만든 것
 	// 초기값은 원 한 바퀴를 의미하는 360도를
@@ -23,22 +23,22 @@ SRTCircle::SRTCircle(Float2 size, int vertex_count, D3D11_PRIMITIVE_TOPOLOGY typ
 	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
 		for (int i = 0; i < vertex_count; i++)
 		{
-			vertices.emplace_back(0, 0, 1.0f, 1.0f, 1.0f);
+			vertices.emplace_back(0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
 			// 삼각형의 첫번째 점으로 사용할, 원의 중점을 입력
 			vertices.emplace_back(
 				-cos(angle) * this->size.x,
 				sin(angle) * this->size.y,
-				angle / (2 * M_PI), (2 * M_PI - angle) / (2 * M_PI), 1.0f
+				(float)(angle / (2 * M_PI)), float((2 * M_PI - angle) / (2 * M_PI)), 1.0f
 			);
 			// 삼각함수를 통해 확보한 육각형의 점 중 하나를 추가
 
-			angle -= 2 * M_PI / float(vertex_count);
+			angle -= 2 * (float)M_PI / (float)vertex_count;
 			// 각도 보정
 
 			vertices.emplace_back(
 				-cos(angle) * this->size.x,
 				sin(angle) * this->size.y,
-				angle / (2 * M_PI), (2 * M_PI - angle) / (2 * M_PI), 1.0f
+				(float)(angle / (2 * M_PI)), (float)((2 * M_PI - angle) / (2 * M_PI)), 1.0f
 			);
 			// 삼각함수를 통해 확보한 육각형의 다음 점을 추가
 		}
@@ -51,20 +51,23 @@ SRTCircle::SRTCircle(Float2 size, int vertex_count, D3D11_PRIMITIVE_TOPOLOGY typ
 			vertices.emplace_back(
 				-cos(angle) * this->size.x,
 				sin(angle) * this->size.y,
-				angle / (2 * M_PI), (2 * M_PI - angle) / (2 * M_PI), 1.0f
+				(float)(angle / (2 * M_PI)), (float)((2 * M_PI - angle) / (2 * M_PI)), 1.0f
 			);
-			angle -= 2 * M_PI / float(vertex_count);
+			angle -= 2 * (float)M_PI / (float)vertex_count;
 		}
 		// 이 쪽은 시작점만 추가로 적어줘야 한다는 점 빼면 꼭지점들만 순차적으로 추가하면 됨
 		break;
 	}
 
-	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
+	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
 
 	VS = new VertexShader(L"Shader/VertexShader/VertexShader.hlsl", flags);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShader.hlsl", flags);
 
-	VB = new VertexBuffer(vertices.data(), sizeof(Vertex), vertices.size());
+	VB = new VertexBuffer(vertices.data(), (UINT)sizeof(Vertex), (UINT)vertices.size());
 	CB = new ColourBuffer();
 }
 
@@ -92,5 +95,5 @@ void SRTCircle::Render()
 	VB->Set(type);
 	VS->Set();
 	PS->Set();
-	DVC->Draw(vertices.size(), 0);
+	DVC->Draw((UINT)vertices.size(), 0);
 }

@@ -1,7 +1,5 @@
 #include "framework.h"
 
-
-
 Program::Program()
 {
 	Create();
@@ -37,15 +35,18 @@ void Program::Update()
 	//그렇기에 가급적이면 Scene내부에서 다른 Scene으로 전환해달라는 요청을 보낼수 있도록
 	//Program에서 Scene을 전환 해달라는 함수를 만드는것이 나음
 	
+	if (scene != NULL) {
+		scene->Update();
+	}
 	
-	scene->Update();
 	CAM->Update();
 }
 
 void Program::Render()
 {
-	Device::Get()->Clear();
 	
+	Device::Get()->Clear();
+#if defined( DEBUG ) || defined( _DEBUG )
 	// 원래는 프로그램에서 Render 함수가 호출되었을 때 이뤄져야 하지만
 	// 지금 당장은 Scene을 한 번에 하나만 다루기 때문에
 	// 그리고 Scene 내부에서 또 화면 초기화를 하기 때문에 여기서는 생략
@@ -64,15 +65,20 @@ void Program::Render()
 	ImGui::SliderFloat2("cam.pos", (float*)&CAM->pos, 0, WIN_WIDTH);
 	
 
-	scene->Render();
+	
 	scene->PostRender();
 
 	ImGui::Render();//렌더링 = 출력하는 함수
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	//그렇게 출력된 UI에 출력해야할 데이터들을 객체에서 표기 가능하도록 등록해주는 함수
-
+#endif
+	
+	if (scene != NULL) {
+		scene->Render();
+	}
+	
 	Device::Get()->Present();
-
+	
 }
 
 void Program::Create()
@@ -81,7 +87,7 @@ void Program::Create()
 	Control::Get();
 	Timer::Get();
 	Environment::Get();
-
+#if defined( DEBUG ) || defined( _DEBUG )
 	ImGui::CreateContext();//객체를 만들어내는 함수
 	ImGui::StyleColorsDark();//창의 색상을 검은색 기반으로 설정하는 함수
 	//이외에도 Light,Classic이라는 스타일도 있음
@@ -93,7 +99,8 @@ void Program::Create()
 	//윈도우 운영체제에서 사용하고 있다고 설정 및 초기화
 
 	//이렇게 4줄을 작성하여 ImGui를 사용하겠다고 선언 및 초기화
-
+#endif
+	
 }
 
 void Program::Delete()
@@ -103,7 +110,9 @@ void Program::Delete()
 
 void Program::CreateScene(UINT map_code, UINT area)
 {
-	delete scene;
+	if (scene != NULL) {
+		delete scene;
+	}
 	Environment::Get()->SetHorizonScreen();
 	if (map_code == 1) {
 		scene = new MapleIsland(area);

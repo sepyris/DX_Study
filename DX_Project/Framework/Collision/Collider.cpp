@@ -3,7 +3,12 @@
 
 Collider::Collider()
 {
-	VS = new VertexShader(L"Shader/VertexShader/VertexShaderPos.hlsl", +1, D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG);
+
+	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
+	VS = new VertexShader(L"Shader/VertexShader/VertexShaderPos.hlsl", +1, D3DCOMPILE_ENABLE_STRICTNESS);
 	PS = new PixelShader(L"Shader/PixelShader/PixelShaderPos.hlsl");
 
 	CB = new ColourBuffer();
@@ -39,7 +44,7 @@ void Collider::Render()
 	//VB->Set(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 	VS->Set();
 	PS->Set();
-	DVC->Draw(vertices.size(), 0);
+	DVC->Draw((UINT)vertices.size(), 0);
 }
 
 bool Collider::isCollision(Collider* collider, Vector2* overwrap)

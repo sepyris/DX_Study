@@ -31,7 +31,7 @@ Texture2D map : register(t0);
 
 float4 PS(PixelInput input) : SV_TARGET
 {
-	return map.Sample(samp, input.uv) * color;
+    return map.Sample(samp, (float2)input.uv) * color;
 	//텍스쳐 파일에서 samp를 통해 들어온 데이터를 uv값에 해당하는 map의 좌표에 저장
 	//추가로 만약 생상버퍼에 색이 들어와 있다면 이를 곱해서
 	//그렇게 가져온 이미지 데이터에 필터 비슷한 느낌으로 색을 보정할수 있음

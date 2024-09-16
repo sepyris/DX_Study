@@ -39,7 +39,7 @@ private:
 	float moveup_speed;
 	float moveup_pos;
 
-	float hit_point;
+	int hit_point;
 
 	bool is_can_double_jump;
 	bool is_jump_attack;

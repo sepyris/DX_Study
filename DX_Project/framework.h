@@ -76,6 +76,7 @@
 //DirectXTex 외부 라이브러리
 #pragma comment(lib, "dxguid.lib")
 #include "../DirectxTex/DirectXTex.h"
+
 //DirectXTex라는 라이브러리를 사용하기 위해 필요한 구문
 //DirectXTex란(DirectX texture processing library)
 //DX에서 이미지를 다루기 쉽게 만들어주는 라이브러리

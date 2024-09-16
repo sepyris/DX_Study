@@ -1,6 +1,6 @@
 #include "framework.h"
 
-Device* Device::instance = nullptr;
+//Device* Device::instance = nullptr;
 // 클래스에서 static으로 선언한 멤버 변수는
 // 이렇게 파일 쪽에서 초기화를 해줘야 에러가 발생하지 않음
 
@@ -49,11 +49,16 @@ void Device::CreateDeviceAndSwapChain()
     sd.SampleDesc.Quality = 0;
     sd.Windowed = true;
 
+    DWORD flags = 0;
+#if defined( DEBUG ) || defined( _DEBUG )
+    flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
     D3D11CreateDeviceAndSwapChain(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         0,
-        D3D11_CREATE_DEVICE_DEBUG,
+        flags,
         nullptr,
         0,
         D3D11_SDK_VERSION,
@@ -73,9 +78,10 @@ void Device::CreateBackBuffer()
     ID3D11Texture2D* backBuffer = nullptr;
 
     swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer);
-    device->CreateRenderTargetView(backBuffer, nullptr, &render_target_view);
-    backBuffer->Release();
-
+    if (backBuffer != NULL) {
+        device->CreateRenderTargetView(backBuffer, nullptr, &render_target_view);
+        backBuffer->Release();
+    }
     device_context->OMSetRenderTargets(1, &render_target_view, nullptr);
 
     // 지난 프로젝트에서 백버퍼를 설정하고 디바이스에 이를 등록하는 부분을 가져옴
@@ -86,8 +92,8 @@ void Device::SetViewPoint()
 // ...2D에서는 기본적으로 이걸 건드릴 일이 많지 않기 때문에 설명하지 않음
 {
     D3D11_VIEWPORT viewPort;
-    viewPort.Width = width; // 우리가 설정한 창의 크기 전체를 화면에 표시하겠다
-    viewPort.Height = height; // 마찬가지
+    viewPort.Width = (float)width; // 우리가 설정한 창의 크기 전체를 화면에 표시하겠다
+    viewPort.Height = (float)height; // 마찬가지
     viewPort.MinDepth = 0.0f; // 깊이를 따지는 내용
     viewPort.MaxDepth = 1.0f; // 이에 대해서는 추후 3D를 배울 떄 다루게 될 것
     viewPort.TopLeftX = 0.0f;

@@ -1,9 +1,9 @@
 #include "framework.h"
 
-MapleIsland::MapleIsland(float area)
+MapleIsland::MapleIsland(UINT area)
 {
+	
 	bg = new BackGroundUV(L"Texture/Image/mapleisland.png", Vector2(0, 0), Vector2(1, 1), Vector2(WIN_CENTER_X, WIN_CENTER_Y),Vector2(3,3),0.0f,Vector2(SCREEN_SIZE_X, SCREEN_SIZE_Y));
-
 	player = new AnimatePlayer(L"Texture/AnimateScene/Animation/sprite.png");
 
 	CAM->SetTarget(player);
@@ -92,7 +92,6 @@ MapleIsland::MapleIsland(float area)
 		}
 	}
 	right_portal->WorldUpdate();
-	
 }
 
 MapleIsland::~MapleIsland()
@@ -130,111 +129,124 @@ MapleIsland::~MapleIsland()
 
 void MapleIsland::Update()
 {
-	if (player->pos.y > WIN_HEIGHT*3) {
-		player->pos = Vector2(WIN_CENTER_X + 545, 500);
-	}
-	CAM->SetTarget(player);
-	bg->Update();
-	
+	if (player != NULL) {
+		if (player->pos.y > WIN_HEIGHT * 3) {
+			player->pos = Vector2(WIN_CENTER_X + 545, 500);
+		}
+		CAM->SetTarget(player);
+		if (bg != NULL) {
+			bg->Update();
+		}
 
-	for (RectCollider* g : left_col) {
-		if (g != NULL) {
-			Vector2 collision;
-			if (player->GetCollider()->isCollision(g, &collision)) {
-				player->pos.x -= collision.x*DELTA * 50.0f;
+
+
+		for (RectCollider* g : left_col) {
+			if (g != NULL) {
+				Vector2 collision;
+				if (player->GetCollider()->isCollision(g, &collision)) {
+					player->pos.x -= collision.x * DELTA * 50.0f;
+				}
 			}
 		}
-	}
-	for (RectCollider* g : right_col) {
-		if (g != NULL) {
-			Vector2 collision;
-			if (player->GetCollider()->isCollision(g, &collision)) {
-				player->pos.x += collision.x * DELTA * 50.0f;
+		for (RectCollider* g : right_col) {
+			if (g != NULL) {
+				Vector2 collision;
+				if (player->GetCollider()->isCollision(g, &collision)) {
+					player->pos.x += collision.x * DELTA * 50.0f;
+				}
 			}
 		}
-	}
 
-	for (RectCollider* g : ground) {
-		if (g != NULL) {
-			Vector2 collision;
-			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (player->pos.y < g->pos.y) {
-					if (player->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
-						player->pos.y -= collision.y*DELTA*20.0f;
-						player->landing();
+		for (RectCollider* g : ground) {
+			if (g != NULL) {
+				Vector2 collision;
+				if (player->GetCollider()->isCollision(g, &collision)) {
+					if (player->pos.y < g->pos.y) {
+						if (player->GetCollider()->BottomVX() > g->TopVX() - 1.0f) {
+							player->pos.y -= collision.y * DELTA * 20.0f;
+							player->landing();
+						}
 					}
 				}
 			}
 		}
-	}
-	
-	for (RectCollider* g : hill_ground) {
-		if (g != NULL) {
-			if (player->GetCollider()->isCollision(g)) {
-				player->pos.y -= DELTA * 300.0f;
-				player->landing();
-			}
-		}
-	}
-	bool check_hanging = false;
-	for (RectCollider* g : ladder) {
-		if (g != NULL) {
-			Vector2 collision;
-			if (player->GetCollider()->isCollision(g, &collision)) {
-				if (player->IsHanging()) {
-					player->pos.x = g->GlobalPos().x;
-					player->GetCollider()->pos.x = g->GlobalPos().x;
-					check_hanging = true;
+
+		for (RectCollider* g : hill_ground) {
+			if (g != NULL) {
+				if (player->GetCollider()->isCollision(g)) {
+					player->pos.y -= DELTA * 300.0f;
+					player->landing();
 				}
 			}
 		}
-	}
-	if (!check_hanging) {
-		player->SetIdle();
-	}
-
-	if (right_portal!= NULL) {
-		if (player->GetCollider()->isCollision(right_portal)) {
-			if (KEY_DOWN(VK_UP)) {
-				program->CreateScene(2,1);
-				return;
+		bool check_hanging = false;
+		for (RectCollider* g : ladder) {
+			if (g != NULL) {
+				Vector2 collision;
+				if (player->GetCollider()->isCollision(g, &collision)) {
+					if (player->IsHanging()) {
+						player->pos.x = g->GlobalPos().x;
+						player->GetCollider()->pos.x = g->GlobalPos().x;
+						check_hanging = true;
+					}
+				}
 			}
 		}
-	}
-	
-	player->Update();
-	for (RectCollider* g : ground) {
-		if (g != NULL) {
-			g->WorldUpdate();
+		if (!check_hanging) {
+			player->SetIdle();
+		}
+
+		if (right_portal != NULL) {
+			if (player->GetCollider()->isCollision(right_portal)) {
+				if (KEY_DOWN(VK_UP)) {
+					program->CreateScene(2, 1);
+					return;
+				}
+			}
+		}
+
+		player->Update();
+		for (RectCollider* g : ground) {
+			if (g != NULL) {
+				g->WorldUpdate();
+			}
+		}
+		for (RectCollider* g : left_col) {
+			if (g != NULL) {
+				g->WorldUpdate();
+			}
+		}
+		for (RectCollider* g : right_col) {
+			if (g != NULL) {
+				g->WorldUpdate();
+			}
+		}
+		for (RectCollider* g : hill_ground) {
+			if (g != NULL) {
+				g->WorldUpdate();
+			}
+		}
+		for (RectCollider* g : ladder) {
+			if (g != NULL) {
+				g->WorldUpdate();
+			}
+		}
+		if (info != NULL) {
+			info->Update();
+		}
+		if (right_portal != NULL) {
+			right_portal->WorldUpdate();
 		}
 	}
-	for (RectCollider* g : left_col) {
-		if (g != NULL) {
-			g->WorldUpdate();
-		}
-	}
-	for (RectCollider* g : right_col) {
-		if (g != NULL) {
-			g->WorldUpdate();
-		}
-	}
-	for (RectCollider* g : hill_ground) {
-		if (g != NULL) {
-			g->WorldUpdate();
-		}
-	}
-	for (RectCollider* g : ladder) {
-		if (g != NULL) {
-			g->WorldUpdate();
-		}
-	}
-	info->Update();
-	right_portal->WorldUpdate();
 }
 
 void MapleIsland::Render()
 {
-	bg->Render();
+
+	if (bg != NULL) {
+		bg->Render();
+	}
+	
 	for (RectCollider* g : ground) {
 		if (g != NULL) {
 			g->Render();
@@ -260,9 +272,15 @@ void MapleIsland::Render()
 			g->Render();
 		}
 	}
-	info->Render();
-	right_portal->Render();
-	player->Render();
+	if (info != NULL) {
+		info->Render();
+	}
+	if (right_portal != NULL) {
+		right_portal->Render();
+	}
+	if (player != NULL) {
+		player->Render();
+	}
 }
 
 void MapleIsland::PostRender()

@@ -59,13 +59,13 @@ void MiniMap::SetStar(S_STAGE stage_star[],int line_count)
 
 void MiniMap::SetCompStar(S_STAGE stage_star)
 {
-	int star1_x = stage_star.star1.x;
-	int star1_y = stage_star.star1.y;
-	int star2_x = stage_star.star2.x;
-	int star2_y = stage_star.star2.y;
+	int star1_x = (int)stage_star.star1.x;
+	int star1_y = (int)stage_star.star1.y;
+	int star2_x = (int)stage_star.star2.x;
+	int star2_y = (int)stage_star.star2.y;
 	//완료된 라인의 이미지 설정
 	for (int i = 0; i < stage_line_count; i++) {
-		if (stage_star_line[i]->CheckLineComp(Vector2(star1_x, star1_y), Vector2(star2_x, star2_y))) {
+		if (stage_star_line[i]->CheckLineComp(Vector2((float)star1_x, (float)star1_y), Vector2((float)star2_x, (float)star2_y))) {
 			stage_star_line[i]->ChangeImage(L"Texture/Image/starline.png");
 		}
 	}
@@ -92,12 +92,12 @@ void MiniMap::Update()
 	//미니맵에는 라인이 보이기에 라인 설정
 	for (int i = 0; i < stage_line_count; i++) {
 		//스테이지 라인 생성
-		int star1_x = stage_star_line[i]->GetStarOne().x;
-		int star1_y = stage_star_line[i]->GetStarOne().y;
+		int star1_x = (int)stage_star_line[i]->GetStarOne().x;
+		int star1_y = (int)stage_star_line[i]->GetStarOne().y;
 		Vector2 star1_pos = star[star1_x][star1_y]->pos;
 
-		int star2_x = stage_star_line[i]->GetStarTwo().x;
-		int star2_y = stage_star_line[i]->GetStarTwo().y;
+		int star2_x = (int)stage_star_line[i]->GetStarTwo().x;
+		int star2_y = (int)stage_star_line[i]->GetStarTwo().y;
 		Vector2 star2_pos = star[star2_x][star2_y]->pos;
 
 		stage_star_line[i]->GetCollider()->pos = (star1_pos + star2_pos) / 2;
@@ -121,10 +121,10 @@ void MiniMap::Render()
 	}
 	for (int i = 0; i < stage_line_count; i++) {
 		//해당 별만 렌더링
-		int star1_x = stage_star_line[i]->GetStarOne().x;
-		int star1_y = stage_star_line[i]->GetStarOne().y;
-		int star2_x = stage_star_line[i]->GetStarTwo().x;
-		int star2_y = stage_star_line[i]->GetStarTwo().y;
+		int star1_x = (int)stage_star_line[i]->GetStarOne().x;
+		int star1_y = (int)stage_star_line[i]->GetStarOne().y;
+		int star2_x = (int)stage_star_line[i]->GetStarTwo().x;
+		int star2_y = (int)stage_star_line[i]->GetStarTwo().y;
 		Star* tmp = star[star1_x][star1_y];
 		if (tmp != NULL) {
 			tmp->Render();

@@ -26,32 +26,50 @@ RectUV::RectUV(Vector2 size, Vector2 start_uv, Vector2 end_uv, D3D11_PRIMITIVE_T
 	//다만 0과 1의 값을 벗어난다고 해서 에러가 발생하지는 않는다
 	//왜 그렇게 되는지는 CreateSamplerState함수에서 설명
 
-	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
-
+	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	flags |= D3DCOMPILE_DEBUG;
+#endif
 	VS = new VertexShader(L"Shader/VertexShader/VertexShaderUV.hlsl",2,flags);
-	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUv.hlsl");
-
-	VB = new VertexBuffer(vertices_uv.data(), sizeof(VertexUV),
-		vertices_uv.size());
+	PS = new PixelShader(L"Shader/PixelShader/PixelShaderUV.hlsl",flags);
+	
+	VB = new VertexBuffer(vertices_uv.data(), (UINT)sizeof(VertexUV), (UINT)vertices_uv.size());
 	CB = new ColourBuffer();
-
 }
 
 RectUV::~RectUV()
 {
-	delete VS;
-	delete PS;
-	delete VB;
-	delete CB;
+	if (VS != NULL) {
+		delete VS;
+	}
+	if (PS != NULL) {
+		delete PS;
+	}
+	if (VB != NULL) {
+		delete VB;
+	}
+	if (CB != NULL) {
+		delete CB;
+	}
+	
 }
 
 void RectUV::Render()
 {
-	CB->SetPS(0);
-	VB->Set(type);
-	VS->Set();
-	PS->Set();
-	DVC->Draw(vertices_uv.size(), 0);
+	if (CB != NULL) {
+		CB->SetPS(0);
+	}
+	if (VB != NULL) {
+		VB->Set(type);
+	}
+	if (VS != NULL) {
+		VS->Set();
+	}
+	if (PS != NULL) {
+		PS->Set();
+	}
+	
+	DVC->Draw((UINT)vertices_uv.size(), 0);
 
 	//꼭지점을 이루는 값 잧체에 이미지의 어디를 출력하라는것인지가 결정되어 있으니
 	//그걸 그냥 이용하면 ok

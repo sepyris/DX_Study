@@ -6,12 +6,15 @@ unordered_map<wstring, VertexShader*> VertexShader::shader_data;
 //static 멤버변수는 반드시 헤더가 아닌곳에서 초기화를 해둬야 함
 
 VertexShader::VertexShader(wstring file_loc, UINT type, DWORD flags)
+    :input_layout(),
+    VS()
 {
-    ID3DBlob* vertexBlob;
+    ID3DBlob* vertexBlob = NULL;
     // 셰이더를 생성하기 위해 필요한 임시 객체
-
+    
     D3DCompileFromFile(file_loc.c_str(), nullptr, nullptr, "VS",
         "vs_5_0", flags, 0, &vertexBlob, nullptr);
+    
     // 매개변수를 통해 실제로 우리가 사용할 셰이더 파일을 이용,
     // DirectX 장치 쪽에서 해당 파일을 기반으로 하는 셰이더를 설치하는 함수
     
@@ -34,6 +37,7 @@ VertexShader::VertexShader(wstring file_loc, UINT type, DWORD flags)
     
     Device::Get()->GetDevice()->CreateVertexShader(vertexBlob->GetBufferPointer(),
         vertexBlob->GetBufferSize(), nullptr, &VS);
+
     // 로드한 파일을 이용해서,
     // 지금 이 프로젝트에서 만들어져 있는 DX 구동용 장치를 이용해
     // 실제 정점 셰이더를 동적 할당하여 VS에 저장
@@ -47,6 +51,7 @@ VertexShader::VertexShader(wstring file_loc, UINT type, DWORD flags)
     // 셰이더에서 사용할 이 데이터인지 저 데이터인지를 분간할 수 없음
     // 그래서 이 layouts를 이용해 보내진 데이터의 어디부터 어디까지가
     // 어떤 데이터인지를 명시하는 역할 
+    
     D3D11_INPUT_ELEMENT_DESC layouts[] =
     {
         {"POSITION", // 셰이더에 데이터가 입력될 때, 지금 다루는 부분의 데이터는
@@ -115,7 +120,7 @@ VertexShader::VertexShader(wstring file_loc, UINT type, DWORD flags)
         {"UV", 0, DXGI_FORMAT_R32G32_FLOAT,
         0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
     };
-
+    
 
 
     UINT layoutSize;
@@ -154,14 +159,14 @@ VertexShader::VertexShader(wstring file_loc, UINT type, DWORD flags)
     }
           
     }
-
     
     // 그렇게 필요한 내용들이 전부 구성이 완료됐다면
     // 이 데이터들을 이용해 
     // 앞으로 이 셰이더에 들어갈 데이터는 이런 형식이라고
     // 안내판 역할을 해줄 input_layout을 동적 할당
-
-    vertexBlob->Release();
+    if (vertexBlob != NULL) {
+        vertexBlob->Release();
+    }
     // 이제 이 임시 셰이더 버퍼는 필요없어졌으니 할당 해제
 }
 
@@ -201,11 +206,17 @@ VertexShader* VertexShader::GetInstance(wstring file_loc, UINT type)
 void VertexShader::Release()
 {
     VS->Release();
-    input_layout->Release();
+    if (input_layout != NULL) {
+        input_layout->Release();
+    }
+        
 }
 
 void VertexShader::Set()
 {
     DVC->VSSetShader(VS, nullptr, 0);
-    DVC->IASetInputLayout(input_layout);
+    if (input_layout != NULL) {
+        DVC->IASetInputLayout(input_layout);
+    }
+    
 }

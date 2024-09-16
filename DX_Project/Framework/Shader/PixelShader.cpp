@@ -4,6 +4,7 @@ unordered_map<wstring, PixelShader*> PixelShader::shader_data;
 
 PixelShader::PixelShader(wstring file_loc, DWORD flags)
 {
+    PS = NULL;
     // VertexShader 측과 하는 것은 똑같음 : 
     // 파일명을 받아서 그걸 이용해 셰이더를 컴파일하고
     // 그걸 토대로 만들어진 셰이더 인스턴스를 PS에 저장
@@ -36,6 +37,10 @@ PixelShader* PixelShader::GetInstance(wstring file_loc)
     shader_data[file_loc] = instance;
 
     return instance;
+}
+
+void PixelShader::Delete()
+{
 }
 
 void PixelShader::Release()

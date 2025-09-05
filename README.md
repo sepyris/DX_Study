@@ -47,7 +47,6 @@ DX
 해결:스테이지를 넘어갈시 상태저장 변수도 초기화
 
 ​<img width="400" height="300" alt="스타브릿지1" src="https://github.com/user-attachments/assets/90b13194-f855-4108-9e52-40be3bb5d745" />
-
 <img width="230" height="222" alt="스타브릿지2" src="https://github.com/user-attachments/assets/dc16851b-56c9-400f-86d3-884394608028" />
 <img width="275" height="282" alt="스타브릿지3" src="https://github.com/user-attachments/assets/024c314c-9c22-4a6a-be0a-2f7dbf5d20bc" />
 <img width="400" height="300" alt="스타브릿지4" src="https://github.com/user-attachments/assets/ffd85980-b358-4aec-b1ac-61f6bf112e63" />
